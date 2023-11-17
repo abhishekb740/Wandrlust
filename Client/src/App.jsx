@@ -1,5 +1,5 @@
 import './App.css'
-
+import {Button} from "@nextui-org/react";
 function App() {
   const submitHandler =async(e) =>{
     // const response = await fetch('http://localhost:5000',{
@@ -17,7 +17,7 @@ function App() {
   }
   return (
     <>
-      <button onClick={submitHandler}>Submit</button>
+      <Button color='primary' onClick={submitHandler}>Submit</Button>
     </>
   )
 }
