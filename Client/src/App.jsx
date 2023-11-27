@@ -1,7 +1,15 @@
 import './App.css'
+import ScrollToTop from "./components/scrollCorrector/scroll.jsx";
+import Navbar from "./components/Navbar/navbar.jsx";
+import Footer from "./components/Footer/footer.jsx";
+import Home from "./pages/home";
+import Flights from "./pages/flights";
 import {Button} from "@nextui-org/react";
+
+import { HashRouter as Router, Routes, Route } from 'react-router-dom';
+
 function App() {
-  const submitHandler =async(e) =>{
+  const submitHandler =async() =>{
     // const response = await fetch('http://localhost:5000',{
     //   method:'POST',
     //   headers:{
@@ -16,10 +24,19 @@ function App() {
     // console.log(await response.json());
   }
   return (
-    <>
-      <Button color='primary' onClick={submitHandler}>Submit</Button>
-    </>
-  )
+    <Router>
+      <ScrollToTop>
+      {/* <Navbar /> */}
+
+      <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/flights" element={<Flights />} />
+      </Routes>
+
+      {/* <Footer /> */}
+      </ScrollToTop>
+    </Router>
+  );
 }
 
 export default App
