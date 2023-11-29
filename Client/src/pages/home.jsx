@@ -1,15 +1,12 @@
 import '../index.css';
 import  {Button}  from '@nextui-org/react';
 
-
 export default function Home() {
 
   const airlines = ["airasia", "airindia", "goair", "indigo", "spicejet", "vistara"];
 
     return (
       <div>
-
-
         {/* -------------------------------------------------------------------------- */
         /*                                HERO SECTION                                */
         /* -------------------------------------------------------------------------- */}
@@ -31,8 +28,6 @@ export default function Home() {
         {/* -------------------------------------------------------------------------- */
         /*                              AIRLINES SECTION                              */
         /* -------------------------------------------------------------------------- */}
-
-
       </div>
     );
   }
