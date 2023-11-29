@@ -1,5 +1,5 @@
 import {Card, CardHeader, CardBody, Image} from "@nextui-org/react";
-import ShanksImage from "../../public/IMG-20231006-WA0007.jpg"
+import ShanksImage from "../assets/images/IMG-20231006-WA0007.jpg"
 
 export default function Cards(props) {
   return (

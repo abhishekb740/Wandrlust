@@ -111,7 +111,7 @@ export default function Header() {
     );
 
     return (
-        <Box sx={{ flexGrow: 1 }}>
+        <Box sx={{ flexGrow: 1, paddingBottom: '1rem' }}>
             <AppBar position="sticky" sx={{
                 padding: ".5rem 0",
                 backgroundColor: "black",
