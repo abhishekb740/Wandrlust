@@ -12,7 +12,7 @@ const Feeds = () => {
 
     return (
         <div style={{ display: 'flex', width: "100%", paddingTop: '1rem' }}>
-            <div style={{ width: '30%', display: 'flex', alignItems: 'center', flexDirection: 'column', gap: '2rem', position: 'fixed' }}>
+            <div style={{ width: '25%', display: 'flex', alignItems: 'center', flexDirection: 'column', gap: '2rem', position: 'fixed' }}>
                 <Card className="py-4" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '90%' }}>
                     <CardHeader className="pb-0 pt-2 px-4 flex-col items-start">
                         <div style={{ display: 'flex', gap: '1rem' }} >
@@ -37,7 +37,7 @@ const Feeds = () => {
                     <Cards />
                 </div>
             </div>
-            <div style={{ width: '30%', position: 'fixed', right: '0' }}  >
+            <div style={{ width: '25%', position: 'fixed', right: '0' }}  >
                 Right Side
             </div>
         </div>
