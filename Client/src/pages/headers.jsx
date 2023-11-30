@@ -12,6 +12,8 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
+import ProfileImage from "../assets/images/profile.png"
+
 
 export default function Header() {
 
@@ -96,26 +98,17 @@ export default function Header() {
                 <p>Notifications</p>
             </MenuItem>
             <MenuItem onClick={handleProfileMenuOpen}>
-                <IconButton
-                    size="large"
-                    aria-label="account of current user"
-                    aria-controls="primary-search-account-menu"
-                    aria-haspopup="true"
-                    color="inherit"
-                >
-                    <AccountCircle />
-                </IconButton>
+            <img src={ProfileImage} width="50px" height="50px" ></img>
                 <p>Profile</p>
             </MenuItem>
         </Menu>
     );
 
     return (
-        <Box sx={{ flexGrow: 1, paddingBottom: '1rem' }}>
-            <AppBar position="sticky" sx={{
+        <Box sx={{ flexGrow: 1, paddingBottom: '6rem' }}>
+            <AppBar position="fixed" sx={{
                 padding: ".5rem 0",
                 backgroundColor: "black",
-                color: "#f94566",
             }}>
                 <Toolbar>
                     <Link to="/">
@@ -123,7 +116,7 @@ export default function Header() {
                             variant="h5"
                             noWrap
                             component="div"
-                            sx={{ display: { xs: 'none', sm: 'block', fontWeight: "bold" } }}
+                            sx={{ display: { xs: 'none', sm: 'block', fontWeight: "bold",color: "#f94566", } }}
                         >
                             WandrLust
                         </Typography>
@@ -183,21 +176,12 @@ export default function Header() {
                                     md: 'flex'
                                 },
                                 alignItems: "center",
-                                gap: "5px",
+                                gap: "12px",
                                 justifyContent: "center",
                                 cursor: "pointer"
                             }}
                         >
-                            <IconButton
-                                size="large"
-                                edge="end"
-                                aria-label="account of current user"
-                                aria-controls={menuId}
-                                aria-haspopup="true"
-                                color="inherit"
-                            >
-                                <AccountCircle fontSize='medium' />
-                            </IconButton>
+                            <img src={ProfileImage} width="35px" height="35px" style={{border: '1px solid white', borderRadius: '50%'}}></img>
                             <Typography
                                 component="div"
                                 variant='body1'
