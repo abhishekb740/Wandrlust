@@ -1,9 +1,13 @@
 import { useState } from 'react';
 import { Card, Button, Input } from "@nextui-org/react";
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import { useSelector, useDispatch } from 'react-redux'
+import { increment } from '../reducers/slice'
 
 const Post = () => {
     const [selectedImage, setSelectedImage] = useState(null);
+    const count = useSelector((state) => state.counter.value)
+    const dispatch = useDispatch()
 
     const handleImageChange = (event) => {
         const file = event.target.files[0];
@@ -16,6 +20,10 @@ const Post = () => {
             reader.readAsDataURL(file);
         }
     };
+
+    // const handleSubmit = () => {
+
+    // }
 
     return (
         <div>
@@ -46,7 +54,7 @@ const Post = () => {
                             <div>
                                 Choose an Image to Post:
                             </div>
-                            <input style={{border: '1px solid black'}} type="file" onChange={handleImageChange} />
+                            <input style={{ border: '1px solid black' }} type="file" onChange={handleImageChange} />
                         </div>
                     </div>
                     <div>
@@ -54,6 +62,10 @@ const Post = () => {
                             style={{ backgroundColor: '#f94566', color: 'white', width: '100%', height: '3rem', fontSize: '25px', fontWeight: 'bold' }}
                             startContent={<CloudUploadIcon />}
                             variant="shadow"
+                            // onClick={handleSubmit}
+                            onClick={() => {
+                                dispatch(increment())
+                            }}
                         >
                             Create Post
                         </Button>
