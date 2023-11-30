@@ -1,6 +1,7 @@
 import {Card, CardHeader, CardBody, Image} from "@nextui-org/react";
 import ShanksImage from "../assets/images/IMG-20231006-WA0007.jpg"
 
+
 export default function Cards(props) {
   return (
     <Card className="py-4" style={{display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -16,7 +17,7 @@ export default function Cards(props) {
           alt="Card background"
           className="object-cover rounded-xl"
           src={ShanksImage}
-          width={500}
+          width={400}
         />
       </CardBody>
       <CardHeader>
