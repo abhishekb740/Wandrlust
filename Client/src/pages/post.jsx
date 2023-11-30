@@ -17,11 +17,6 @@ const Post = () => {
         }
     };
 
-    const handleInputClick = (event) => {
-        // Reset the value of the file input to allow re-triggering the change event
-        event.target.value = null;
-    };
-
     return (
         <div>
             <div style={{ display: 'flex', justifyContent: 'center' }}>
