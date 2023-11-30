@@ -9,38 +9,42 @@ import AboutUs from './pages/about-us.jsx';
 import ContactUs from './pages/contact-us.jsx';
 import Location from './pages/location.jsx';
 import Profile from './pages/profile.jsx';
+import Post from './pages/post.jsx';
 
 function App() {
-  // const submitHandler =async() =>{
-  //   const response = await fetch('http://localhost:5000',{
-  //     method:'POST',
-  //     headers:{
-  //       'Content-Type':'application/json'
+  // const submitHandler = async () => {
+  //   const response = await fetch('http://localhost:5000', {
+  //     method: 'POST',
+  //     headers: {
+  //       'Content-Type': 'application/json'
   //     },
-  //     body:JSON.stringify({
-  //       name:'Abhishek',
-  //       age:20
+  //     body: JSON.stringify({
+  //       name: 'Abhishek',
+  //       age: 20
   //     })
   //   })
   //   console.log(await response.status);
   //   console.log(await response.json());
   // }
   return (
-    <Router>
-      <ScrollToTop>
-      <Headers/>
-      <Routes>
-          <Route path="/" element={<Home />}/>
-          <Route path="/flights" element={<Flights />}/>
-          <Route path='/feeds' element={<Feeds/>}/>
-          <Route path='/about-us' element={<AboutUs/>} />
-          <Route path='/contact-us' element={<ContactUs/>} />
-          <Route path='/locations' element={<Location/>} />
-          <Route path='/locations' element={<Location/>} />
-          <Route path='/profile'  element={<Profile/>} />
-      </Routes>
-      </ScrollToTop>
-    </Router>
+    <div>
+      <Router>
+        <Headers />
+        <ScrollToTop>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/flights" element={<Flights />} />
+            <Route path='/feeds' element={<Feeds />} />
+            <Route path='/about-us' element={<AboutUs />} />
+            <Route path='/contact-us' element={<ContactUs />} />
+            <Route path='/locations' element={<Location />} />
+            <Route path='/locations' element={<Location />} />
+            <Route path='/profile' element={<Profile />} />
+            <Route path='/post' element={<Post/>}/>
+          </Routes>
+        </ScrollToTop>
+      </Router>
+    </div>
   );
 }
 
