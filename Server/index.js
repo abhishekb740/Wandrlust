@@ -2,12 +2,21 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 const mongoose = require('mongoose');
-const dotenv = require("dotenv");
-dotenv.config();
+const {config} = require("dotenv");
+config();
 app.use(cors());
 app.use(express.json());
 
 const PORT = 5000;
+
+const connect = () => {
+    try {
+      mongoose.connect(process.env.MONGODB_URL);
+      console.log("Connected to MongoDb");
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
 app.use("/", (req,res)=>{
     console.log(req.body);
@@ -15,5 +24,6 @@ app.use("/", (req,res)=>{
 })
 
 app.listen(PORT, ()=>{
+    connect();
     console.log("Server is running on port: ", PORT);
 })
