@@ -16,15 +16,17 @@ const Feeds = () => {
         <div style={{ display: 'flex', width: "100%", paddingTop: '1rem' }}>
             <div style={{ width: '25%', display: 'flex', alignItems: 'center', flexDirection: 'column', gap: '2rem', position: 'fixed' }}>
                 <Card className="py-4" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '90%' }}>
-                    <CardHeader className="pb-0 pt-2 px-4 flex-col items-start">
-                        <div style={{ display: 'flex', gap: '1rem' }} >
-                            <img src={ProfileImage} width="50px" height="50px" ></img>
-                            <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-evenly', width: '100%', }}>
-                                <p className="text-tiny uppercase font-bold" style={{ fontSize: '20px' }} >Abhishek Bhagat</p>
-                                <small className="text-default-500">Email</small>
+                    <Link to="/profile" >
+                        <CardHeader className="pb-0 pt-2 px-4 flex-col items-start">
+                            <div style={{ display: 'flex', gap: '1rem' }} >
+                                <img src={ProfileImage} width="50px" height="50px" ></img>
+                                <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-evenly', width: '100%', }}>
+                                    <p className="text-tiny uppercase font-bold" style={{ fontSize: '20px' }} >Abhishek Bhagat</p>
+                                    <small className="text-default-500">Email</small>
+                                </div>
                             </div>
-                        </div>
-                    </CardHeader>
+                        </CardHeader>
+                    </Link>
                 </Card>
                 <Link style={{ width: '70%' }} to="/post" >
                     <Button style={{ backgroundColor: '#f94566', color: 'white', width: '100%', height: '4rem', fontSize: '25px', fontWeight: 'bold' }} startContent={<CloudUploadIcon />} variant="shadow" >
