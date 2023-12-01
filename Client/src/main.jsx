@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client'
 import { NextUIProvider } from '@nextui-org/react'
 import App from './App.jsx'
 import './index.css';
-import { store } from './store/index.js';
+import store from "./store/index.jsx";
 import { Provider } from 'react-redux';
 
 ReactDOM.createRoot(document.getElementById('root')).render(

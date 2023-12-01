@@ -18,6 +18,7 @@ export default function Cards(props) {
           className="object-cover rounded-xl"
           src={ShanksImage}
           width={400}
+          style={{border: '3px solid black'}}
         />
       </CardBody>
       <CardHeader>
