@@ -2,17 +2,22 @@ import {createSlice} from "@reduxjs/toolkit";
 
 const postSlice = createSlice({
     name: 'post',
-    initialState: null,
+    initialState: {
+        caption: "",
+        description:""
+    },
     reducers: {
-        addPost(state, action){
-        
+        caption(state, action){
+            state.caption = action.payload;
         },
-        deletePost(state, action){
-
-        },
+        description(state, action){
+            state.description = action.payload;
+        }
     }
 })
 
 console.log(postSlice.actions);
+
+export const {caption, description} = postSlice.actions;
 
 export default postSlice.reducer;
