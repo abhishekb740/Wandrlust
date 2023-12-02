@@ -282,6 +282,7 @@ export default function Flights() {
               </div>
               {index?.map((i) => {
                 if (airline.length === 0) {
+                  // eslint-disable-next-line react/jsx-key
                   return (<h1>No Flights found!</h1>)
                 } else {
               var plane = airline[i]['airlines']
