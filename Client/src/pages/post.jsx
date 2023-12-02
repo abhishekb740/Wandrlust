@@ -1,27 +1,59 @@
 import { useState } from 'react';
 import { Card, Button, Input } from "@nextui-org/react";
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-// import { useSelector, useDispatch } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux';
+import axios from 'axios';
+import { caption, description } from "../store/slices/PostSlice";
 
+let formData;
 const Post = () => {
     const [selectedImage, setSelectedImage] = useState(null);
-    // const dispatch = useDispatch()
+    const captionValue = useSelector(state => state.posts.caption);
+    const descriptionValue = useSelector(state => state.posts.description);
+    const [file, setFile] = useState(null);
+    const dispatch = useDispatch()
 
     const handleImageChange = (event) => {
-        const file = event.target.files[0];
+        const selectedFile = event.target.files[0];
 
-        if (file) {
+        if (selectedFile) {
             const reader = new FileReader();
             reader.onloadend = () => {
                 setSelectedImage(reader.result);
             };
-            reader.readAsDataURL(file);
+            reader.readAsDataURL(selectedFile);
+
+            setFile(selectedFile);
         }
     };
 
-    // const handleSubmit = () => {
+    const captionChangeHandler = (e) =>{
+        dispatch(caption(e.target.value))
+    }
 
-    // }
+    const descriptionChangehandler = (e) =>{
+        dispatch(description(e.target.value))
+    }
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        formData = new FormData();
+        formData.append("myImage", file, "image.png");
+        console.log(captionValue);
+        console.log(descriptionValue);
+        formData.append("caption", captionValue);
+        formData.append("description", descriptionValue);
+        const result = await axios.post(
+            'http://localhost:5000/uploadPhoto',
+            formData,
+            {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            }
+        )
+        console.log(result);
+    };
 
     return (
         <div>
@@ -43,8 +75,8 @@ const Post = () => {
                             )}
                         </div>
                         <div style={{ width: '40%', display: 'flex', flexDirection: 'column', gap: '2rem' }} >
-                            <Input type="text" label="Title" radius="full" />
-                            <Input type="text" label="Caption" radius="full" />
+                            <Input onChange={captionChangeHandler} type="text" label="Caption" radius="full" />
+                            <Input onChange={descriptionChangehandler} type="text" label="Description" radius="full" />
                         </div>
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%' }}>
@@ -52,7 +84,7 @@ const Post = () => {
                             <div>
                                 Choose an Image to Post:
                             </div>
-                            <input style={{ border: '1px solid black' }} type="file" onChange={handleImageChange} />
+                            <input style={{ border: '1px solid black' }} type="file" name="myImage" onChange={handleImageChange} />
                         </div>
                     </div>
                     <div>
@@ -60,7 +92,7 @@ const Post = () => {
                             style={{ backgroundColor: '#f94566', color: 'white', width: '100%', height: '3rem', fontSize: '25px', fontWeight: 'bold' }}
                             startContent={<CloudUploadIcon />}
                             variant="shadow"
-                            // onClick={handleSubmit}
+                            onClick={handleSubmit}
                         >
                             Create Post
                         </Button>
