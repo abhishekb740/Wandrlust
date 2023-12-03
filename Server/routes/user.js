@@ -51,15 +51,35 @@ router.post('/signin', async (req, res) => {
       return res.status(400).json({ error: 'Please provide username and password' });
     }
 
-    const user = await user.findOne({ username });
+    const User = await user.findOne({ username });
 
-    if (!user || user.password !== password) {
+    if (!User || User.password !== password) {
       return res.status(401).json({ error: 'Invalid username or password' });
     }
 
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET_KEY, { expiresIn: '15d' });
+    const token = jwt.sign({ userId: User._id }, process.env.JWT_SECRET_KEY, { expiresIn: '24h' });
     console.log(token)
     res.status(200).json({ token });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+router.get('/userInfo', async (req, res) => {
+  try {
+    const {userId} = req.body;
+
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ error: 'Invalid user ID' });
+    }
+
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    res.status(200).json(user);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal Server Error' });
