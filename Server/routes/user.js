@@ -23,6 +23,11 @@ router.post("/uploadPhoto", upload.single("myImage"), async (req, res) => {
   res.send(await newImage.save());
 });
 
+router.get("/getPhotos", async (req, res) => {
+  const images = await ImageModel.find();
+  res.send(images);
+});
+
 router.get("/", (req, res) => {
   console.log(req.body);
 });

@@ -10,8 +10,24 @@ import ProfileImage from "../assets/images/profile.png"
 import { Input } from "@nextui-org/react";
 import SearchIcon from '@mui/icons-material/Search';
 import TextField from '@mui/material/TextField';
-const Feeds = () => {
+import { useEffect, useState } from "react";
 
+const Feeds = () => {
+    const [feeds, setFeeds] = useState([]);
+    useEffect(()=>{
+        const getFeeds = async() =>{
+            const res = await fetch("http://localhost:5000/getPhotos", {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+            const data = await res.json();
+            setFeeds(data);
+            console.log(data);
+        }
+        getFeeds();
+    },[])
     return (
         <div style={{ display: 'flex', width: "100%", paddingTop: '1rem' }}>
             <div style={{ width: '25%', display: 'flex', alignItems: 'center', flexDirection: 'column', gap: '2rem', position: 'fixed' }}>
@@ -36,9 +52,10 @@ const Feeds = () => {
             </div>
             <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                 <div style={{ display: 'flex', flexDirection: 'column', width: '100%', justifyContent: 'center', alignItems: 'center', gap: '2rem' }} >
-                    <Cards />
-                    <Cards />
-                    <Cards />
+
+                    {feeds.map((feed, index) => (
+                        <Cards key={index} feed={feed} />
+                    ))}
                 </div>
             </div>
             <div style={{ width: '25%', position: 'fixed', right: '0' }}  >
