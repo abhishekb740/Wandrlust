@@ -4,6 +4,8 @@ const path = require("path");
 const multer = require("multer");
 const ImageModel = require("../Models/images");
 const { downloadFile } = require("../utils/file");
+const user = require("../Models/user");
+const jwt = require('jsonwebtoken');
 
 const upload = multer();
 
@@ -21,6 +23,47 @@ router.post("/uploadPhoto", upload.single("myImage"), async (req, res) => {
     //   author: "1",
   });
   res.send(await newImage.save());
+});
+
+router.post('/signup', async (req, res) => {
+  try {
+    const { name, email, phone,username,password,age,gender } = req.body;
+
+    if (!name || !email || !phone || !username || !password || !age || !gender) {
+      return res.status(400).json({ error: 'Please provide all required fields' });
+    }
+
+    const newUser = new user({ name, phone ,email,username,password,age,gender });
+    await newUser.save();
+
+    res.status(201).json({ message: 'User created successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+router.post('/signin', async (req, res) => {
+  try {
+    const { username, password } = req.body;
+
+    if (!username || !password) {
+      return res.status(400).json({ error: 'Please provide username and password' });
+    }
+
+    const user = await user.findOne({ username });
+
+    if (!user || user.password !== password) {
+      return res.status(401).json({ error: 'Invalid username or password' });
+    }
+
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET_KEY, { expiresIn: '15d' });
+    console.log(token)
+    res.status(200).json({ token });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
 });
 
 router.get("/", (req, res) => {
