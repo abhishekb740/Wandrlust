@@ -86,6 +86,11 @@ router.get('/userInfo', async (req, res) => {
   }
 });
 
+router.get("/getPhotos", async (req, res) => {
+  const images = await ImageModel.find();
+  res.send(images);
+});
+
 router.get("/", (req, res) => {
   console.log(req.body);
 });
