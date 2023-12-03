@@ -13,10 +13,11 @@ import Typography from '@mui/material/Typography';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 import ProfileImage from "../assets/images/profile.png"
+import { useState } from 'react';
 
 
 export default function Header() {
-
+    const [count, setCount] = useState(false);
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
 
@@ -98,7 +99,7 @@ export default function Header() {
                 <p>Notifications</p>
             </MenuItem>
             <MenuItem onClick={handleProfileMenuOpen}>
-            <img src={ProfileImage} width="50px" height="50px" ></img>
+                <img src={ProfileImage} width="50px" height="50px" ></img>
                 <p>Profile</p>
             </MenuItem>
         </Menu>
@@ -116,7 +117,7 @@ export default function Header() {
                             variant="h5"
                             noWrap
                             component="div"
-                            sx={{ display: { xs: 'none', sm: 'block', fontWeight: "bold",color: "#f94566", } }}
+                            sx={{ display: { xs: 'none', sm: 'block', fontWeight: "bold", color: "#f94566", } }}
                         >
                             WandrLust
                         </Typography>
@@ -168,7 +169,7 @@ export default function Header() {
                             </Typography>
                         </Link>
                     </Box>
-                    <Link to="/profile">
+                    {count ? (<Link to="/profile">
                         <Box
                             sx={{
                                 display: {
@@ -181,7 +182,7 @@ export default function Header() {
                                 cursor: "pointer"
                             }}
                         >
-                            <img src={ProfileImage} width="35px" height="35px" style={{border: '1px solid white', borderRadius: '50%'}}></img>
+                            <img src={ProfileImage} width="35px" height="35px" style={{ border: '1px solid white', borderRadius: '50%' }}></img>
                             <Typography
                                 component="div"
                                 variant='body1'
@@ -190,7 +191,31 @@ export default function Header() {
                                 Profile
                             </Typography>
                         </Box>
+                    </Link>) : (
+                    <Link to="/signup">
+                        <Box
+                            sx={{
+                                display: {
+                                    xs: 'none',
+                                    md: 'flex'
+                                },
+                                alignItems: "center",
+                                gap: "12px",
+                                justifyContent: "center",
+                                cursor: "pointer"
+                            }}
+                        >
+                            <img src={ProfileImage} width="35px" height="35px" style={{ border: '1px solid white', borderRadius: '50%' }}></img>
+                            <Typography
+                                component="div"
+                                variant='body1'
+                                fontWeight={500}
+                            >
+                                Signup
+                            </Typography>
+                        </Box>
                     </Link>
+                    )}
                     <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
                         <IconButton
                             size="large"
