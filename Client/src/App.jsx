@@ -10,7 +10,8 @@ import ContactUs from './pages/contact-us.jsx';
 import Location from './pages/location.jsx';
 import Profile from './pages/profile.jsx';
 import Post from './pages/post.jsx';
-import Signup from './pages/signup.jsx';
+// import Signup from './pages/signup.jsx';
+import Signin from './pages/signin.jsx';
 
 function App() {
   // const submitHandler = async () => {
@@ -42,7 +43,7 @@ function App() {
             <Route path='/locations' element={<Location />} />
             <Route path='/profile' element={<Profile />} />
             <Route path='/post' element={<Post/>}/>
-            <Route path='/signup' element={<Signup/>}/>
+            <Route path='/signup' element={<Signin/>}/>
           </Routes>
         </ScrollToTop>
       </Router>
