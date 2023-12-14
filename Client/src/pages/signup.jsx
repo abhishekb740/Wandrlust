@@ -1,11 +1,55 @@
+import { Link, useNavigate  } from "react-router-dom";
+import { useState } from "react";
 const Signup = () => {
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    username: "",
+    password: "",
+    age: "",
+    gender: "",
+  });
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    console.log(formData);
+    try {
+      const response = await fetch("http://localhost:5000/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log(result);
+        alert("Signup successful")
+        navigate("/");
+      } else {
+        console.error("Failed to submit form");
+        alert("Signup failed")
+      }
+    } catch (error) {
+      alert("Signup failed")
+      console.error("Error submitting form:", error);
+    }
+  };
+
+  const handleInputChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
   return (
     <div>
       <section className=" bg-gray-50 bg-cover">
         <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
           <a
             href="#"
-            className="flex items-center mb-6 text-2xl font-bold text-[#eb2168] pt-96 "
+            className="flex items-center mb-6 text-2xl font-bold text-[#eb2168] pt-52 "
           >
             WandrLust
           </a>
@@ -14,7 +58,7 @@ const Signup = () => {
               <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
                 Sign Up to WandrLust
               </h1>
-              <form className="space-y-4 md:space-y-6" action="#">
+              <form className="space-y-4 md:space-y-6" onSubmit={handleSubmit}>
                 <div>
                   <label
                     htmlFor="name"
@@ -23,6 +67,7 @@ const Signup = () => {
                     Name
                   </label>
                   <input
+                    onChange={handleInputChange}
                     type="name"
                     name="name"
                     id="name"
@@ -39,6 +84,7 @@ const Signup = () => {
                     Email
                   </label>
                   <input
+                    onChange={handleInputChange}
                     type="email"
                     name="email"
                     id="email"
@@ -56,6 +102,7 @@ const Signup = () => {
                     Phonenumber
                   </label>
                   <input
+                    onChange={handleInputChange}
                     type="phone"
                     name="phone"
                     id="phone"
@@ -66,12 +113,13 @@ const Signup = () => {
                 </div>
                 <div>
                   <label
-                    htmlFor="phone"
+                    htmlFor="username"
                     className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                   >
                     Username
                   </label>
                   <input
+                    onChange={handleInputChange}
                     type="username"
                     name="username"
                     id="username"
@@ -88,6 +136,7 @@ const Signup = () => {
                     Password
                   </label>
                   <input
+                    onChange={handleInputChange}
                     type="password"
                     name="password"
                     id="password"
@@ -104,6 +153,7 @@ const Signup = () => {
                     Age
                   </label>
                   <input
+                    onChange={handleInputChange}
                     type="age"
                     name="age"
                     id="age"
@@ -120,12 +170,13 @@ const Signup = () => {
                     Gender
                   </label>
                   <select
+                    defaultValue="male"
                     name="gender"
                     id="gender"
                     className="bg-gray-50 border border-gray-300 text-gray-400 sm:text-sm rounded-lg focus:ring-[#E02168] focus:border-[#E02168] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white "
                     required=""
                   >
-                    <option value="" disabled selected>
+                    <option value="" defaultValue="male" disabled selected>
                       Select your gender
                     </option>
                     <option value="male">Male</option>
@@ -133,8 +184,6 @@ const Signup = () => {
                     <option value="other">Rather not say</option>
                   </select>
                 </div>
-
-                
                 <button
                   type="submit"
                   className="w-full text-white bg-[#eb2168] hover:bg-[#E02168] focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
@@ -143,12 +192,12 @@ const Signup = () => {
                 </button>
                 <p className="text-sm font-light text-[#eb2168] dark:text-gray-400">
                   Already have an account!{" "}
-                  <a
-                    href="#"
+                  <Link
+                    to="/signin"
                     className="font-medium text-black hover:underline dark:text-primary-500"
                   >
                     Sign in
-                  </a>
+                  </Link>
                 </p>
               </form>
             </div>

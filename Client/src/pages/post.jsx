@@ -3,15 +3,17 @@ import { Card, Button, Input } from "@nextui-org/react";
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { useSelector, useDispatch } from 'react-redux';
 import axios from 'axios';
+import {useNavigate} from 'react-router-dom';
 import { caption, description } from "../store/slices/PostSlice";
 
 let formData;
 const Post = () => {
+    const navigate = useNavigate();
     const [selectedImage, setSelectedImage] = useState(null);
     const captionValue = useSelector(state => state.posts.caption);
     const descriptionValue = useSelector(state => state.posts.description);
     const [file, setFile] = useState(null);
-    const dispatch = useDispatch()
+    const dispatch = useDispatch();
 
     const handleImageChange = (event) => {
         const selectedFile = event.target.files[0];
@@ -53,6 +55,7 @@ const Post = () => {
             }
         )
         console.log(result);
+        navigate("/feeds");
     };
 
     return (

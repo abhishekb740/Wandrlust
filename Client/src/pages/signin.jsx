@@ -1,8 +1,42 @@
+import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
+
 const Signin = () => {
+  const navigate = useNavigate();
+
+  const submitHandler = async (e) => {
+    e.preventDefault();
+    const username = e.target.username.value;
+    const password = e.target.password.value;
+
+    try {
+      const response = await fetch("http://localhost:5000/signin", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username, password }),
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log(result);
+        // Handle successful sign-in, e.g., save the token to localStorage
+        navigate("/"); // Redirect to the desired page after successful sign-in
+      } else {
+        console.error("Failed to sign in");
+        // Handle sign-in failure, e.g., show an error message
+      }
+    } catch (error) {
+      console.error("Error signing in:", error);
+      // Handle sign-in error, e.g., show an error message
+    }
+  };
+
   return (
     <div>
-      <section className=" bg-gray-50 bg-cover">
-        <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
+      <section className="bg-gray-50 bg-cover">
+        <div className="flex flex-col items-center justify-center mx-auto md:h-screen lg:py-0">
           <a
             href="#"
             className="flex items-center mb-6 text-2xl font-bold text-[#eb2168] "
@@ -14,10 +48,10 @@ const Signin = () => {
               <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
                 Sign In to WandrLust
               </h1>
-              <form className="space-y-4 md:space-y-6" action="#">
-              <div>
+              <form className="space-y-4 md:space-y-6" onSubmit={submitHandler}>
+                <div>
                   <label
-                    htmlFor="phone"
+                    htmlFor="username"
                     className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                   >
                     Username
@@ -81,13 +115,13 @@ const Signin = () => {
                   Sign In
                 </button>
                 <p className="text-sm font-light text-[#eb2168] dark:text-gray-400">
-                  Don&apos;t have an account?{" "}
-                  <a
-                    href="#"
+                  Don't have an account?{" "}
+                  <Link
+                    to="/signup"
                     className="font-medium text-black hover:underline dark:text-primary-500"
                   >
-                    Sign Up
-                  </a>
+                    Sign up
+                  </Link>
                 </p>
               </form>
             </div>

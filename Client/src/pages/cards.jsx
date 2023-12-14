@@ -14,7 +14,7 @@ export default function Cards(props) {
     <Card className="py-4" style={{display: 'flex', flexDirection: 'column', alignItems: 'center', width: '550px' }}>
       <CardHeader className="pb-0 pt-2 px-4 flex-col items-start">
         <div style={{display: 'flex', justifyContent: 'space-between', width: '100%'}}>
-        <p className="text-tiny uppercase font-bold">Author Name</p>
+        <p className="text-tiny uppercase font-bold">{props.feed.name}</p>
         <small className="text-default-500">{createdAtIST}</small>
         </div>
         <h4 className="font-bold text-large">{props.feed.caption}</h4>

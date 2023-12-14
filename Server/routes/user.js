@@ -6,6 +6,7 @@ const ImageModel = require("../Models/images");
 const { downloadFile } = require("../utils/file");
 const user = require("../Models/user");
 const jwt = require('jsonwebtoken');
+const { log } = require("console");
 
 const upload = multer();
 
@@ -13,27 +14,25 @@ router.post("/uploadPhoto", upload.single("myImage"), async (req, res) => {
   const body = req.body;
   console.log(body);
   const downloaded = await downloadFile(
-    req.file.originalname /*userid add krdo */,
+    req.file.originalname,
     req.file.buffer
   );
   const newImage = await new ImageModel({
     image: downloaded,
     caption: req.body.caption,
     description: req.body.description,
-    //   author: "1",
+    name: "Abhishek Bhagat"
   });
   res.send(await newImage.save());
 });
 
 router.post('/signup', async (req, res) => {
+  log(req.body);
   try {
-    const { name, email, phone,username,password,age,gender } = req.body;
+    console.log(req.body);
+    const { name, email, phone,username,password,age } = req.body;
 
-    if (!name || !email || !phone || !username || !password || !age || !gender) {
-      return res.status(400).json({ error: 'Please provide all required fields' });
-    }
-
-    const newUser = new user({ name, phone ,email,username,password,age,gender });
+    const newUser = new user({ name, phone ,email,username,password,age,gender: "male" });
     await newUser.save();
 
     res.status(201).json({ message: 'User created successfully' });
@@ -46,17 +45,14 @@ router.post('/signup', async (req, res) => {
 router.post('/signin', async (req, res) => {
   try {
     const { username, password } = req.body;
-
     if (!username || !password) {
       return res.status(400).json({ error: 'Please provide username and password' });
     }
-
     const User = await user.findOne({ username });
 
     if (!User || User.password !== password) {
       return res.status(401).json({ error: 'Invalid username or password' });
     }
-
     const token = jwt.sign({ userId: User._id }, process.env.JWT_SECRET_KEY, { expiresIn: '24h' });
     console.log(token)
     res.status(200).json({ token });
@@ -65,6 +61,7 @@ router.post('/signin', async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+
 router.get('/userInfo', async (req, res) => {
   try {
     const {userId} = req.body;
