@@ -7,8 +7,10 @@ const { downloadFile } = require("../utils/file");
 const user = require("../Models/user");
 const jwt = require('jsonwebtoken');
 const { log } = require("console");
+const cookieParser = require("cookie-parser")
 
 const upload = multer();
+router.use(cookieParser());
 
 router.post("/uploadPhoto", upload.single("myImage"), async (req, res) => {
   const body = req.body;
@@ -53,9 +55,13 @@ router.post('/signin', async (req, res) => {
     if (!User || User.password !== password) {
       return res.status(401).json({ error: 'Invalid username or password' });
     }
-    const token = jwt.sign({ userId: User._id }, process.env.JWT_SECRET_KEY, { expiresIn: '24h' });
-    console.log(token)
-    res.status(200).json({ token });
+    // const token = jwt.sign({ userId: User._id }, process.env.JWT_SECRET_KEY, { expiresIn: '24h' });
+    // console.log(token)
+    res.cookie("userId",User._id,{
+      httpOnly: true,
+      maxAge : 5000000
+    })
+    res.status(200).json({ message: "succesful signin" });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal Server Error' });
