@@ -1,5 +1,6 @@
-import { Link, useNavigate  } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
+
 const Signup = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -14,7 +15,6 @@ const Signup = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData);
     try {
       const response = await fetch("http://localhost:5000/signup", {
         method: "POST",
@@ -25,17 +25,26 @@ const Signup = () => {
       });
 
       if (response.ok) {
-        const result = await response.json();
-        console.log(result);
-        alert("Signup successful")
-        navigate("/");
+        // Clear form data after successful signup
+        setFormData({
+          name: "",
+          email: "",
+          phone: "",
+          username: "",
+          password: "",
+          age: "",
+          gender: "",
+        });
+
+        // Redirect to signin route
+        navigate("/signin");
       } else {
         console.error("Failed to submit form");
-        alert("Signup failed")
+        alert("Signup failed");
       }
     } catch (error) {
-      alert("Signup failed")
       console.error("Error submitting form:", error);
+      alert("Signup failed");
     }
   };
 

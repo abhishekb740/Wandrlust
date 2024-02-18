@@ -21,15 +21,15 @@ const Signin = () => {
       if (response.ok) {
         const result = await response.json();
         console.log(result);
-        // Handle successful sign-in, e.g., save the token to localStorage
-        navigate("/"); // Redirect to the desired page after successful sign-in
+        alert("Signin successful");
+        navigate("/"); // Redirect to the desired page after successful signin
       } else {
         console.error("Failed to sign in");
-        // Handle sign-in failure, e.g., show an error message
+        alert("Signin failed");
       }
     } catch (error) {
       console.error("Error signing in:", error);
-      // Handle sign-in error, e.g., show an error message
+      alert("Signin failed");
     }
   };
 
@@ -115,7 +115,7 @@ const Signin = () => {
                   Sign In
                 </button>
                 <p className="text-sm font-light text-[#eb2168] dark:text-gray-400">
-                  Don't have an account?{" "}
+                  Dont have an account?{" "}
                   <Link
                     to="/signup"
                     className="font-medium text-black hover:underline dark:text-primary-500"
