@@ -368,7 +368,7 @@ export default function Flights() {
                   var check_in_luggae = luggage[i]["baglimit"]["hold_weight"];
 
                   return (
-                    <div key={i} className="border border-gray-300 rounded-lg overflow-hidden mb-2 border-2">
+                    <div key={i} className=" border-gray-300 rounded-lg overflow-hidden mb-2 border-2">
                     <Accordion key={i} expanded={expanded === `panel${i}`} onChange={handleAccordionChange(`panel${i}`)}>
                       <AccordionSummary
                         expandIcon={<FlightTakeoffRoundedIcon />}
