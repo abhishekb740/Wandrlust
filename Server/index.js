@@ -37,6 +37,7 @@ const connect = () => {
 };
 
 app.use("/", UserRoute);
+app.use("/admin",)
 
 app.use("/static/files", express.static("routes/uploads"));
 
