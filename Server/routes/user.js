@@ -55,13 +55,13 @@ router.post('/signin', async (req, res) => {
     if (!User || User.password !== password) {
       return res.status(401).json({ error: 'Invalid username or password' });
     }
-    // const token = jwt.sign({ userId: User._id }, process.env.JWT_SECRET_KEY, { expiresIn: '24h' });
-    // console.log(token)
+    const token = jwt.sign({ userId: User._id }, process.env.JWT_SECRET_KEY, { expiresIn: '24h' });
+    console.log(token)
     res.cookie("userId",User._id,{
       httpOnly: true,
       maxAge : 5000000
     })
-    res.status(200).json({ message: "succesful signin" });
+    res.status(200).json({ message: "successful signin", token });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal Server Error' });

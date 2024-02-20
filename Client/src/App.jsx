@@ -2,7 +2,7 @@ import './App.css'
 import ScrollToTop from "./components/scrollCorrector/scroll.jsx";
 import Home from "./pages/home";
 import Flights from "./pages/flights";
-import { HashRouter as Router, Routes, Route } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import Headers from './pages/headers.jsx';
 import Feeds from './pages/feeds.jsx';
 import AboutUs from './pages/about-us.jsx';
@@ -30,24 +30,22 @@ function App() {
   // }
   return (
     <div>
-      <Router>
-        <Headers />
-        <ScrollToTop>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/flights" element={<Flights />} />
-            <Route path='/feeds' element={<Feeds />} />
-            <Route path='/about-us' element={<AboutUs />} />
-            <Route path='/contact-us' element={<ContactUs />} />
-            <Route path='/locations' element={<Location />} />
-            <Route path='/locations' element={<Location />} />
-            <Route path='/profile' element={<Profile />} />
-            <Route path='/post' element={<Post/>}/>
-            <Route path='/signup' element={<Signup/>}/>
-            <Route path='/signin' element={<Signin/>} />
-          </Routes>
-        </ScrollToTop>
-      </Router>
+      <Headers />
+      <ScrollToTop>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/flights" element={<Flights />} />
+          <Route path='/feeds' element={<Feeds />} />
+          <Route path='/about-us' element={<AboutUs />} />
+          <Route path='/contact-us' element={<ContactUs />} />
+          <Route path='/locations' element={<Location />} />
+          <Route path='/locations' element={<Location />} />
+          <Route path='/profile' element={<Profile />} />
+          <Route path='/post' element={<Post />} />
+          <Route path='/signup' element={<Signup />} />
+          <Route path='/signin' element={<Signin />} />
+        </Routes>
+      </ScrollToTop>
     </div>
   );
 }
