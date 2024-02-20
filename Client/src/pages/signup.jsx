@@ -23,9 +23,8 @@ const Signup = () => {
         },
         body: JSON.stringify(formData),
       });
-
+      console.log(response);
       if (response.ok) {
-        // Clear form data after successful signup
         setFormData({
           name: "",
           email: "",

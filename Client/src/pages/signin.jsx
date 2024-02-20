@@ -17,7 +17,7 @@ const Signin = () => {
         },
         body: JSON.stringify({ username, password }),
       });
-
+      console.log(response);
       if (response.ok) {
         const result = await response.json();
         console.log(result);
