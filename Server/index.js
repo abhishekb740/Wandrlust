@@ -8,6 +8,7 @@ const morgan = require('morgan');
 const fs = require('fs');
 const path = require('path');
 const bodyParser = require('body-parser');
+const AdminRoute = require("./routes/admin");
 
 config();
 app.use(cors());
@@ -37,6 +38,7 @@ const connect = () => {
 };
 
 app.use("/", UserRoute);
+app.use("/admin", AdminRoute);
 
 app.use("/static/files", express.static("routes/uploads"));
 
