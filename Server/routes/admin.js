@@ -21,7 +21,7 @@ router.post("/delete-post/:postId", async (req, res) => {
         return res.status(500).json({ error: "Internal server error" });
     }
 });
-router.post("/block-user/:userId", getAdminId, async (req, res) => {
+router.post("/block-user/:userId", async (req, res) => {
     const { userId } = req.params;
 
     try {
