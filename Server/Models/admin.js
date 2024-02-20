@@ -12,6 +12,14 @@ const AdminSchema = new mongoose.Schema(
       unique: false,
       required: true,
     },
+    usersBlocked: {
+      type: [mongoose.Schema.Types.ObjectId], 
+      default: [],
+    },
+    postsDeleted: {
+      type: [mongoose.Schema.Types.ObjectId], 
+      default: [],
+    },
   },
   {
     timestamps: true,
