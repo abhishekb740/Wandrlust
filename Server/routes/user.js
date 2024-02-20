@@ -88,7 +88,37 @@ router.get('/userInfo', async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+router.post("/follow/:userIdToFollow", async (req, res) => {
+  const { userIdToFollow } = req.params;
+  const followerUserId = req.user.userId; 
 
+  try {
+    const followedUser = await user.findByIdAndUpdate(
+      userIdToFollow,
+      { $push: { followers: followerUserId } },
+      { new: true }
+    );
+
+    if (!followedUser) {
+      return res.status(404).json({ error: "User to follow not found" });
+    }
+
+    const followerUser = await user.findByIdAndUpdate(
+      followerUserId,
+      { $push: { following: userIdToFollow } },
+      { new: true }
+    );
+
+    if (!followerUser) {
+      return res.status(404).json({ error: "Follower user not found" });
+    }
+
+    return res.status(200).json({ message: "User followed successfully" });
+  } catch (error) {
+    console.log("Error in follow user API ", error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
 router.get("/getPhotos", async (req, res) => {
   const images = await ImageModel.find();
   res.send(images);
