@@ -7,7 +7,9 @@ const { downloadFile } = require("../utils/file");
 const user = require("../Models/user");
 const jwt = require("jsonwebtoken");
 const { log } = require("console");
-const cookieParser = require("cookie-parser");
+const cookieParser = require("cookie-parser")
+const Post = require('../Models/images')
+
 router.use(cookieParser());
 
 const fileStorageEngine = multer.diskStorage({
@@ -121,7 +123,6 @@ router.post("/follow/:userIdToFollow", async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
-
 router.get("/getPhotos", async (req, res) => {
   const images = await ImageModel.find().populate("author");
   res.send(images);
