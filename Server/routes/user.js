@@ -8,6 +8,7 @@ const user = require("../Models/user");
 const jwt = require('jsonwebtoken');
 const { log } = require("console");
 const cookieParser = require("cookie-parser")
+const Post = require('../Models/images')
 
 const upload = multer();
 router.use(cookieParser());
@@ -119,6 +120,36 @@ router.post("/follow/:userIdToFollow", async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
+
+router.post("/like/:postId", async (req, res) => {
+  const { postId } = req.params;
+  const userId = req.user.userId;
+
+  try {
+    const post = await Post.findById(postId);
+
+    if (!post) {
+      return res.status(404).json({ error: "Post not found" });
+    }
+
+    const userIndex = post.likes.indexOf(userId);
+
+    if (userIndex !== -1) {
+      post.likes.splice(userIndex, 1);
+    } else {
+      post.likes.push(userId);
+    }
+
+    await post.save();
+
+    return res.status(200).json({ message: "Post like updated successfully" });
+  } catch (error) {
+    console.log("Error in like post API ", error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+
 router.get("/getPhotos", async (req, res) => {
   const images = await ImageModel.find();
   res.send(images);
