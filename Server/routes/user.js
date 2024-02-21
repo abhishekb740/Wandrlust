@@ -7,8 +7,8 @@ const { downloadFile } = require("../utils/file");
 const user = require("../Models/user");
 const jwt = require("jsonwebtoken");
 const { log } = require("console");
-const cookieParser = require("cookie-parser")
-const Post = require('../Models/images')
+const cookieParser = require("cookie-parser");
+const Post = require("../Models/images");
 
 router.use(cookieParser());
 
@@ -94,6 +94,7 @@ router.post("/signin", async (req, res) => {
 
 router.post("/follow/:userIdToFollow", async (req, res) => {
   const { userIdToFollow } = req.params;
+  console.log(userIdToFollow);
   const followerUserId = req.user.userId;
 
   try {
@@ -128,12 +129,15 @@ router.get("/getPhotos", async (req, res) => {
   res.send(images);
 });
 
-// router.get("/getUserPosts/:userId", async (req, res) => {
-//   const { userId } = req.params;
-//   const images = await ImageModel.find({ userId });
-//   console.log(images);
-//   res.send(images);
-// })
+router.post("/getAllUsers", async (req, res) => {
+  try {
+    const users = await user.find();
+    return res.status(200).json({ users});
+  } catch (error) {
+    console.log("Error in get users not followed API ", error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
 
 router.get("/:userId", async (req, res) => {
   const { userId } = req.params;

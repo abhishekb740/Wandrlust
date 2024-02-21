@@ -11,9 +11,13 @@ import { Input } from "@nextui-org/react";
 import SearchIcon from '@mui/icons-material/Search';
 import TextField from '@mui/material/TextField';
 import { useEffect, useState } from "react";
+import { extractUserIdFromToken } from "../utils/extractUserIdFromToken";
 
 const Feeds = () => {
     const [feeds, setFeeds] = useState([]);
+    const [users, setUsers] = useState([]);
+    const token = localStorage.getItem("token")
+    const userId = extractUserIdFromToken(token);
     useEffect(() => {
         const getFeeds = async () => {
             const res = await fetch("http://localhost:5000/getPhotos", {
@@ -26,10 +30,35 @@ const Feeds = () => {
             setFeeds(data);
             console.log(data);
         }
-        const token = localStorage.getItem("token")
-        console.log(token);
+        const getUsers = async () => {
+            console.log("Working1?");
+            const res = await fetch("http://localhost:5000/getAllUsers", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ userId })
+            });
+            const data = await res.json();
+            console.log(data);
+            setUsers(data.users);
+        }
         getFeeds();
-    }, [])
+        getUsers();
+    }, [userId])
+
+    const handleFollow = async (userIdToFollow) => {
+        console.log(userIdToFollow);
+        const res = await fetch(`http://localhost:5000/follow/${userIdToFollow}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            }
+        })
+        const data = await res.json();
+        console.log(data);
+    }
+
     return (
         <div style={{ display: 'flex', width: "100%", paddingTop: '1rem' }}>
             <div style={{ width: '25%', display: 'flex', alignItems: 'center', flexDirection: 'column', gap: '2rem', position: 'fixed' }}>
@@ -66,58 +95,21 @@ const Feeds = () => {
                         endAdornment: <SearchIcon />,
                     }} />
                     <CardHeader className="pb-0 pt-2 px-4 flex-col items-start" style={{ display: 'flex', flexDirection: 'column', gap: '0.9rem' }} >
-                        <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }} >
-                            <div style={{ display: 'flex', gap: '1rem' }} >
-                                <img src={ProfileImage} width="40px" height="25px" ></img>
-                                <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-evenly', width: '100%', }}>
-                                    <p className="text-tiny" style={{ fontSize: '18px' }}>Abhishek Bhagat</p>
-                                    <small className="text-default-500">abhishekb740@gmail.com</small>
+                        {users.map((user, index) => (
+                            user._id !== userId &&
+                            <div key={index} style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }} >
+                                <div style={{ display: 'flex', gap: '1rem' }} >
+                                    <img src={ProfileImage} alt="profile" width="40px" height="25px" />
+                                    <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-evenly', width: '100%', }} >
+                                        <p className="text-tiny" style={{ fontSize: '18px' }} >{user.name}</p>
+                                        <small className="text-default-500">{user.email}</small>
+                                    </div>
                                 </div>
+                                <Button style={{ backgroundColor: '#f94566', color: 'white', fontWeight: 'bold' }} variant="shadow" onClick={() => handleFollow(user._id)}>Follow</Button>
                             </div>
-                            <Button style={{ backgroundColor: '#f94566', color: 'white', fontWeight: 'bold' }} variant="shadow">Follow</Button>
-                        </div>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }} >
-                            <div style={{ display: 'flex', gap: '1rem' }} >
-                                <img src={ProfileImage} width="40px" height="25px" ></img>
-                                <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-evenly', width: '100%', }}>
-                                    <p className="text-tiny" style={{ fontSize: '18px' }} >Vaibhav Pandey</p>
-                                    <small className="text-default-500">vaibhav@gmail.com</small>
-                                </div>
-                            </div>
-                            <Button style={{ backgroundColor: '#f94566', color: 'white', fontWeight: 'bold' }} variant="shadow">Follow</Button>
-                        </div>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }} >
-                            <div style={{ display: 'flex', gap: '1rem' }} >
-                                <img src={ProfileImage} width="40px" height="25px" ></img>
-                                <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-evenly', width: '100%', }}>
-                                    <p className="text-tiny" style={{ fontSize: '18px' }} >Harsh</p>
-                                    <small className="text-default-500">harsh@gmail.com</small>
-                                </div>
-                            </div>
-                            <Button style={{ backgroundColor: '#f94566', color: 'white', fontWeight: 'bold' }} variant="shadow">Follow</Button>
-                        </div><div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }} >
-                            <div style={{ display: 'flex', gap: '1rem' }} >
-                                <img src={ProfileImage} width="40px" height="25px" ></img>
-                                <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-evenly', width: '100%', }}>
-                                    <p className="text-tiny" style={{ fontSize: '18px' }} >Mayank</p>
-                                    <small className="text-default-500">mayank@gmail.com</small>
-                                </div>
-                            </div>
-                            <Button style={{ backgroundColor: '#f94566', color: 'white', fontWeight: 'bold' }} variant="shadow">Follow</Button>
-                        </div>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }} >
-                            <div style={{ display: 'flex', gap: '1rem' }} >
-                                <img src={ProfileImage} width="40px" height="25px" ></img>
-                                <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-evenly', width: '100%', }}>
-                                    <p className="text-tiny" style={{ fontSize: '18px' }} >Priyansh</p>
-                                    <small className="text-default-500">priyansh@gmail.com</small>
-                                </div>
-                            </div>
-                            <Button style={{ backgroundColor: '#f94566', color: 'white', fontWeight: 'bold' }} variant="shadow">Follow</Button>
-                        </div>
+                        ))}
                     </CardHeader>
                 </Card>
-
             </div>
         </div>
     )
