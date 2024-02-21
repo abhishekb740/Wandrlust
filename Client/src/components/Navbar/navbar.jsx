@@ -6,13 +6,12 @@ import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
 import AirplanemodeActiveRoundedIcon from '@mui/icons-material/AirplanemodeActiveRounded';
 import FavoriteRoundedIcon from '@mui/icons-material/FavoriteRounded';
 import MailRoundedIcon from '@mui/icons-material/MailRounded';
-import CssBaseline from '@mui/material/CssBaseline';
 import useScrollTrigger from '@mui/material/useScrollTrigger';
 import Container from '@mui/material/Container';
 import Slide from '@mui/material/Slide';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
-import Button  from '@mui/material/Button';
+import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -48,12 +47,11 @@ export default function Navbar(props) {
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
   };
-    
+
 
 
   return (
     <React.Fragment>
-      <CssBaseline />
       <HideOnScroll {...props}>
         <AppBar className="navbar">
           <Toolbar>
@@ -63,48 +61,48 @@ export default function Navbar(props) {
             </a>
 
             <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' }, justifyContent: 'right' }}>
-            <IconButton
-              size="large"
-              aria-label="account of current user"
-              aria-controls="menu-appbar"
-              aria-haspopup="true"
-              onClick={handleOpenNavMenu}
-              color="black"
-            >
-              <MenuIcon />
-            </IconButton>
-            <Menu
-              id="menu-appbar"
-              anchorEl={anchorElNav}
-              anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'left',
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'left',
-              }}
-              open={Boolean(anchorElNav)}
-              onClose={handleCloseNavMenu}
-              sx={{
-                display: { xs: 'block', md: 'none' },
-              }}
-            >
-              <MenuItem onClick={handleCloseNavMenu} >
-                <Button onClick={() => {window.location.href="/SkyClub"}} textAlign="center" className='mobile-nav'><HomeRoundedIcon style={{ fontSize:"1.2rem", color: "#4361ee" }} /> &nbsp;Home</Button>
-              </MenuItem>
-              <MenuItem onClick={handleCloseNavMenu}>
-                <Button onClick={() => {window.location.href="/SkyClub/#/flights"}} textAlign="center" className='mobile-nav'><AirplanemodeActiveRoundedIcon style={{ fontSize:"1.2rem", color: "#4361ee" }} /> &nbsp;Flights</Button>
-              </MenuItem>
-            </Menu>
-          </Box>
+              <IconButton
+                size="large"
+                aria-label="account of current user"
+                aria-controls="menu-appbar"
+                aria-haspopup="true"
+                onClick={handleOpenNavMenu}
+                color="black"
+              >
+                <MenuIcon />
+              </IconButton>
+              <Menu
+                id="menu-appbar"
+                anchorEl={anchorElNav}
+                anchorOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'left',
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'left',
+                }}
+                open={Boolean(anchorElNav)}
+                onClose={handleCloseNavMenu}
+                sx={{
+                  display: { xs: 'block', md: 'none' },
+                }}
+              >
+                <MenuItem onClick={handleCloseNavMenu} >
+                  <Button onClick={() => { window.location.href = "/SkyClub" }} textAlign="center" className='mobile-nav'><HomeRoundedIcon style={{ fontSize: "1.2rem", color: "#4361ee" }} /> &nbsp;Home</Button>
+                </MenuItem>
+                <MenuItem onClick={handleCloseNavMenu}>
+                  <Button onClick={() => { window.location.href = "/SkyClub/#/flights" }} textAlign="center" className='mobile-nav'><AirplanemodeActiveRoundedIcon style={{ fontSize: "1.2rem", color: "#4361ee" }} /> &nbsp;Flights</Button>
+                </MenuItem>
+              </Menu>
+            </Box>
 
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }} className='nav-items'>
-              <Button className='nav-item' id='flights-btn' onClick={() => {window.location.href="/SkyClub/#/flights"}}>
+            <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }} className='nav-items'>
+              <Button className='nav-item' id='flights-btn' onClick={() => { window.location.href = "/SkyClub/#/flights" }}>
                 Flights
               </Button>
-          </Box>
+            </Box>
 
           </Toolbar>
         </AppBar>
@@ -113,6 +111,6 @@ export default function Navbar(props) {
       <Container>
       </Container>
     </React.Fragment>
-    
+
   );
 }

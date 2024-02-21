@@ -1,6 +1,5 @@
 import { Card, CardHeader, CardBody, Image } from "@nextui-org/react";
-import ShanksImage from "../assets/images/IMG-20231006-WA0007.jpg"
-
+import FavoriteIcon from '@mui/icons-material/Favorite';
 
 export default function Cards(props) {
 
@@ -30,9 +29,13 @@ export default function Cards(props) {
           style={{ border: '3px solid black' }}
         />
       </CardBody>
-      <CardHeader>
+      <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }} className="px-8" >
         <h4 className="font-bold text-large">{props.feed.description}</h4>
-      </CardHeader>
+        <div className="flex items-center gap-1 cursor-pointer">
+          Like
+          <FavoriteIcon color="red" sx={{ color: 'red' }} />
+        </div>
+      </div>
     </Card>
   );
 }
