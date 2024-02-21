@@ -67,26 +67,16 @@ router.post('/signin', async (req, res) => {
   }
 });
 
-router.get('/userInfo', async (req, res) => {
-  try {
-    const {userId} = req.body;
-
-    if (!mongoose.Types.ObjectId.isValid(userId)) {
-      return res.status(400).json({ error: 'Invalid user ID' });
-    }
-
-    const user = await User.findById(userId);
-
-    if (!user) {
-      return res.status(404).json({ error: 'User not found' });
-    }
-
-    res.status(200).json(user);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Internal Server Error' });
+router.get("/:userId", async(req,res)=>{
+  const {userId} = req.params;
+  console.log(userId);
+  const userDetails = await user.findById(userId);
+  if(!userDetails){
+    return res.status(404).json({error: "User Not Found"});
   }
-});
+  res.status(200).json(userDetails)
+} )
+
 router.post("/follow/:userIdToFollow", async (req, res) => {
   const { userIdToFollow } = req.params;
   const followerUserId = req.user.userId; 

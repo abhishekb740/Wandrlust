@@ -10,11 +10,40 @@ import {
   MDBBtn,
   MDBTypography,
 } from 'mdb-react-ui-kit';
+import { useEffect, useState } from 'react';
 import Modal from 'react-modal';
+import { extractUserIdFromToken } from '../utils/extractUserIdFromToken';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 Modal.setAppElement('#root');
 
 export default function Profile() {
+  const [userDetails, setUserDetails] = useState({});
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const userId = extractUserIdFromToken(token);
+    console.log(userId);
+    const fetchUserDetails = async () => {
+      console.log("fetching user details");
+      const res = await fetch(`http://localhost:5000/${userId}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        }
+      });
+      if (!res.ok) {
+        toast(`Error fetching user details`, { type: "error" });
+      }
+      const data = await res.json();
+      setUserDetails(data);
+    }
+    if (userId) {
+      fetchUserDetails();
+    }
+  }, [])
+
   return (
     <div className='flex justify-center items-center min-h-screen'>
       <MDBContainer className="py-5 px-11">
@@ -30,27 +59,26 @@ export default function Profile() {
                     fluid
                     style={{ width: '150px', zIndex: '1' }}
                   />
-                  <MDBBtn outline color="text"  className="h-9 px-6 ring-2 ring-black overflow-visible text-black">
+                  <MDBBtn outline color="text" className="h-9 px-6 ring-2 ring-black text-black">
                     Edit profile
                   </MDBBtn>
                 </div>
                 <div className="ms-3 text-white flex-grow" style={{ marginTop: '130px' }}>
-                  <MDBTypography tag="h5" className=' text-xl'>Andy Horwitz</MDBTypography>
-                  <MDBCardText>New York</MDBCardText>
+                  <MDBTypography tag="h5" className=' text-xl'>{`${userDetails.name}`}</MDBTypography>
                 </div>
               </div>
               <div className="p-4 text-black" style={{ backgroundColor: '#f8f9fa' }}>
                 <div className="flex justify-end text-center py-1">
                   <div>
                     <MDBCardText className="mb-1 text-lg">253</MDBCardText>
-                    <MDBCardText className="text-sm text-muted mb-0">Photos</MDBCardText>
+                    <MDBCardText className="text-sm text-muted mb-0">Posts</MDBCardText>
                   </div>
                   <div className="px-3">
-                    <MDBCardText className="mb-1 text-lg">1026</MDBCardText>
+                    <MDBCardText className="mb-1 text-lg">{`${userDetails.followers.length}`}</MDBCardText>
                     <MDBCardText className="text-sm text-muted mb-0">Followers</MDBCardText>
                   </div>
                   <div>
-                    <MDBCardText className="mb-1 text-lg">478</MDBCardText>
+                    <MDBCardText className="mb-1 text-lg">{`${userDetails.following.length}`}</MDBCardText>
                     <MDBCardText className="text-sm text-muted mb-0">Following</MDBCardText>
                   </div>
                 </div>

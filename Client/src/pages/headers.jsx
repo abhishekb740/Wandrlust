@@ -107,7 +107,6 @@ export default function Header() {
 
     useEffect(() => {
         const getToken = async () => {
-            console.log(localStorage.getItem('token'));
             const token = localStorage.getItem('token')
             if (token !== null) {
                 setCount(true);
