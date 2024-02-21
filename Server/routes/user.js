@@ -67,15 +67,15 @@ router.post('/signin', async (req, res) => {
   }
 });
 
-router.get("/:userId", async(req,res)=>{
-  const {userId} = req.params;
-  console.log(userId);
-  const userDetails = await user.findById(userId);
-  if(!userDetails){
-    return res.status(404).json({error: "User Not Found"});
-  }
-  res.status(200).json(userDetails)
-} )
+// router.get("/:userId", async(req,res)=>{
+//   const {userId} = req.params;
+//   console.log(userId);
+//   const userDetails = await user.findById(userId);
+//   if(!userDetails){
+//     return res.status(404).json({error: "User Not Found"});
+//   }
+//   res.status(200).json(userDetails)
+// } )
 
 router.post("/follow/:userIdToFollow", async (req, res) => {
   const { userIdToFollow } = req.params;

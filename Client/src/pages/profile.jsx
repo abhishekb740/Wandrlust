@@ -19,30 +19,33 @@ import 'react-toastify/dist/ReactToastify.css';
 Modal.setAppElement('#root');
 
 export default function Profile() {
-  const [userDetails, setUserDetails] = useState({});
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    const userId = extractUserIdFromToken(token);
-    console.log(userId);
-    const fetchUserDetails = async () => {
-      console.log("fetching user details");
-      const res = await fetch(`http://localhost:5000/${userId}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
-        }
-      });
-      if (!res.ok) {
-        toast(`Error fetching user details`, { type: "error" });
-      }
-      const data = await res.json();
-      setUserDetails(data);
-    }
-    if (userId) {
-      fetchUserDetails();
-    }
-  }, [])
+  const [userDetails, setUserDetails] = useState({
+
+  });
+  // useEffect(() => {
+  //   const token = localStorage.getItem("token");
+  //   console.log(token);
+  //   const userId = extractUserIdFromToken(token);
+  //   console.log(userId);
+  //   const fetchUserDetails = async () => {
+  //     console.log("fetching user details");
+  //     const res = await fetch(`http://localhost:5000/${userId}`, {
+  //       method: "GET",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         "Authorization": `Bearer ${token}`
+  //       }
+  //     });
+  //     if (!res.ok) {
+  //       toast(`Error fetching user details`, { type: "error" });
+  //     }
+  //     const data = await res.json();
+  //     setUserDetails(data);
+  //   }
+  //   if (userId) {
+  //     fetchUserDetails();
+  //   }
+  // }, [])
 
   return (
     <div className='flex justify-center items-center min-h-screen'>
@@ -64,7 +67,7 @@ export default function Profile() {
                   </MDBBtn>
                 </div>
                 <div className="ms-3 text-white flex-grow" style={{ marginTop: '130px' }}>
-                  <MDBTypography tag="h5" className=' text-xl'>{`${userDetails.name}`}</MDBTypography>
+                  {/* <MDBTypography tag="h5" className=' text-xl'>{`${userDetails.name}`}</MDBTypography> */}
                 </div>
               </div>
               <div className="p-4 text-black" style={{ backgroundColor: '#f8f9fa' }}>
@@ -74,11 +77,11 @@ export default function Profile() {
                     <MDBCardText className="text-sm text-muted mb-0">Posts</MDBCardText>
                   </div>
                   <div className="px-3">
-                    <MDBCardText className="mb-1 text-lg">{`${userDetails.followers.length}`}</MDBCardText>
+                    {/* <MDBCardText className="mb-1 text-lg">{`${userDetails.followers.length}`}</MDBCardText> */}
                     <MDBCardText className="text-sm text-muted mb-0">Followers</MDBCardText>
                   </div>
                   <div>
-                    <MDBCardText className="mb-1 text-lg">{`${userDetails.following.length}`}</MDBCardText>
+                    {/* <MDBCardText className="mb-1 text-lg">{`${userDetails.following.length}`}</MDBCardText> */}
                     <MDBCardText className="text-sm text-muted mb-0">Following</MDBCardText>
                   </div>
                 </div>

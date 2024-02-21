@@ -14,8 +14,8 @@ import { useEffect, useState } from "react";
 
 const Feeds = () => {
     const [feeds, setFeeds] = useState([]);
-    useEffect(()=>{
-        const getFeeds = async() =>{
+    useEffect(() => {
+        const getFeeds = async () => {
             const res = await fetch("http://localhost:5000/getPhotos", {
                 method: "GET",
                 headers: {
@@ -26,8 +26,10 @@ const Feeds = () => {
             setFeeds(data);
             console.log(data);
         }
+        const token = localStorage.getItem("token")
+        console.log(token);
         getFeeds();
-    },[])
+    }, [])
     return (
         <div style={{ display: 'flex', width: "100%", paddingTop: '1rem' }}>
             <div style={{ width: '25%', display: 'flex', alignItems: 'center', flexDirection: 'column', gap: '2rem', position: 'fixed' }}>
