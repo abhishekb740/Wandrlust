@@ -142,3 +142,4 @@
 2024-02-21T10:21:05.454Z GET /static/files/image1.png 304 5.032 ms
 2024-02-21T10:21:05.458Z GET /static/files/image3.png 304 2.740 ms
 2024-02-21T10:21:05.461Z GET /static/files/image.png 304 1.003 ms
+2024-02-21T10:22:34.538Z GET /getPhotos 304 580.230 ms
