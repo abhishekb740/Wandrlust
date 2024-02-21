@@ -1,8 +1,10 @@
 import { Card, CardHeader, CardBody, Image } from "@nextui-org/react";
 import FavoriteIcon from '@mui/icons-material/Favorite';
+import { extractUserIdFromToken } from "../utils/extractUserIdFromToken";
 
 export default function Cards(props) {
-
+  const token = localStorage.getItem("token");
+  const userId = extractUserIdFromToken(token);
   const createdAtIST = new Date(props.feed.createdAt).toLocaleString("en-US", {
     timeZone: 'Asia/Kolkata',
     weekday: "long", year: "numeric", month: "long", day: "numeric",
@@ -10,6 +12,39 @@ export default function Cards(props) {
   });
   const url = `http://localhost:5000/${props.feed.image}`;
   console.log(url);
+
+  const likePost = async (postId) => {
+    try {
+      console.log("Like post.....");
+      const res = await fetch(`http://localhost:5000/like/${postId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ userId }),
+      });
+      const data = await res.json();
+      console.log(data);
+    } catch (error) {
+      console.error("Error liking post:", error);
+    }
+  };
+
+  const disLikePost = async (postId) => {
+    try {
+      const res = await fetch(`http://localhost:5000/dislike/${postId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ userId }),
+      });
+      const data = await res.json();
+      console.log(data);
+    } catch (error) {
+      console.error("Error unliking post:", error);
+    }
+  }
 
   return (
     <Card className="py-4" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '550px' }}>
@@ -31,10 +66,18 @@ export default function Cards(props) {
       </CardBody>
       <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }} className="px-8" >
         <h4 className="font-bold text-large">{props.feed.description}</h4>
-        <div className="flex items-center gap-1 cursor-pointer">
-          Like
-          <FavoriteIcon color="red" sx={{ color: 'red' }} />
-        </div>
+        {props.feed.likes.includes(userId) ? (
+          <div onClick={() => disLikePost(props.feed._id)} className="flex items-center gap-1 cursor-pointer">
+            <div>{props.feed.likes.length}</div>
+            <FavoriteIcon color="red" sx={{ color: 'red' }} />
+          </div>
+        ) : (
+          <div onClick={() => likePost(props.feed._id)} className="flex items-center gap-1 cursor-pointer">
+            <div>{props.feed.likes.length}</div>
+            <FavoriteIcon color="red" sx={{ color: 'black'}} />
+          </div>
+        )}
+
       </div>
     </Card>
   );
