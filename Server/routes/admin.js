@@ -3,7 +3,7 @@ const router = Router();
 const Admin = require('../Models/admin')
 const User = require("../Models/user")
 
-const adminId = ""
+const adminId = "" // admin 
 router.post("/delete-post/:postId", async (req, res) => {
     const { postId } = req.params;
 
@@ -46,6 +46,24 @@ router.post("/block-user/:userId", async (req, res) => {
         return res.status(200).json({ message: "User blocked successfully" });
     } catch (error) {
         console.log("Error in block user admin ", error);
+        return res.status(500).json({ error: "Internal server error" });
+    }
+});
+router.get("/users-not-followed", async (req, res) => {
+    const currentUser = req.user.userId;
+
+    try {
+        const user = await User.findById(currentUser);
+
+        if (!user) {
+            return res.status(404).json({ error: "User not found" });
+        }
+
+        const usersNotFollowed = await User.find({ _id: { $nin: user.following } });
+
+        return res.status(200).json({ users: usersNotFollowed });
+    } catch (error) {
+        console.log("Error in get users not followed API ", error);
         return res.status(500).json({ error: "Internal server error" });
     }
 });
