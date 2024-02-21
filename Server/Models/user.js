@@ -35,9 +35,15 @@ const UserSchema = new mongoose.Schema(
       required: [true, PASSWORD_REQUIRED],
       unique: false,
     },
+    profileImage: {
+      type: String,
+    },
     age: {
       type: Number,
       required: [true, AGE_REQUIRED],
+    },
+    about:{
+      type: String
     },
     gender: {
       type: String,
