@@ -94,22 +94,28 @@ router.post("/signin", async (req, res) => {
 
 router.post("/follow/:userIdToFollow", async (req, res) => {
   const { userIdToFollow } = req.params;
-  const followerUserId = req.user.userId;
+  const followerUserId = req.body.userId;
 
   try {
-    const followedUser = await user.findByIdAndUpdate(
-      userIdToFollow,
-      { $push: { followers: followerUserId } },
-      { new: true }
-    );
+    const followedUser = await user.findById(userIdToFollow);
 
     if (!followedUser) {
       return res.status(404).json({ error: "User to follow not found" });
     }
 
+    const isAlreadyFollowing = followedUser.followers.includes(followerUserId);
+
+    if (isAlreadyFollowing) {
+      followedUser.followers = followedUser.followers.filter(
+        (follower) => follower.toString() !== followerUserId
+      );
+    } else {
+      followedUser.followers.push(followerUserId);
+    }
+    await followedUser.save();
     const followerUser = await user.findByIdAndUpdate(
       followerUserId,
-      { $push: { following: userIdToFollow } },
+      { $addToSet: { following: userIdToFollow } },
       { new: true }
     );
 
@@ -117,12 +123,13 @@ router.post("/follow/:userIdToFollow", async (req, res) => {
       return res.status(404).json({ error: "Follower user not found" });
     }
 
-    return res.status(200).json({ message: "User followed successfully" });
+    return res.status(200).json({ message: "User follow status updated successfully" });
   } catch (error) {
-    console.log("Error in follow user API ", error);
+    console.log("Error in follow/unfollow user API ", error);
     return res.status(500).json({ error: "Internal server error" });
   }
 });
+
 router.get("/getPhotos", async (req, res) => {
   const images = await ImageModel.find().populate("author");
   res.send(images);
