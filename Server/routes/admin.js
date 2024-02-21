@@ -3,7 +3,7 @@ const router = Router();
 const Admin = require('../Models/admin')
 const User = require("../Models/user")
 
-const adminId = ""
+const adminId = "" // admin 
 router.post("/delete-post/:postId", async (req, res) => {
     const { postId } = req.params;
 
@@ -49,4 +49,5 @@ router.post("/block-user/:userId", async (req, res) => {
         return res.status(500).json({ error: "Internal server error" });
     }
 });
+
 module.exports = router;
