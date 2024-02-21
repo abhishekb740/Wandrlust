@@ -9,6 +9,7 @@ const fs = require('fs');
 const path = require('path');
 const bodyParser = require('body-parser');
 const AdminRoute = require("./routes/admin");
+app.use("/images", express.static(path.join(__dirname, "images")));
 
 config();
 app.use(cors());

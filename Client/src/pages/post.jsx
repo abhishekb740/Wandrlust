@@ -3,8 +3,9 @@ import { Card, Button, Input } from "@nextui-org/react";
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { useSelector, useDispatch } from 'react-redux';
 import axios from 'axios';
-import {useNavigate} from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { caption, description } from "../store/slices/PostSlice";
+import { extractUserIdFromToken } from '../utils/extractUserIdFromToken';
 
 let formData;
 const Post = () => {
@@ -19,44 +20,69 @@ const Post = () => {
         const selectedFile = event.target.files[0];
 
         if (selectedFile) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setSelectedImage(reader.result);
-            };
-            reader.readAsDataURL(selectedFile);
-
+            // const reader = new FileReader();
+            // reader.onloadend = () => {
+            //     setSelectedImage(reader.result);
+            // };
+            // reader.readAsDataURL(selectedFile);
             setFile(selectedFile);
         }
     };
 
-    const captionChangeHandler = (e) =>{
+    const captionChangeHandler = (e) => {
         dispatch(caption(e.target.value))
     }
 
-    const descriptionChangehandler = (e) =>{
+    const descriptionChangehandler = (e) => {
         dispatch(description(e.target.value))
     }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        const token = localStorage.getItem("token");
+        console.log(token);
+        const userId = extractUserIdFromToken(token)
+        console.log(userId);
         formData = new FormData();
         formData.append("myImage", file, "image.png");
-        console.log(captionValue);
-        console.log(descriptionValue);
         formData.append("caption", captionValue);
         formData.append("description", descriptionValue);
-        const result = await axios.post(
-            'http://localhost:5000/uploadPhoto',
-            formData,
-            {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
+        formData.append("userId", userId);
+        console.log(formData);
+        const res = await axios.post("http://localhost:5000/uploadPhoto", formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
             }
-        )
-        console.log(result);
+        })
+        console.log(res);
         navigate("/feeds");
-    };
+    }
+
+    // const handleSubmit = async (e) => {
+    //     e.preventDefault();
+    //     const token = localStorage.getItem("token");
+    //     console.log(token);
+    //     const userId = extractUserIdFromToken(token);
+    //     console.log(userId);
+    //     formData = new FormData();
+    //     formData.append("myImage", file, "image.png");
+    //     console.log(captionValue);
+    //     console.log(descriptionValue);
+    //     formData.append("caption", captionValue);
+    //     formData.append("description", descriptionValue);
+    //     const result = await axios.post(
+    //         'http://localhost:5000/uploadPhoto',
+    //         formData,
+    //         {
+    //             headers: {
+    //                 'Content-Type': 'multipart/form-data'
+    //             }
+    //         },
+
+    //     )
+    //     console.log(result);
+    //     navigate("/feeds");
+    // };
 
     return (
         <div>

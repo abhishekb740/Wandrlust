@@ -70,7 +70,7 @@ const Feeds = () => {
                             <div style={{ display: 'flex', gap: '1rem' }} >
                                 <img src={ProfileImage} width="40px" height="25px" ></img>
                                 <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-evenly', width: '100%', }}>
-                                    <p className="text-tiny" style={{ fontSize: '18px' }} >Abhishek Bhagat</p>
+                                    <p className="text-tiny" style={{ fontSize: '18px' }}>Abhishek Bhagat</p>
                                     <small className="text-default-500">abhishekb740@gmail.com</small>
                                 </div>
                             </div>
@@ -104,7 +104,8 @@ const Feeds = () => {
                                 </div>
                             </div>
                             <Button style={{ backgroundColor: '#f94566', color: 'white', fontWeight: 'bold' }} variant="shadow">Follow</Button>
-                        </div><div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }} >
+                        </div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }} >
                             <div style={{ display: 'flex', gap: '1rem' }} >
                                 <img src={ProfileImage} width="40px" height="25px" ></img>
                                 <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-evenly', width: '100%', }}>
