@@ -8,22 +8,36 @@ const user = require("../Models/user");
 const jwt = require("jsonwebtoken");
 const { log } = require("console");
 const cookieParser = require("cookie-parser");
-
-const upload = multer();
 router.use(cookieParser());
 
-router.post("/uploadPhoto", upload.single("myImage"), async (req, res) => {
-  const body = req.body;
-  console.log(body);
-  const downloaded = await downloadFile(req.file.originalname, req.file.buffer);
-  const newImage = await new ImageModel({
-    image: downloaded,
-    caption: req.body.caption,
-    description: req.body.description,
-    name: "Abhishek Bhagat",
-  });
-  res.send(await newImage.save());
+const fileStorageEngine = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "./images");
+  },
+  filename: (req, file, cb) => {
+    cb(false, Date.now() + "--" + file.originalname);
+  },
 });
+
+const upload = multer({ storage: fileStorageEngine });
+
+router.post(
+  "/uploadPhoto",
+  upload.single("myImage"),
+  async (req, res, next) => {
+    console.log(req.file);
+    const userId = req.body.userId;
+    const caption = req.body.caption;
+    const description = req.body.description;
+    const newImage = await new ImageModel({
+      image: req.file.filename,
+      caption: caption,
+      description: description,
+      author: userId,
+    });
+    res.send(await newImage.save());
+  }
+);
 
 router.post("/signup", async (req, res) => {
   log(req.body);
@@ -107,10 +121,18 @@ router.post("/follow/:userIdToFollow", async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
+
 router.get("/getPhotos", async (req, res) => {
-  const images = await ImageModel.find();
+  const images = await ImageModel.find().populate("author");
   res.send(images);
 });
+
+// router.get("/getUserPosts/:userId", async (req, res) => {
+//   const { userId } = req.params;
+//   const images = await ImageModel.find({ userId });
+//   console.log(images);
+//   res.send(images);
+// })
 
 router.get("/:userId", async (req, res) => {
   const { userId } = req.params;
