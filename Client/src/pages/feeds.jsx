@@ -15,8 +15,29 @@ const Feeds = () => {
     const [following, setFollowing] = useState([]);
     const token = localStorage.getItem("token");
     const userId = extractUserIdFromToken(token);
+    const [userDetails, setUserDetails] = useState({});
 
     useEffect(() => {
+        const fetchUserDetails = async () => {
+            const res = await fetch(`http://localhost:5000/${userId}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            if (!res.ok) {
+                toast(`Error fetching user details`, { type: 'error' });
+            }
+            const data = await res.json();
+            setUserDetails(data);
+            if (data.about) {
+                setAboutContent({ description: data.about });
+            }
+        };
+        if (userId) {
+            fetchUserDetails();
+        }
         const getFeeds = async () => {
             try {
                 const res = await fetch("http://localhost:5000/getPhotos", {
@@ -27,11 +48,11 @@ const Feeds = () => {
                 });
                 const data = await res.json();
                 setFeeds(data);
+                console.log(data);
             } catch (error) {
                 console.error("Error fetching feeds:", error);
             }
         };
-
         const getUsers = async () => {
             try {
                 const res = await fetch("http://localhost:5000/getAllUsers", {
@@ -93,8 +114,8 @@ const Feeds = () => {
                             <div style={{ display: "flex", gap: "1rem" }}>
                                 <img src={ProfileImage} width="50px" height="50px" alt="profile" />
                                 <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-evenly", width: "100%" }}>
-                                    <p className="text-tiny uppercase font-bold" style={{ fontSize: "20px" }}>Abhishek Bhagat</p>
-                                    <small className="text-default-500">Email</small>
+                                    <p className="text-tiny uppercase font-bold" style={{ fontSize: "20px" }}>{userDetails.name}</p>
+                                    <small className="text-default-500">{userDetails.email}</small>
                                 </div>
                             </div>
                         </CardHeader>
@@ -117,13 +138,13 @@ const Feeds = () => {
                 </div>
             </div>
 
-            <div style={{ width: "25%", position: "fixed", right: "0" }}>
+            <div style={{ width: "28%", position: "fixed", right: "0" }}>
                 <Card className="py-4" style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "95%", gap: "1rem" }}>
                     <TextField id="outlined-basic" label="Search User" variant="outlined" style={{ width: "95%" }} InputProps={{ endAdornment: <SearchIcon /> }} />
                     <CardHeader className="pb-0 pt-2 px-4 flex-col items-start" style={{ display: "flex", flexDirection: "column", gap: "0.9rem" }}>
                         {users.map((user, index) => (
                             user._id !== userId && (
-                                <div key={index} style={{ display: "flex", justifyContent: "space-between", width: "100%" }}>
+                                <div key={index} style={{ display: "flex", justifyContent: "space-between", width: "100%", }}>
                                     <div style={{ display: "flex", gap: "1rem" }}>
                                         <img src={ProfileImage} alt="profile" width="40px" height="25px" />
                                         <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-evenly", width: "100%" }}>
@@ -134,7 +155,7 @@ const Feeds = () => {
                                     {user.followers.includes(userId) ? (
                                         <Button style={{ backgroundColor: "#f94566", color: "white", fontWeight: "bold" }} variant="shadow" onClick={() => handleUnfollow(user._id)}>Unfollow</Button>
                                     ) : (
-                                        <Button style={{ backgroundColor: "#64b5f6", color: "white", fontWeight: "bold" }} variant="shadow" onClick={() => handleFollow(user._id)}>Follow</Button>
+                                        <Button style={{ backgroundColor: "#f94566", color: "white", fontWeight: "bold" }} variant="shadow" onClick={() => handleFollow(user._id)}>Follow</Button>
                                     )}
                                 </div>
                             )

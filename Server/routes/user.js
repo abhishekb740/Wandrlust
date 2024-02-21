@@ -151,6 +151,44 @@ router.put("/unfollow/:userIdToUnfollow", async (req, res) => {
   }
 });
 
+router.put("/like/:postId", async (req, res) => {
+  const postId = req.params.postId;
+  try {
+    await ImageModel.findByIdAndUpdate(
+      postId,
+      {
+        $push: { likes: req.body.userId },
+      },
+      {
+        new: true,
+      }
+    );
+    res.json({ message: "Liked successfully" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+router.put("/dislike/:postId", async (req, res) => {
+  const postId = req.params.postId;
+  try {
+    await ImageModel.findByIdAndUpdate(
+      postId,
+      {
+        $pull: { likes: req.body.userId },
+      },
+      {
+        new: true,
+      }
+    );
+    res.json({ message: "Disliked successfully" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
 router.get("/getPhotos", async (req, res) => {
   const images = await ImageModel.find().populate("author");
   res.send(images);
