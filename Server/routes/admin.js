@@ -3,7 +3,7 @@ const router = Router();
 const Admin = require('../Models/admin')
 const User = require("../Models/user")
 
-const adminId = ""
+const adminId = "" // admin 
 router.post("/delete-post/:postId", async (req, res) => {
     const { postId } = req.params;
 
