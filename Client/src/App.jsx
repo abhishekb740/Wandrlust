@@ -12,7 +12,8 @@ import Profile from './pages/profile.jsx';
 import Post from './pages/post.jsx';
 import Signup from './pages/signup.jsx';
 import Signin from './pages/signin.jsx';
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 function App() {
   // const submitHandler = async () => {
   //   const response = await fetch('http://localhost:5000', {
@@ -46,6 +47,7 @@ function App() {
           <Route path='/signin' element={<Signin />} />
         </Routes>
       </ScrollToTop>
+      <ToastContainer />
     </div>
   );
 }

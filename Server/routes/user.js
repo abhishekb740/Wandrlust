@@ -56,7 +56,6 @@ router.post('/signin', async (req, res) => {
       return res.status(401).json({ error: 'Invalid username or password' });
     }
     const token = jwt.sign({ userId: User._id }, process.env.JWT_SECRET_KEY, { expiresIn: '24h' });
-    console.log(token)
     res.cookie("userId",User._id,{
       httpOnly: true,
       maxAge : 5000000
