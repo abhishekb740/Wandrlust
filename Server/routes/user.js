@@ -5,93 +5,96 @@ const multer = require("multer");
 const ImageModel = require("../Models/images");
 const { downloadFile } = require("../utils/file");
 const user = require("../Models/user");
-const jwt = require('jsonwebtoken');
+const jwt = require("jsonwebtoken");
 const { log } = require("console");
 const cookieParser = require("cookie-parser")
 const Post = require('../Models/images')
 
-const upload = multer();
 router.use(cookieParser());
 
-router.post("/uploadPhoto", upload.single("myImage"), async (req, res) => {
-  const body = req.body;
-  console.log(body);
-  const downloaded = await downloadFile(
-    req.file.originalname,
-    req.file.buffer
-  );
-  const newImage = await new ImageModel({
-    image: downloaded,
-    caption: req.body.caption,
-    description: req.body.description,
-    name: "Abhishek Bhagat"
-  });
-  res.send(await newImage.save());
+const fileStorageEngine = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "./images");
+  },
+  filename: (req, file, cb) => {
+    cb(false, Date.now() + "--" + file.originalname);
+  },
 });
 
-router.post('/signup', async (req, res) => {
+const upload = multer({ storage: fileStorageEngine });
+
+router.post(
+  "/uploadPhoto",
+  upload.single("myImage"),
+  async (req, res, next) => {
+    console.log(req.file);
+    const userId = req.body.userId;
+    const caption = req.body.caption;
+    const description = req.body.description;
+    const newImage = await new ImageModel({
+      image: req.file.filename,
+      caption: caption,
+      description: description,
+      author: userId,
+    });
+    res.send(await newImage.save());
+  }
+);
+
+router.post("/signup", async (req, res) => {
   log(req.body);
   try {
     console.log(req.body);
-    const { name, email, phone,username,password,age } = req.body;
+    const { name, email, phone, username, password, age } = req.body;
 
-    const newUser = new user({ name, phone ,email,username,password,age,gender: "male" });
+    const newUser = new user({
+      name,
+      phone,
+      email,
+      username,
+      password,
+      age,
+      gender: "male",
+    });
     await newUser.save();
 
-    res.status(201).json({ message: 'User created successfully' });
+    res.status(201).json({ message: "User created successfully" });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
-router.post('/signin', async (req, res) => {
+router.post("/signin", async (req, res) => {
   try {
     const { username, password } = req.body;
     if (!username || !password) {
-      return res.status(400).json({ error: 'Please provide username and password' });
+      return res
+        .status(400)
+        .json({ error: "Please provide username and password" });
     }
     const User = await user.findOne({ username });
 
     if (!User || User.password !== password) {
-      return res.status(401).json({ error: 'Invalid username or password' });
+      return res.status(401).json({ error: "Invalid username or password" });
     }
-    const token = jwt.sign({ userId: User._id }, process.env.JWT_SECRET_KEY, { expiresIn: '24h' });
-    console.log(token)
-    res.cookie("userId",User._id,{
+    const token = jwt.sign({ userId: User._id }, process.env.JWT_SECRET_KEY, {
+      expiresIn: "24h",
+    });
+    res.cookie("userId", User._id, {
       httpOnly: true,
-      maxAge : 5000000
-    })
+      maxAge: 5000000,
+    });
     res.status(200).json({ message: "successful signin", token });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
-router.get('/userInfo', async (req, res) => {
-  try {
-    const {userId} = req.body;
-
-    if (!mongoose.Types.ObjectId.isValid(userId)) {
-      return res.status(400).json({ error: 'Invalid user ID' });
-    }
-
-    const user = await User.findById(userId);
-
-    if (!user) {
-      return res.status(404).json({ error: 'User not found' });
-    }
-
-    res.status(200).json(user);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-});
 router.post("/follow/:userIdToFollow", async (req, res) => {
   const { userIdToFollow } = req.params;
-  const followerUserId = req.user.userId; 
+  const followerUserId = req.user.userId;
 
   try {
     const followedUser = await user.findByIdAndUpdate(
@@ -120,39 +123,30 @@ router.post("/follow/:userIdToFollow", async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
-
-router.post("/like/:postId", async (req, res) => {
-  const { postId } = req.params;
-  const userId = req.user.userId;
-
-  try {
-    const post = await Post.findById(postId);
-
-    if (!post) {
-      return res.status(404).json({ error: "Post not found" });
-    }
-
-    const userIndex = post.likes.indexOf(userId);
-
-    if (userIndex !== -1) {
-      post.likes.splice(userIndex, 1);
-    } else {
-      post.likes.push(userId);
-    }
-
-    await post.save();
-
-    return res.status(200).json({ message: "Post like updated successfully" });
-  } catch (error) {
-    console.log("Error in like post API ", error);
-    return res.status(500).json({ error: "Internal server error" });
-  }
+router.get("/getPhotos", async (req, res) => {
+  const images = await ImageModel.find().populate("author");
+  res.send(images);
 });
 
+// router.get("/getUserPosts/:userId", async (req, res) => {
+//   const { userId } = req.params;
+//   const images = await ImageModel.find({ userId });
+//   console.log(images);
+//   res.send(images);
+// })
 
-router.get("/getPhotos", async (req, res) => {
-  const images = await ImageModel.find();
-  res.send(images);
+router.get("/:userId", async (req, res) => {
+  const { userId } = req.params;
+  console.log(userId);
+  try {
+    const userDetails = await user.findById(userId);
+    if (!userDetails) {
+      return res.status(404).json({ error: "User Not Found" });
+    }
+    res.status(200).json(userDetails);
+  } catch (err) {
+    console.log(err);
+  }
 });
 
 router.get("/", (req, res) => {

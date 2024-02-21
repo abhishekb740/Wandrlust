@@ -13,8 +13,8 @@ import Typography from '@mui/material/Typography';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 import ProfileImage from "../assets/images/profile.png"
-import { useState } from 'react';
-
+import { useState, useEffect } from 'react';
+import LockOpenIcon from '@mui/icons-material/LockOpen';
 
 export default function Header() {
     const [count, setCount] = useState(false);
@@ -105,6 +105,17 @@ export default function Header() {
         </Menu>
     );
 
+    useEffect(() => {
+        const getToken = async () => {
+            const token = localStorage.getItem('token')
+            if (token !== null) {
+                setCount(true);
+            }
+        }
+        getToken();
+        // window.addEventListener('storage', getToken)
+    }, []);
+
     return (
         <Box sx={{ flexGrow: 1, paddingBottom: '6rem' }}>
             <AppBar position="fixed" sx={{
@@ -169,52 +180,54 @@ export default function Header() {
                             </Typography>
                         </Link>
                     </Box>
-                    {count ? (<Link to="/profile">
-                        <Box
-                            sx={{
-                                display: {
-                                    xs: 'none',
-                                    md: 'flex'
-                                },
-                                alignItems: "center",
-                                gap: "12px",
-                                justifyContent: "center",
-                                cursor: "pointer"
-                            }}
-                        >
-                            <img src={ProfileImage} width="35px" height="35px" style={{ border: '1px solid white', borderRadius: '50%' }}></img>
-                            <Typography
-                                component="div"
-                                variant='body1'
-                                fontWeight={500}
+                    {count ? (
+                        <Link to="/profile">
+                            <Box
+                                sx={{
+                                    display: {
+                                        xs: 'none',
+                                        md: 'flex'
+                                    },
+                                    alignItems: "center",
+                                    gap: "12px",
+                                    justifyContent: "center",
+                                    cursor: "pointer"
+                                }}
                             >
-                                Profile
-                            </Typography>
-                        </Box>
-                    </Link>) : (
-                    <Link to="/signup">
-                        <Box
-                            sx={{
-                                display: {
-                                    xs: 'none',
-                                    md: 'flex'
-                                },
-                                alignItems: "center",
-                                gap: "12px",
-                                justifyContent: "center",
-                                cursor: "pointer"
-                            }}
-                        >
-                            <img src={ProfileImage} width="35px" height="35px" style={{ border: '1px solid white', borderRadius: '50%' }}></img>
-                            <Typography
-                                component="div"
-                                variant='body1'
-                                fontWeight={500}
+                                <img src={ProfileImage} width="35px" height="35px" style={{ border: '1px solid white', borderRadius: '50%' }}></img>
+                                <Typography
+                                    component="div"
+                                    variant='body1'
+                                    fontWeight={500}
+                                >
+                                    Profile
+                                </Typography>
+                            </Box>
+                        </Link>
+                    ) : (
+                        <Link to="/signup">
+                            <Box
+                                sx={{
+                                    display: {
+                                        xs: 'none',
+                                        md: 'flex'
+                                    },
+                                    alignItems: "center",
+                                    gap: "12px",
+                                    justifyContent: "center",
+                                    cursor: "pointer"
+                                }}
                             >
-                                Signup
-                            </Typography>
-                        </Box>
-                    </Link>
+                                <LockOpenIcon />
+                                <Typography
+                                    component="div"
+                                    variant='body1'
+                                    fontWeight={500}
+                                >
+                                    SignIn/SignUp
+                                </Typography>
+                            </Box>
+                        </Link>
                     )}
                     <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
                         <IconButton

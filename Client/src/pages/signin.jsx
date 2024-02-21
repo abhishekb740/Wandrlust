@@ -1,35 +1,37 @@
 import { Link, useNavigate } from "react-router-dom";
 // import { useState } from "react";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Signin = () => {
   const navigate = useNavigate();
-
   const submitHandler = async (e) => {
     e.preventDefault();
     const username = e.target.username.value;
     const password = e.target.password.value;
+    const response = await fetch("http://localhost:5000/signin", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ username, password }),
+    });
+    console.log(response);
+    if (response.ok) {
+      const result = await response.json();
+      console.log(result);
+      console.log(result.token);
+      localStorage.setItem("token", result.token);
+      toast("SignIn successful", {
+        type: "success",
 
-    try {
-      const response = await fetch("http://localhost:5000/signin", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ username, password }),
       });
-      console.log(response);
-      if (response.ok) {
-        const result = await response.json();
-        console.log(result);
-        alert("Signin successful");
-        navigate("/"); // Redirect to the desired page after successful signin
-      } else {
-        console.error("Failed to sign in");
-        alert("Signin failed");
-      }
-    } catch (error) {
-      console.error("Error signing in:", error);
-      alert("Signin failed");
+      navigate("/");
+    } else {
+      console.error("Failed to sign in");
+      toast("Error in SignIn", {
+        type: "error",
+      })
     }
   };
 

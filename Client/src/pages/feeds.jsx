@@ -14,8 +14,8 @@ import { useEffect, useState } from "react";
 
 const Feeds = () => {
     const [feeds, setFeeds] = useState([]);
-    useEffect(()=>{
-        const getFeeds = async() =>{
+    useEffect(() => {
+        const getFeeds = async () => {
             const res = await fetch("http://localhost:5000/getPhotos", {
                 method: "GET",
                 headers: {
@@ -26,8 +26,10 @@ const Feeds = () => {
             setFeeds(data);
             console.log(data);
         }
+        const token = localStorage.getItem("token")
+        console.log(token);
         getFeeds();
-    },[])
+    }, [])
     return (
         <div style={{ display: 'flex', width: "100%", paddingTop: '1rem' }}>
             <div style={{ width: '25%', display: 'flex', alignItems: 'center', flexDirection: 'column', gap: '2rem', position: 'fixed' }}>
@@ -68,7 +70,7 @@ const Feeds = () => {
                             <div style={{ display: 'flex', gap: '1rem' }} >
                                 <img src={ProfileImage} width="40px" height="25px" ></img>
                                 <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-evenly', width: '100%', }}>
-                                    <p className="text-tiny" style={{ fontSize: '18px' }} >Abhishek Bhagat</p>
+                                    <p className="text-tiny" style={{ fontSize: '18px' }}>Abhishek Bhagat</p>
                                     <small className="text-default-500">abhishekb740@gmail.com</small>
                                 </div>
                             </div>
@@ -102,7 +104,8 @@ const Feeds = () => {
                                 </div>
                             </div>
                             <Button style={{ backgroundColor: '#f94566', color: 'white', fontWeight: 'bold' }} variant="shadow">Follow</Button>
-                        </div><div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }} >
+                        </div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }} >
                             <div style={{ display: 'flex', gap: '1rem' }} >
                                 <img src={ProfileImage} width="40px" height="25px" ></img>
                                 <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-evenly', width: '100%', }}>
