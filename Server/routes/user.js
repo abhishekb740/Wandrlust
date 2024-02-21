@@ -148,6 +148,33 @@ router.get("/:userId", async (req, res) => {
   }
 });
 
+router.put('/:userId/about', async (req, res) => {
+  const { userId } = req.params;
+  const { about } = req.body;
+
+  try {
+    // Find the user by ID
+    const User = await user.findById(userId);
+
+    if (!User) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Update the user's "about" field
+    User.about = about;
+
+    // Save the updated user document
+    await User.save();
+
+    // Respond with success message
+    res.json({ message: 'About section updated successfully' });
+  } catch (error) {
+    console.error('Error updating about section:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+
 router.get("/", (req, res) => {
   console.log(req.body);
 });
