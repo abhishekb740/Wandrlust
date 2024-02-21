@@ -49,10 +49,12 @@ const UserSchema = new mongoose.Schema(
       required: false,
     },
     followers: {
-      type: Array,
+      type: [mongoose.Schema.Types.ObjectId],
+      default : [],
     },
     following: {
-      type: Array,
+      type: [mongoose.Schema.Types.ObjectId],
+      default : [],
     },
     createdAt: {
       type: Date,
