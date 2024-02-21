@@ -92,41 +92,62 @@ router.post("/signin", async (req, res) => {
   }
 });
 
-router.post("/follow/:userIdToFollow", async (req, res) => {
+router.put("/follow/:userIdToFollow", async (req, res) => {
   const { userIdToFollow } = req.params;
-  console.log(userIdToFollow);
-  const followerUserId = req.user.userId;
+  const followingId = req.body.followingId;
+
   try {
-    const followedUser = await user.findById(userIdToFollow);
+    const userToFollow = await user.findById(userIdToFollow);
+    const currentUser = await user.findById(followingId);
 
-    if (!followedUser) {
-      return res.status(404).json({ error: "User to follow not found" });
+    if (!userToFollow || !currentUser) {
+      return res.status(404).json({ error: "User not found" });
     }
 
-    const isAlreadyFollowing = followedUser.followers.includes(followerUserId);
+    // Check if already following
+    const isFollowing = currentUser.following.includes(userIdToFollow);
 
-    if (isAlreadyFollowing) {
-      followedUser.followers = followedUser.followers.filter(
-        (follower) => follower.toString() !== followerUserId
-      );
-    } else {
-      followedUser.followers.push(followerUserId);
-    }
-    await followedUser.save();
-    const followerUser = await user.findByIdAndUpdate(
-      followerUserId,
-      { $addToSet: { following: userIdToFollow } },
-      { new: true }
-    );
-
-    if (!followerUser) {
-      return res.status(404).json({ error: "Follower user not found" });
+    if (isFollowing) {
+      return res.status(400).json({ error: "Already following this user" });
     }
 
-    return res.status(200).json({ message: "User follow status updated successfully" });
+    await currentUser.updateOne({ $push: { following: userIdToFollow } });
+    await userToFollow.updateOne({ $push: { followers: followingId } });
+
+    res.status(200).json({ message: "User followed successfully" });
   } catch (error) {
-    console.log("Error in follow/unfollow user API ", error);
-    return res.status(500).json({ error: "Internal server error" });
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+// Unfollow
+router.put("/unfollow/:userIdToUnfollow", async (req, res) => {
+  const { userIdToUnfollow } = req.params;
+  const followingId = req.body.followingId;
+
+  try {
+    const userToUnfollow = await user.findById(userIdToUnfollow);
+    const currentUser = await user.findById(followingId);
+
+    if (!userToUnfollow || !currentUser) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Check if not following
+    const isNotFollowing = !currentUser.following.includes(userIdToUnfollow);
+
+    if (isNotFollowing) {
+      return res.status(400).json({ error: "Not following this user" });
+    }
+
+    await currentUser.updateOne({ $pull: { following: userIdToUnfollow } });
+    await userToUnfollow.updateOne({ $pull: { followers: followingId } });
+
+    res.status(200).json({ message: "User unfollowed successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
@@ -138,7 +159,7 @@ router.get("/getPhotos", async (req, res) => {
 router.post("/getAllUsers", async (req, res) => {
   try {
     const users = await user.find();
-    return res.status(200).json({ users});
+    return res.status(200).json({ users });
   } catch (error) {
     console.log("Error in get users not followed API ", error);
     return res.status(500).json({ error: "Internal server error" });
@@ -159,7 +180,7 @@ router.get("/:userId", async (req, res) => {
   }
 });
 
-router.put('/:userId/about', async (req, res) => {
+router.put("/:userId/about", async (req, res) => {
   const { userId } = req.params;
   const { about } = req.body;
 
@@ -168,7 +189,7 @@ router.put('/:userId/about', async (req, res) => {
     const User = await user.findById(userId);
 
     if (!User) {
-      return res.status(404).json({ error: 'User not found' });
+      return res.status(404).json({ error: "User not found" });
     }
 
     // Update the user's "about" field
@@ -178,13 +199,12 @@ router.put('/:userId/about', async (req, res) => {
     await User.save();
 
     // Respond with success message
-    res.json({ message: 'About section updated successfully' });
+    res.json({ message: "About section updated successfully" });
   } catch (error) {
-    console.error('Error updating about section:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    console.error("Error updating about section:", error);
+    res.status(500).json({ error: "Internal server error" });
   }
 });
-
 
 router.get("/", (req, res) => {
   console.log(req.body);
