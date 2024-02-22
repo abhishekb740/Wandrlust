@@ -6,7 +6,7 @@ import FeedIcon from '@mui/icons-material/Feed';
 
 export default function AdminSidebar() {
     return (
-        <Sidebar style={{ marginTop: "-15px" }} className='h-min-[90vh]'>
+        <Sidebar style={{ marginTop: "-15px", height: "90vh" }} className='h-min-[90vh]'>
             <Menu
                 // className='text-center'
                 rootStyles={{

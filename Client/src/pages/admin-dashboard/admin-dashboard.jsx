@@ -1,163 +1,30 @@
 import { Card, AreaChart, BarChart, DonutChart, Legend } from '@tremor/react';
 import AdminSidebar from "./sidebar";
 
-
-const postdata = [
-    {
-        date: 'Jan 22',
-        'Posts': 20,
-    },
-    {
-        date: 'Feb 22',
-        'Posts': 27,
-    },
-    {
-        date: 'Mar 22',
-        'Posts': 40,
-    },
-    {
-        date: 'Apr 22',
-        'Posts': 55,
-    },
-    {
-        date: 'May 22',
-        'Posts': 66,
-    },
-    {
-        date: 'Jun 22',
-        'Posts': 40,
-    },
-    {
-        date: 'Jul 22',
-        'Posts': 60,
-    },
-    {
-        date: 'Aug 22',
-        'Posts': 65,
-    },
-    {
-        date: 'Sep 22',
-        'Posts': 45,
-    },
-    {
-        date: 'Oct 22',
-        'Posts': 90,
-    },
-    {
-        date: 'Nov 22',
-        'Posts': 10,
-    },
-    {
-        date: 'Dec 22',
-        'Posts': 100,
-    },
-];
-
 const sales = [
     {
-        name: 'New York',
-        sales: 980,
+        name: 'Blocked Users',
+        number: 2,
     },
     {
-        name: 'London',
-        sales: 456,
-    },
-    {
-        name: 'Hong Kong',
-        sales: 390,
-    },
-    {
-        name: 'San Francisco',
-        sales: 240,
-    },
-    {
-        name: 'Singapore',
-        sales: 190,
-    },
-]
-
-const userdata = [
-    {
-        date: 'Jan 22',
-        Users: 10,
-    },
-    {
-        date: 'Feb 22',
-        Users: 12,
-    },
-    {
-        date: 'Mar 22',
-        Users: 13,
-    },
-    {
-        date: 'Apr 22',
-        Users: 20,
-    },
-    {
-        date: 'May 22',
-        Users: 40,
-    },
-    {
-        date: 'Jun 22',
-        Users: 50,
-    },
-    {
-        date: 'Jul 22',
-        Users: 52,
-    },
-    {
-        date: 'Aug 22',
-        Users: 100,
-    },
-    {
-        date: 'Sep 22',
-        Users: 102,
-    },
-    {
-        date: 'Oct 22',
-        Users: 115,
-    },
-    {
-        date: 'Nov 22',
-        Users: 116,
-    },
-    {
-        date: 'Dec 22',
-        Users: 120,
+        name: 'Activer Users',
+        number: 8,
     },
 ];
 
-const chartdata = [
+const posts = [
     {
-        name: 'Amphibians',
-        'Number of threatened species': 2488,
+        name: 'Deleted Posts',
+        number: 3,
     },
     {
-        name: 'Birds',
-        'Number of threatened species': 1445,
-    },
-    {
-        name: 'Crustaceans',
-        'Number of threatened species': 743,
-    },
-    {
-        name: 'Ferns',
-        'Number of threatened species': 281,
-    },
-    {
-        name: 'Arachnids',
-        'Number of threatened species': 251,
-    },
-    {
-        name: 'Corals',
-        'Number of threatened species': 232,
-    },
-    {
-        name: 'Algae',
-        'Number of threatened species': 98,
+        name: 'Activer Posts',
+        number: 8,
     },
 ];
 
+// const dataFormatter = (number: number) =>
+//     `$ ${Intl.NumberFormat('us').format(number).toString()}`;
 
 export default function AdminDashboard() {
     return (
@@ -187,28 +54,34 @@ export default function AdminDashboard() {
                     </Card>
                 </div>
 
-                <h3 className="mt-10 text-tremor-default text-tremor-content dark:text-dark-tremor-content">Total number of posts over time</h3>
-                <p className="text-tremor-metric text-tremor-content-strong dark:text-dark-tremor-content-strong font-semibold">50</p>
-                <AreaChart
-                    className="mt-4 h-72 pr-20"
-                    data={postdata}
-                    index="date"
-                    yAxisWidth={65}
-                    categories={['Posts']}
-                    colors={['red']}
-                />
-
-                <h3 className="mt-10 text-tremor-default text-tremor-content dark:text-dark-tremor-content">Total number of users over time</h3>
-                <p className="text-tremor-metric text-tremor-content-strong dark:text-dark-tremor-content-strong font-semibold">20</p>
-                <AreaChart
-                    className="mt-4 h-72 pr-20"
-                    data={userdata}
-                    index="date"
-                    yAxisWidth={65}
-                    categories={['Users']}
-                    colors={['yellow']}
-                />
-
+                <div className='mt-20 px-44 flex justify-around'>
+                    <div>
+                        <DonutChart
+                            data={sales}
+                            category="number"
+                            index="name"
+                            colors={['blue', 'yellow']}
+                            className="w-40"
+                        />
+                        <Legend
+                            categories={['Blocked Users', 'Active Users']}
+                            className="w-40 pt-5"
+                        />
+                    </div>
+                    <div>
+                        <DonutChart
+                            data={posts}
+                            category="number"
+                            index="name"
+                            colors={['yellow', 'red']}
+                            className="w-40"
+                        />
+                        <Legend
+                            categories={['Deleted Posts', 'Active Posts']}
+                            className="w-40 pt-5"
+                        />
+                    </div>
+                </div>
             </div>
         </div>
     )
