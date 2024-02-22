@@ -9,6 +9,7 @@ import { TextField } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import { extractUserIdFromToken } from "../utils/extractUserIdFromToken";
 import { toast } from "react-toastify";
+import CircularProgress from '@mui/material/CircularProgress';
 
 const Feeds = () => {
     const [feeds, setFeeds] = useState([]);
@@ -16,6 +17,8 @@ const Feeds = () => {
     const token = localStorage.getItem("token");
     const userId = extractUserIdFromToken(token);
     const [userDetails, setUserDetails] = useState({});
+    const [loadingFeeds, setLoadingFeeds] = useState(false);
+    const [loadingUsers, setLoadingUsers] = useState(false);
 
     useEffect(() => {
         const fetchUserDetails = async () => {
@@ -36,6 +39,7 @@ const Feeds = () => {
             fetchUserDetails();
         }
         const getFeeds = async () => {
+            setLoadingFeeds(true);
             try {
                 const res = await fetch("http://localhost:5000/getPhotos", {
                     method: "GET",
@@ -48,8 +52,10 @@ const Feeds = () => {
             } catch (error) {
                 console.error("Error fetching feeds:", error);
             }
+            setLoadingFeeds(false);
         };
         const getUsers = async () => {
+            setLoadingUsers(true);
             try {
                 const res = await fetch("http://localhost:5000/getAllUsers", {
                     method: "POST",
@@ -63,6 +69,7 @@ const Feeds = () => {
             } catch (error) {
                 console.error("Error fetching users:", error);
             }
+            setLoadingUsers(false);
         };
 
         getFeeds();
@@ -159,6 +166,7 @@ const Feeds = () => {
             {/* Feeds */}
             <div style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
                 <div style={{ display: "flex", flexDirection: "column", width: "100%", justifyContent: "center", alignItems: "center", gap: "2rem" }}>
+                    {loadingFeeds && <CircularProgress color="secondary" sx={{ color: '#f94566' }} />}
                     {feeds.map((feed, index) => (
                         <Cards key={index} feed={feed} updateLikeStatus={updateLikeStatus} />
                     ))}
@@ -169,6 +177,11 @@ const Feeds = () => {
                 <Card className="py-4" style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "95%", gap: "1rem" }}>
                     <TextField id="outlined-basic" label="Search User" variant="outlined" style={{ width: "95%" }} InputProps={{ endAdornment: <SearchIcon /> }} />
                     <CardHeader className="pb-0 pt-2 px-4 flex-col items-start" style={{ display: "flex", flexDirection: "column", gap: "0.9rem" }}>
+                        {loadingUsers &&
+                            <div className="flex justify-center w-full">
+                                <CircularProgress color="secondary" sx={{ color: '#f94566' }} />
+                            </div>
+                        }
                         {users.map((user, index) => (
                             user._id !== userId && (
                                 <div key={index} style={{ display: "flex", justifyContent: "space-between", width: "100%", }}>

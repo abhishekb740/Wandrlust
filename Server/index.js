@@ -23,7 +23,6 @@ if (!fs.existsSync(logsDir)) {
     fs.mkdirSync(logsDir);
 }
 
-// Morgan middleware for logging with timestamps
 const accessLogStream = fs.createWriteStream(path.join(__dirname, 'logs', 'access.log'), { flags: 'a' });
 app.use(morgan(':date[iso] :method :url :status :response-time ms', { stream: accessLogStream }));
 
