@@ -330,9 +330,27 @@ router.get("/getPhotos/:userId", async (req, res) => {
   }
 });
 
+router.delete("/deletePost/:postId", async (req, res) => {
+  const { postId } = req.params;
+
+  try {
+    // Find the post by ID and delete it from the database
+    await Post.findByIdAndDelete(postId);
+
+    // If deletion is successful, send a success response
+    res.status(200).json({ message: "Post deleted successfully" });
+  } catch (error) {
+    // If there's an error, send an error response
+    console.error("Error deleting post:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 
 router.get("/", (req, res) => {
   console.log(req.body);
 });
+
+
 
 module.exports = router;
