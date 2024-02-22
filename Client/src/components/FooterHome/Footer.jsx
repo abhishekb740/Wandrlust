@@ -1,7 +1,7 @@
 import './Footer.css';
 import { images, data } from '../../constants'
 import { BsFacebook, BsTwitter, BsLinkedin } from 'react-icons/bs'
-
+import { Link } from "react-router-dom";
 const Footer = () => {
     return (
         <footer className='mx-40'>

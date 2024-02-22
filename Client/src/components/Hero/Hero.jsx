@@ -1,7 +1,7 @@
 import HeroImage from "../../assets/images/hero.png";
 // import { IconScroll } from '../../components';
 import './Hero.css';
-
+import { Link } from "react-router-dom";
 import '../../App.css'
 
 const Hero = () => {
@@ -13,8 +13,8 @@ const Hero = () => {
                     <h1 className="title">  Navigating the globe, connecting hearts, and building bridges of shared experiences. </h1>
                     <p className="py-4">Embark on a shared expedition, connect with like-minded explorers, and weave the vibrant threads of your global adventures with Wandrlust - the ultimate travel companion.</p>
                     <div className="flex gap-4">
-                        <button className="btn-positivus">Sign Up</button>
-                        <button className="btn-positivus">Login</button>
+                    <Link to="/signup" className="btn-positivus">Sign-up</Link>
+                    <Link to="/signin" className="btn-positivus">Sign-in</Link>
                     </div>
                 </div>
                 <div className="">

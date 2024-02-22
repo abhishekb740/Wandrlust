@@ -18,6 +18,13 @@ const Signup = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      // Validate form fields
+      if (!validateForm()) {
+        return;
+      }
+
+      setLoading(true);
+
       const response = await fetch("http://localhost:5000/signup", {
         method: "POST",
         headers: {
@@ -25,7 +32,9 @@ const Signup = () => {
         },
         body: JSON.stringify(formData),
       });
-      console.log(response);
+
+      setLoading(false);
+
       if (response.ok) {
         setFormData({
           name: "",
@@ -53,6 +62,51 @@ const Signup = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const validateForm = () => {
+    // Simple form validation
+    if (
+      formData.name.trim() === "" ||
+      formData.email.trim() === "" ||
+      formData.phone.trim() === "" ||
+      formData.username.trim() === "" ||
+      formData.password.trim() === "" ||
+      formData.age.trim() === "" ||
+      formData.gender.trim() === ""
+    ) {
+      alert("Please fill in all fields");
+      return false;
+    }
+
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      alert("Please enter a valid email address");
+      return false;
+    }
+
+    // Phone number validation
+    const phoneRegex = /^\d{10}$/;
+    if (!phoneRegex.test(formData.phone)) {
+      alert("Please enter a valid 10-digit phone number");
+      return false;
+    }
+
+    // Password validation
+    if (formData.password.length < 6) {
+      alert("Password must be at least 6 characters long");
+      return false;
+    }
+
+    // Age validation
+    const age = parseInt(formData.age);
+    if (age <= 13) {
+      alert("You must be at least 14 years old to sign up");
+      return false;
+    }
+
+    return true;
+  };
+
   return (
     <div>
       <section className="bg-gray-50 bg-cover">
@@ -78,12 +132,13 @@ const Signup = () => {
                   </label>
                   <input
                     onChange={handleInputChange}
-                    type="name"
+                    type="text"
                     name="name"
                     id="name"
+                    value={formData.name}
                     className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-[#E02168] focus:border-[#E02168] block w-full p-2.5 dark:bg-gray-700  dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#E02168] dark:focus:border-[#E02168]"
                     placeholder="Your official name"
-                    required=""
+                    required
                   />
                 </div>
                 <div>
@@ -98,9 +153,10 @@ const Signup = () => {
                     type="email"
                     name="email"
                     id="email"
-                    className="bg-gray-50 border border-#E02168 text-gray-900 sm:text-sm rounded-lg focus:ring-[#E02168] focus:border-[#E02168] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#E02168] dark:focus:border-[#E02168]"
+                    value={formData.email}
+                    className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-[#E02168] focus:border-[#E02168] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#E02168] dark:focus:border-[#E02168]"
                     placeholder="example123@gmail.com"
-                    required=""
+                    required
                   />
                 </div>
 
@@ -109,16 +165,18 @@ const Signup = () => {
                     htmlFor="phone"
                     className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                   >
-                    Phonenumber
+                    Phone Number
                   </label>
                   <input
                     onChange={handleInputChange}
-                    type="phone"
+                    type="tel"
                     name="phone"
                     id="phone"
-                    className="bg-gray-50 border border-#E02168 text-gray-900 sm:text-sm rounded-lg focus:ring-[#E02168] focus:border-[#E02168] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#E02168] dark:focus:border-[#E02168]"
+                    value={formData.phone}
+                    className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-[#E02168] focus:border-[#E02168] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#E02168] dark:focus:border-[#E02168]"
                     placeholder="10-digit contact number"
-                    required=""
+                    pattern="[0-9]{10}"
+                    required
                   />
                 </div>
                 <div>
@@ -130,12 +188,13 @@ const Signup = () => {
                   </label>
                   <input
                     onChange={handleInputChange}
-                    type="username"
+                    type="text"
                     name="username"
                     id="username"
-                    className="bg-gray-50 border border-#E02168 text-gray-900 sm:text-sm rounded-lg focus:ring-[#E02168] focus:border-[#E02168] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#E02168] dark:focus:border-[#E02168]"
+                    value={formData.username}
+                    className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-[#E02168] focus:border-[#E02168] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#E02168] dark:focus:border-[#E02168]"
                     placeholder="Your username"
-                    required=""
+                    required
                   />
                 </div>
                 <div>
@@ -150,9 +209,10 @@ const Signup = () => {
                     type="password"
                     name="password"
                     id="password"
+                    value={formData.password}
                     placeholder="••••••••"
-                    className="bg-gray-50 border border-#E02168 text-gray-900 sm:text-sm rounded-lg focus:ring-[#E02168] focus:border-[#E02168] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#E02168] dark:focus:border-[#E02168]"
-                    required=""
+                    className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-[#E02168] focus:border-[#E02168] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#E02168] dark:focus:border-[#E02168]"
+                    required
                   />
                 </div>
                 <div>
@@ -164,12 +224,13 @@ const Signup = () => {
                   </label>
                   <input
                     onChange={handleInputChange}
-                    type="age"
+                    type="number"
                     name="age"
                     id="age"
-                    className="bg-gray-50 border border-#E02168 text-gray-900 sm:text-sm rounded-lg focus:ring-[#E02168] focus:border-[#E02168] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#E02168] dark:focus:border-[#E02168]"
+                    value={formData.age}
+                    className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-[#E02168] focus:border-[#E02168] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-[#E02168] dark:focus:border-[#E02168]"
                     placeholder="Your age"
-                    required=""
+                    required
                   />
                 </div>
                 <div>
