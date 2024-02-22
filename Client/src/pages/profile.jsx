@@ -152,7 +152,7 @@ export default function Profile() {
                     style={{ width: "150px", height: "150px", zIndex: "1" }} // Adjusted style
                   />
                   <div
-                    className="text-center ml-2 flex items-center cursor-pointer"
+                    className="text-center ml-2 flex items-center cursor-pointer w-full"
                     onClick={() => setModalIsOpen(true)}
                   >
                     {" "}
@@ -160,7 +160,7 @@ export default function Profile() {
                     <MDBBtn
                       outline
                       color="text"
-                      className="h-9 px-6 ring-2  ring-white bg-[#eb2168] hover:bg-[#d7004b] text-white w-44 mt-40"
+                      className="h-[4.2rem] px-6 ring-2  ring-white bg-[#eb2168] hover:bg-[#d7004b] text-white w-70 mt-40 z-10"
                     >
                       Edit profile
                     </MDBBtn>
