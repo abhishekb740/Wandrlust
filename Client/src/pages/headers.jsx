@@ -134,7 +134,7 @@ export default function Header() {
                         </Typography>
                     </Link>
                     <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center', gap: '4rem' }}>
-                        <Link to="/locations" >
+                        <Link to={count ? "/locations" : "/signup"}>
                             <Typography
                                 component="div"
                                 variant='body1'
@@ -143,7 +143,7 @@ export default function Header() {
                                 Locations
                             </Typography>
                         </Link>
-                        <Link to="/feeds" >
+                        <Link to={count ? "/feeds" : "/signup"} >
                             <Typography
                                 component="div"
                                 variant='body1'
@@ -152,7 +152,7 @@ export default function Header() {
                                 Feeds
                             </Typography>
                         </Link>
-                        <Link to="/flights">
+                        <Link to={count ? "/flights" : "/signup"}>
                             <Typography
                                 component="div"
                                 variant='body1'
@@ -161,7 +161,7 @@ export default function Header() {
                                 Flights
                             </Typography>
                         </Link>
-                        <Link to="/about-us">
+                        <Link to={count ? "/about-us" : "/signup"}>
                             <Typography
                                 component="div"
                                 variant='body1'
@@ -170,7 +170,7 @@ export default function Header() {
                                 About Us
                             </Typography>
                         </Link>
-                        <Link to="/contact-us">
+                        <Link to={"/contact-us"}>
                             <Typography
                                 component="div"
                                 variant='body1'

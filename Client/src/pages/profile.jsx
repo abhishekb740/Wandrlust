@@ -22,7 +22,7 @@ export default function Profile() {
   const [userDetails, setUserDetails] = useState({});
   const [editableAbout, setEditableAbout] = useState(false);
   const [aboutContent, setAboutContent] = useState({
-    description: "Web Developer\nLives in New York\nPhotographer",
+    description: "",
   });
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null); // New state to store the selected file

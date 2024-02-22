@@ -148,7 +148,6 @@ router.put("/follow/:userIdToFollow", async (req, res) => {
       return res.status(404).json({ error: "User not found" });
     }
 
-    // Check if already following
     const isFollowing = currentUser.following.includes(userIdToFollow);
 
     if (isFollowing) {
@@ -178,7 +177,6 @@ router.put("/unfollow/:userIdToUnfollow", async (req, res) => {
       return res.status(404).json({ error: "User not found" });
     }
 
-    // Check if not following
     const isNotFollowing = !currentUser.following.includes(userIdToUnfollow);
 
     if (isNotFollowing) {
@@ -207,7 +205,7 @@ router.put("/like/:postId", async (req, res) => {
         new: true,
       }
     );
-    res.json({ message: "Liked successfully" });
+    res.status(200).json({ message: "Liked successfully" });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Internal Server Error" });
@@ -226,7 +224,7 @@ router.put("/dislike/:postId", async (req, res) => {
         new: true,
       }
     );
-    res.json({ message: "Disliked successfully" });
+    res.status(200).json({ message: "Disliked successfully" });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Internal Server Error" });
