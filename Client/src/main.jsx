@@ -12,7 +12,6 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <Provider store={store}>
       <NextUIProvider>
         <App />
-        
       </NextUIProvider>
     </Provider>
   </BrowserRouter>

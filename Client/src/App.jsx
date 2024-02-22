@@ -16,21 +16,16 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Users from './pages/admin-dashboard/users.jsx';
 import Posts from './pages/admin-dashboard/posts.jsx';
+import { useEffect, useState } from 'react';
+import { extractUserIdFromToken } from './utils/extractUserIdFromToken.js';
+import Agency from './pages/agency.jsx';
+
 function App() {
-    // const submitHandler = async () => {
-    //   const response = await fetch('http://localhost:5000', {
-    //     method: 'POST',
-    //     headers: {
-    //       'Content-Type': 'application/json'
-    //     },
-    //     body: JSON.stringify({
-    //       name: 'Abhishek',
-    //       age: 20
-    //     })
-    //   })
-    //   console.log(await response.status);
-    //   console.log(await response.json());
-    // }
+    const [userId, setUserId] = useState(null);
+    useEffect(()=>{
+        const token = localStorage.getItem('token');
+        setUserId(extractUserIdFromToken(token));
+    }, [])
     return (
         <div>
             <Headers />
@@ -50,6 +45,7 @@ function App() {
                     <Route path='/dashboard/admin/' element={<AdminDashboard />} />
                     <Route path='/dashboard/admin/users' element={<Users />} />
                     <Route path='/dashboard/admin/posts' element={<Posts />} />
+                    <Route path='/agency' element={<Agency/>} />
                     {/* <Route path='/dashboard/admin' element={<AdminDashboard />} /> */}
                     {/* <Route path='/dashboard/agency' element={<AgencyDashboard/>} /> */}
                 </Routes>

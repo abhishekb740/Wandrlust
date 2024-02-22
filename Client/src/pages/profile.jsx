@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   MDBCol,
   MDBContainer,
@@ -10,7 +10,6 @@ import {
   MDBBtn,
   MDBTypography,
 } from "mdb-react-ui-kit";
-import { useEffect } from "react";
 import Modal from "react-modal";
 import { extractUserIdFromToken } from "../utils/extractUserIdFromToken";
 import { ToastContainer, toast } from "react-toastify";
@@ -26,31 +25,59 @@ export default function Profile() {
     description: "",
   });
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [userPosts, setUserPosts] = useState([]); 
 
   useEffect(() => {
     const token = localStorage.getItem("token");
     const userId = extractUserIdFromToken(token);
     const fetchUserDetails = async () => {
-      const res = await fetch(`http://localhost:5000/${userId}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      if (!res.ok) {
-        toast(`Error fetching user details`, { type: "error" });
+      try {
+        const res = await fetch(`http://localhost:5000/${userId}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        if (!res.ok) {
+          throw new Error("Error fetching user details");
+        }
+        const data = await res.json();
+        setUserDetails(data);
+        if (data.about) {
+          setAboutContent({ description: data.about });
+        }
+      } catch (error) {
+        console.error("Error:", error);
+        toast("Error fetching user details", { type: "error" });
       }
-      const data = await res.json();
-      setUserDetails(data);
-      if (data.about) {
-        setAboutContent({ description: data.about });
+    };
+    const fetchUserPosts = async () => {
+      try {
+        const res = await fetch(`http://localhost:5000/getPhotos/${userId}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        if (!res.ok) {
+          throw new Error("Error fetching user posts");
+        }
+        const data = await res.json();
+        setUserPosts(data);
+      } catch (error) {
+        console.error("Error:", error);
+        toast("Error fetching user posts", { type: "error" });
       }
     };
     if (userId) {
       fetchUserDetails();
+      fetchUserPosts(); // Fetch user's posts
     }
   }, []);
+  
 
   const handleAboutEdit = () => {
     setEditableAbout(true);
@@ -84,6 +111,26 @@ export default function Profile() {
     setAboutContent({ description: e.target.value });
   };
 
+  const handleFileChange = (e) => {
+    setSelectedFile(e.target.files[0]); 
+  };
+
+  const handleProfilePhotoSave = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const userId = extractUserIdFromToken(token);
+      const formData = new FormData();
+      formData.append("profileImage", selectedFile);
+      formData.append("userId", userId);
+      await axios.post(`http://localhost:5000/uploadProfilePhoto`, formData);
+      toast("Profile photo updated successfully", { type: "success" });
+      setModalIsOpen(false);
+    } catch (error) {
+      console.error("Error updating profile photo:", error);
+      toast("Error updating profile photo", { type: "error" });
+    }
+  };
+
   return (
     <div className="flex justify-center items-center min-h-screen">
       <MDBContainer className="py-5 px-11">
@@ -91,63 +138,58 @@ export default function Profile() {
           <MDBCol lg="9" xl="7">
             <MDBCard>
               <div
-                className="rounded-t-lg text-white flex"
-                style={{ backgroundColor: "#000", height: "200px" }}
+                className="rounded-t-lg text-white flex items-center" // Adjusted style
+                style={{ backgroundColor: "#000" }}
               >
                 <div
-                  className="ms-4 mt-5 px-3 pt-12 flex-col"
+                  className="ms-4 mt-5 flex items-center" // Adjusted style
                   style={{ width: "150px" }}
                 >
                   <MDBCardImage
-                    src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-profiles/avatar-1.webp"
-                    alt="Generic placeholder image"
-                    className="mt-4 mb-5 img-thumbnail"
-                    fluid
-                    style={{ width: "150px", height: "auto", zIndex: "1" }}
+                    src={`http://localhost:5000/profileImages/${userDetails.profileImage}`}
+                    alt="Profile"
+                    className=" mt-20 mb-5 img-thumbnail rounded-full pr-1" // Adjusted style
+                    style={{ width: "150px", height: "150px", zIndex: "1" }} // Adjusted style
                   />
-                  <MDBBtn
-                    outline
-                    color="text"
-                    className="h-9 px-6 ring-2 ring-black text-black w-full" // Fix width here
-                    onClick={() => setModalIsOpen(true)}
-                  >
-                    Edit profile
-                  </MDBBtn>
+                  <div className="text-center ml-2 flex items-center cursor-pointer"  onClick={() => setModalIsOpen(true)} > {/* Adjusted style */}
+                    <MDBBtn
+                      outline
+                      color="text"
+                      className="h-9 px-6 ring-2  ring-white text-white w-44 mt-40" 
+                    >
+                      Edit profile
+                    </MDBBtn>
+                  </div>
                 </div>
                 <div
                   className="ms-3 text-white flex-grow"
                   style={{ marginTop: "130px" }}
                 >
-                  <MDBTypography tag="h5" className=" text-xl">
+                  <MDBTypography tag="h5" className="text-xl">
                     {`${userDetails?.name}`}
                   </MDBTypography>
                   <MDBCardText className="mb-1 text-lg">
                     {`${userDetails?.email}`}
                   </MDBCardText>
-                </div>
-              </div>
-              <div
-                className="p-4 text-black"
-                style={{ backgroundColor: "#f8f9fa" }}
-              >
-                <div className="flex justify-end text-center py-1">
-                  <div>
-                    <MDBCardText className="mb-1 text-lg">253</MDBCardText>
-                    <MDBCardText className="text-sm text-muted mb-0">
-                      Posts
-                    </MDBCardText>
-                  </div>
-                  <div className="px-3">
-                    <MDBCardText className="mb-1 text-lg">{`${userDetails.followers?.length}`}</MDBCardText>
-                    <MDBCardText className="text-sm text-muted mb-0">
-                      Followers
-                    </MDBCardText>
-                  </div>
-                  <div>
-                    <MDBCardText className="mb-1 text-lg">{`${userDetails.following?.length}`}</MDBCardText>
-                    <MDBCardText className="text-sm text-muted mb-0">
-                      Following
-                    </MDBCardText>
+                  <div className="flex justify-end text-center py-1 mt-3 mr-3 mb-1">
+                    <div>
+                      <MDBCardText className="mb-1 text-lg text-white">253</MDBCardText>
+                      <MDBCardText className="text-sm text-muted text-white mb-0">
+                        Posts
+                      </MDBCardText>
+                    </div>
+                    <div className="px-3">
+                      <MDBCardText className="mb-1 text-lg text-white">{`${userDetails.followers?.length}`}</MDBCardText>
+                      <MDBCardText className="text-sm text-muted mb-0 text-white">
+                        Followers
+                      </MDBCardText>
+                    </div>
+                    <div>
+                      <MDBCardText className="mb-1 text-lg text-white">{`${userDetails.following?.length}`}</MDBCardText>
+                      <MDBCardText className="text-sm text-muted mb-0 text-white">
+                        Following
+                      </MDBCardText>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -193,13 +235,22 @@ export default function Profile() {
                   </MDBCardText>
                 </div>
                 {/* Recent photos section */}
+                {/* Recent photos section */}
+<div className="grid grid-cols-3 gap-4 mt-4">
+  {userPosts.map((post) => (
+    <div key={post._id}>
+      <img src={`http://localhost:5000/images/${post.image}`} alt="Post" />
+      <p>{post.caption}</p>
+    </div>
+  ))}
+</div>
+
               </MDBCardBody>
             </MDBCard>
           </MDBCol>
         </MDBRow>
       </MDBContainer>
 
-      {/* Modal */}
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={() => setModalIsOpen(false)}
@@ -220,11 +271,10 @@ export default function Profile() {
         }}
       >
         <h2 className="text-lg font-bold mb-4">Edit Profile</h2>
-        {/* Add inputs for adding photo and saving profile */}
-        <input type="file" className="mb-4" />
+        <input type="file" name="profileImage" className="mb-4" onChange={handleFileChange} />
         <button
           className="bg-[#eb2168] hover:bg-[#d7004b] text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-          onClick={() => setModalIsOpen(false)}
+          onClick={handleProfilePhotoSave}
         >
           Save
         </button>
