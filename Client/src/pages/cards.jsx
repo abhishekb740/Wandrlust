@@ -52,7 +52,10 @@ export default function Cards(props) {
         <Card className="py-4" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '550px' }}>
             <CardHeader className="pb-0 pt-2 px-4 flex-col items-start">
                 <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
-                    <p className="font-bold text-xl">{props.feed.author.name}</p>
+                    <div className="flex items-center gap-2">
+                        <img src={`http://localhost:5000/profileImages/${props.feed.author.profileImage}`} className="rounded-[50%]" height={50} width={50} ></img>
+                        <p className="font-bold text-xl">{props.feed.author.name}</p>
+                    </div>
                     <small className="text-default-500">{createdAtIST}</small>
                 </div>
                 <h4 className="font-bold text-large">{props.feed.caption}</h4>
@@ -76,7 +79,7 @@ export default function Cards(props) {
                 ) : (
                     <div onClick={() => likePost(props.feed._id)} className="flex items-center gap-1 cursor-pointer">
                         <div>{props.feed.likes.length}</div>
-                        <FavoriteIcon color="red" sx={{ color: 'black'}} />
+                        <FavoriteIcon color="red" sx={{ color: 'black' }} />
                     </div>
                 )}
 

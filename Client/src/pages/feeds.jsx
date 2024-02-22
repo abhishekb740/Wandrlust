@@ -146,7 +146,7 @@ const Feeds = () => {
                     <Link to="/profile">
                         <CardHeader className="pb-0 pt-2 px-4 flex-col items-start">
                             <div style={{ display: "flex", gap: "1rem" }}>
-                                <img src={ProfileImage} width="50px" height="50px" alt="profile" />
+                                <img src={`http://localhost:5000/profileImages/${userDetails.profileImage}`} width="50px" height="50px" alt="profile" />
                                 <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-evenly", width: "100%" }}>
                                     <p className="text-tiny uppercase font-bold" style={{ fontSize: "20px" }}>{userDetails.name}</p>
                                     <small className="text-default-500">{userDetails.email}</small>
@@ -186,7 +186,7 @@ const Feeds = () => {
                             user._id !== userId && (
                                 <div key={index} style={{ display: "flex", justifyContent: "space-between", width: "100%", }}>
                                     <div style={{ display: "flex", gap: "1rem" }}>
-                                        <img src={ProfileImage} alt="profile" width="40px" height="25px" />
+                                        <img src={`http://localhost:5000/profileImages/${user.profileImage}`} alt="profile" width="40px" height="25px" />
                                         <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-evenly", width: "100%" }}>
                                             <p className="text-tiny" style={{ fontSize: "18px" }}>{user.name}</p>
                                             <small className="text-default-500">{user.email}</small>

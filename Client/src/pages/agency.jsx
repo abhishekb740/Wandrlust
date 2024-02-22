@@ -25,6 +25,10 @@ const Agency = () => {
         getAllAgencies();
     }, [])
 
+    const handleEnroll = () =>{
+        
+    }
+
     return (
         <div className='flex flex-wrap justify-center'>
             {
@@ -54,6 +58,7 @@ const Agency = () => {
                                     <Link
                                         isExternal
                                         showAnchorIcon
+                                        onClick={handleEnroll}
                                     >
                                         <Button style={{ backgroundColor: '#f94566', color: 'white' }}>
                                             Enroll Now
