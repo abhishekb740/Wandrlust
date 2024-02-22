@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Cards from "./cards";
+import Cards from "./cards"; // Update import
 import { Link } from "react-router-dom";
 import { Button } from "@nextui-org/react";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
@@ -8,14 +8,17 @@ import ProfileImage from "../assets/images/profile.png";
 import { TextField } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import { extractUserIdFromToken } from "../utils/extractUserIdFromToken";
+import { toast } from "react-toastify";
+import CircularProgress from '@mui/material/CircularProgress';
 
 const Feeds = () => {
     const [feeds, setFeeds] = useState([]);
     const [users, setUsers] = useState([]);
-    const [following, setFollowing] = useState([]);
     const token = localStorage.getItem("token");
     const userId = extractUserIdFromToken(token);
     const [userDetails, setUserDetails] = useState({});
+    const [loadingFeeds, setLoadingFeeds] = useState(false);
+    const [loadingUsers, setLoadingUsers] = useState(false);
 
     useEffect(() => {
         const fetchUserDetails = async () => {
@@ -31,14 +34,12 @@ const Feeds = () => {
             }
             const data = await res.json();
             setUserDetails(data);
-            if (data.about) {
-                setAboutContent({ description: data.about });
-            }
         };
         if (userId) {
             fetchUserDetails();
         }
         const getFeeds = async () => {
+            setLoadingFeeds(true);
             try {
                 const res = await fetch("http://localhost:5000/getPhotos", {
                     method: "GET",
@@ -48,12 +49,13 @@ const Feeds = () => {
                 });
                 const data = await res.json();
                 setFeeds(data);
-                console.log(data);
             } catch (error) {
                 console.error("Error fetching feeds:", error);
             }
+            setLoadingFeeds(false);
         };
         const getUsers = async () => {
+            setLoadingUsers(true);
             try {
                 const res = await fetch("http://localhost:5000/getAllUsers", {
                     method: "POST",
@@ -67,11 +69,12 @@ const Feeds = () => {
             } catch (error) {
                 console.error("Error fetching users:", error);
             }
+            setLoadingUsers(false);
         };
 
         getFeeds();
         getUsers();
-    }, [userId]);
+    }, [userId, token]);
 
     const handleFollow = async (userIdToFollow) => {
         try {
@@ -79,11 +82,21 @@ const Feeds = () => {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
                 },
                 body: JSON.stringify({ followingId: userId }),
             });
-            const data = await res.json();
-            console.log(data);
+            if (res.ok) {
+                setUsers(prevUsers => {
+                    return prevUsers.map(user => {
+                        if (user._id === userIdToFollow) {
+                            return { ...user, followers: [...user.followers, userId] };
+                        }
+                        console.log(user);
+                        return user;
+                    });
+                });
+            }
         } catch (error) {
             console.error("Error following user:", error);
         }
@@ -95,14 +108,35 @@ const Feeds = () => {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
                 },
                 body: JSON.stringify({ followingId: userId }),
             });
-            const data = await res.json();
-            console.log(data);
+            if (res.ok) {
+                setUsers(prevUsers => {
+                    return prevUsers.map(user => {
+                        if (user._id === userIdToUnfollow) {
+                            const updatedFollowers = user.followers.filter(follower => follower !== userId);
+                            return { ...user, followers: updatedFollowers };
+                        }
+                        return user;
+                    });
+                });
+            }
         } catch (error) {
             console.error("Error unfollowing user:", error);
         }
+    };
+
+    const updateLikeStatus = (postId, liked) => {
+        setFeeds(prevFeeds => {
+            return prevFeeds.map(feed => {
+                if (feed._id === postId) {
+                    return { ...feed, likes: liked ? [...feed.likes, userId] : feed.likes.filter(id => id !== userId) };
+                }
+                return feed;
+            });
+        });
     };
 
     return (
@@ -132,8 +166,9 @@ const Feeds = () => {
             {/* Feeds */}
             <div style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
                 <div style={{ display: "flex", flexDirection: "column", width: "100%", justifyContent: "center", alignItems: "center", gap: "2rem" }}>
+                    {loadingFeeds && <CircularProgress color="secondary" sx={{ color: '#f94566' }} />}
                     {feeds.map((feed, index) => (
-                        <Cards key={index} feed={feed} />
+                        <Cards key={index} feed={feed} updateLikeStatus={updateLikeStatus} />
                     ))}
                 </div>
             </div>
@@ -142,6 +177,11 @@ const Feeds = () => {
                 <Card className="py-4" style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "95%", gap: "1rem" }}>
                     <TextField id="outlined-basic" label="Search User" variant="outlined" style={{ width: "95%" }} InputProps={{ endAdornment: <SearchIcon /> }} />
                     <CardHeader className="pb-0 pt-2 px-4 flex-col items-start" style={{ display: "flex", flexDirection: "column", gap: "0.9rem" }}>
+                        {loadingUsers &&
+                            <div className="flex justify-center w-full">
+                                <CircularProgress color="secondary" sx={{ color: '#f94566' }} />
+                            </div>
+                        }
                         {users.map((user, index) => (
                             user._id !== userId && (
                                 <div key={index} style={{ display: "flex", justifyContent: "space-between", width: "100%", }}>
