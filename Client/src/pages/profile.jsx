@@ -237,29 +237,26 @@ export default function Profile() {
                   </MDBCardText>
                 </div>
                 <div className="grid justify-center">
-                  <ScrollShadow hideScrollBar className="w-[500px] h-[500px]">
-                    {userPosts.map((post) => (
-                      <div
-                        key={post._id}
-                        className="max-w-sm border-3 border-black rounded-lg overflow-hidden m-4"
-                      >
-                        <img
-                          src={`http://localhost:5000/images/${post.image}`}
-                          alt="Post"
-                          className="w-full"
-                        />
-                        <div className="px-6 py-4">
-                          <p className="font-bold text-xl mb-2">
-                            {post.caption}
-                          </p>
-                          <p className="text-[#eb2168] text-base">
-                            {post.likes.length}{" "}
-                            {post.likes.length === 1 ? "Like" : "Likes"}
-                          </p>
-                        </div>
+                <ScrollShadow hideScrollBar className="w-[500px] h-[500px]">
+                  {userPosts.map((post) => (
+                    <div
+                      key={post._id}
+                      className="max-w-sm border-3 border-black rounded-lg overflow-hidden m-4"
+                    >
+                      <img
+                        src={`http://localhost:5000/images/${post.image}`}
+                        alt="Post"
+                        className="w-full"
+                      />
+                      <div className="px-6 py-4">
+                        <p className="font-bold text-xl mb-2">{post.caption}</p>
+                        <p className="text-[#eb2168] text-base">
+            {post.likes.length} {post.likes.length === 1 ? 'Like' : 'Likes'}
+          </p>
                       </div>
-                    ))}
-                  </ScrollShadow>
+                    </div>
+                  ))}
+                </ScrollShadow>
                 </div>
               </MDBCardBody>
             </MDBCard>
