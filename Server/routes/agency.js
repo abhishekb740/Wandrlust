@@ -24,7 +24,7 @@ const User  = require("../Models/user")
 //   }
 //   insertAgencyData()
 
-router.get('/getAgencys',async(req,res)=>{
+router.get('/getAllAgency',async(req,res)=>{
     try{
         const data = await Agency.find();
         return res.status(400).json({data})

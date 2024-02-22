@@ -131,6 +131,24 @@ export default function Profile() {
     }
   };
 
+  const handleDeletePost = async (postId) => {
+    try {
+      // Make a DELETE request to your backend API to delete the post
+      const response = await axios.delete(
+        `http://localhost:5000/deletePost/${postId}`
+      );
+
+      // If deletion is successful, update the userPosts state to remove the deleted post
+      setUserPosts(userPosts.filter((post) => post._id !== postId));
+
+      // Show a success toast message
+      toast.success(response.data.message);
+    } catch (error) {
+      // If there's an error, show an error toast message
+      toast.error("Error deleting post");
+    }
+  };
+
   return (
     <div className="flex justify-center items-center min-h-screen">
       <MDBContainer className="py-5 px-11">
@@ -152,7 +170,7 @@ export default function Profile() {
                     style={{ width: "150px", height: "150px", zIndex: "1" }} // Adjusted style
                   />
                   <div
-                    className="text-center ml-2 flex items-center cursor-pointer"
+                    className="text-center ml-4 flex items-center cursor-pointer w-full"
                     onClick={() => setModalIsOpen(true)}
                   >
                     {" "}
@@ -160,7 +178,7 @@ export default function Profile() {
                     <MDBBtn
                       outline
                       color="text"
-                      className="h-9 px-6 ring-2  ring-white bg-[#eb2168] hover:bg-[#d7004b] text-white w-44 mt-40"
+                      className="h-[4.2rem] px-6 ring-2  ring-white bg-[#eb2168] hover:bg-[#d7004b] text-white w-70 mt-40 z-10"
                     >
                       Edit profile
                     </MDBBtn>
@@ -173,26 +191,30 @@ export default function Profile() {
                   <MDBTypography tag="h5" className="text-xl">
                     {`${userDetails?.name}`}
                   </MDBTypography>
-                  <MDBCardText className="mb-1 text-lg">
+                  <MDBCardText className="mb-10 text-lg ">
                     {`${userDetails?.email}`}
                   </MDBCardText>
                   <div className="flex justify-end text-center py-1 mt-3 mr-3 mb-1">
                     <div>
-                      <MDBCardText className="mb-1 text-lg text-white">{`${userPosts.length}`}</MDBCardText>
-                      <MDBCardText className="text-sm text-muted text-white mb-0 font-semibold">
-                        Posts
+                      <MDBCardText className="mb-1 text-lg text-white">
+                        {userPosts.length}{" "}
+                        {userPosts.length !== 1 ? "Posts" : "Post"}
                       </MDBCardText>
                     </div>
                     <div className="px-3">
-                      <MDBCardText className="mb-1 text-lg text-white">{`${userDetails.followers?.length}`}</MDBCardText>
-                      <MDBCardText className="text-sm text-muted mb-0 text-white font-semibold">
-                        Followers
+                      <MDBCardText className="mb-1 text-lg text-white">
+                        {userDetails.followers?.length}{" "}
+                        {userDetails.followers?.length !== 1
+                          ? "Followers"
+                          : "Follower"}
                       </MDBCardText>
                     </div>
                     <div>
-                      <MDBCardText className="mb-1 text-lg text-white">{`${userDetails.following?.length}`}</MDBCardText>
-                      <MDBCardText className="text-sm text-muted mb-0 text-white font-semibold">
-                        Following
+                      <MDBCardText className="mb-1 text-lg text-white">
+                        {userDetails.following?.length}{" "}
+                        {userDetails.following?.length !== 1
+                          ? "Following"
+                          : "Following"}
                       </MDBCardText>
                     </div>
                   </div>
@@ -238,27 +260,42 @@ export default function Profile() {
                 </div>
                 <div className="grid justify-center">
                   <ScrollShadow hideScrollBar className="w-[500px] h-[500px]">
-                    {userPosts.map((post) => (
-                      <div
-                        key={post._id}
-                        className="max-w-sm border-3 border-black rounded-lg overflow-hidden m-4"
-                      >
-                        <img
-                          src={`http://localhost:5000/images/${post.image}`}
-                          alt="Post"
-                          className="w-full"
-                        />
-                        <div className="px-6 py-4">
-                          <p className="font-bold text-xl mb-2">
-                            {post.caption}
-                          </p>
-                          <p className="text-[#eb2168] text-base">
-                            {post.likes.length}{" "}
-                            {post.likes.length === 1 ? "Like" : "Likes"}
-                          </p>
-                        </div>
+                    {userPosts.length === 0 ? (
+                      <div className="text-center">
+                        <p className="text-lg font-semibold mb-2 text-[#eb2168]">
+                          Why not travelling, start travelling and sharing with
+                          Wandrlust!
+                        </p>
                       </div>
-                    ))}
+                    ) : (
+                      userPosts.map((post) => (
+                        <div
+                          key={post._id}
+                          className="max-w-sm border-3 border-black rounded-lg relative overflow-hidden m-4"
+                        >
+                          <img
+                            src={`http://localhost:5000/images/${post.image}`}
+                            alt="Post"
+                            className="w-full"
+                          />
+                          <div className="px-6 py-4">
+                            <p className="font-bold text-xl mb-2">
+                              {post.caption}
+                            </p>
+                            <p className="text-[#eb2168] text-base">
+                              {post.likes.length}{" "}
+                              {post.likes.length === 1 ? "Like" : "Likes"}
+                            </p>
+                            <button
+                              className="absolute bottom-0 right-0 m-2 bg-red-500 text-white py-1 px-3 rounded-md"
+                              onClick={() => handleDeletePost(post._id)} // Assuming there's a function handleDeletePost to handle post deletion
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        </div>
+                      ))
+                    )}
                   </ScrollShadow>
                 </div>
               </MDBCardBody>
