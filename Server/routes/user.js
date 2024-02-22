@@ -232,7 +232,8 @@ router.put("/dislike/:postId", async (req, res) => {
 });
 
 router.get("/getPhotos", async (req, res) => {
-  const images = await ImageModel.find().populate("author");
+  let images = await ImageModel.find().populate("author");
+  images = images.reverse();
   res.send(images);
 });
 
