@@ -15,6 +15,7 @@ import { extractUserIdFromToken } from "../utils/extractUserIdFromToken";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
+import { ScrollShadow } from "@nextui-org/react";
 
 Modal.setAppElement("#root");
 
@@ -26,7 +27,7 @@ export default function Profile() {
   });
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
-  const [userPosts, setUserPosts] = useState([]); 
+  const [userPosts, setUserPosts] = useState([]);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -77,7 +78,6 @@ export default function Profile() {
       fetchUserPosts(); // Fetch user's posts
     }
   }, []);
-  
 
   const handleAboutEdit = () => {
     setEditableAbout(true);
@@ -112,7 +112,7 @@ export default function Profile() {
   };
 
   const handleFileChange = (e) => {
-    setSelectedFile(e.target.files[0]); 
+    setSelectedFile(e.target.files[0]);
   };
 
   const handleProfilePhotoSave = async () => {
@@ -151,11 +151,16 @@ export default function Profile() {
                     className=" mt-20 mb-5 img-thumbnail rounded-full pr-1" // Adjusted style
                     style={{ width: "150px", height: "150px", zIndex: "1" }} // Adjusted style
                   />
-                  <div className="text-center ml-2 flex items-center cursor-pointer"  onClick={() => setModalIsOpen(true)} > {/* Adjusted style */}
+                  <div
+                    className="text-center ml-2 flex items-center cursor-pointer"
+                    onClick={() => setModalIsOpen(true)}
+                  >
+                    {" "}
+                    {/* Adjusted style */}
                     <MDBBtn
                       outline
                       color="text"
-                      className="h-9 px-6 ring-2  ring-white text-white w-44 mt-40" 
+                      className="h-9 px-6 ring-2  ring-white bg-[#eb2168] hover:bg-[#d7004b] text-white w-44 mt-40"
                     >
                       Edit profile
                     </MDBBtn>
@@ -173,20 +178,20 @@ export default function Profile() {
                   </MDBCardText>
                   <div className="flex justify-end text-center py-1 mt-3 mr-3 mb-1">
                     <div>
-                      <MDBCardText className="mb-1 text-lg text-white">253</MDBCardText>
-                      <MDBCardText className="text-sm text-muted text-white mb-0">
+                      <MDBCardText className="mb-1 text-lg text-white">{`${userPosts.length}`}</MDBCardText>
+                      <MDBCardText className="text-sm text-muted text-white mb-0 font-semibold">
                         Posts
                       </MDBCardText>
                     </div>
                     <div className="px-3">
                       <MDBCardText className="mb-1 text-lg text-white">{`${userDetails.followers?.length}`}</MDBCardText>
-                      <MDBCardText className="text-sm text-muted mb-0 text-white">
+                      <MDBCardText className="text-sm text-muted mb-0 text-white font-semibold">
                         Followers
                       </MDBCardText>
                     </div>
                     <div>
                       <MDBCardText className="mb-1 text-lg text-white">{`${userDetails.following?.length}`}</MDBCardText>
-                      <MDBCardText className="text-sm text-muted mb-0 text-white">
+                      <MDBCardText className="text-sm text-muted mb-0 text-white font-semibold">
                         Following
                       </MDBCardText>
                     </div>
@@ -195,7 +200,7 @@ export default function Profile() {
               </div>
               <MDBCardBody className="text-black p-4">
                 <div className="mb-5">
-                  <p className="lead font-normal mb-1">About</p>
+                  <p className="lead font-bold mb-1">About</p>
                   {editableAbout ? (
                     <textarea
                       className="mt-2 px-4 py-2 w-full bg-gray-100 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
@@ -227,24 +232,35 @@ export default function Profile() {
                   )}
                 </div>
                 <div className="flex justify-between items-center mb-4">
-                  <MDBCardText className="lead font-normal mb-0">
-                    Recent photos
-                  </MDBCardText>
-                  <MDBCardText className="mb-0">
-                    <a className="text-muted">Show all</a>
+                  <MDBCardText className="lead font-bold mb-0">
+                    Your Posts
                   </MDBCardText>
                 </div>
-                {/* Recent photos section */}
-                {/* Recent photos section */}
-<div className="grid grid-cols-3 gap-4 mt-4">
-  {userPosts.map((post) => (
-    <div key={post._id}>
-      <img src={`http://localhost:5000/images/${post.image}`} alt="Post" />
-      <p>{post.caption}</p>
-    </div>
-  ))}
-</div>
-
+                <div className="grid justify-center">
+                  <ScrollShadow hideScrollBar className="w-[500px] h-[500px]">
+                    {userPosts.map((post) => (
+                      <div
+                        key={post._id}
+                        className="max-w-sm border-3 border-black rounded-lg overflow-hidden m-4"
+                      >
+                        <img
+                          src={`http://localhost:5000/images/${post.image}`}
+                          alt="Post"
+                          className="w-full"
+                        />
+                        <div className="px-6 py-4">
+                          <p className="font-bold text-xl mb-2">
+                            {post.caption}
+                          </p>
+                          <p className="text-[#eb2168] text-base">
+                            {post.likes.length}{" "}
+                            {post.likes.length === 1 ? "Like" : "Likes"}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </ScrollShadow>
+                </div>
               </MDBCardBody>
             </MDBCard>
           </MDBCol>
@@ -271,7 +287,12 @@ export default function Profile() {
         }}
       >
         <h2 className="text-lg font-bold mb-4">Edit Profile</h2>
-        <input type="file" name="profileImage" className="mb-4" onChange={handleFileChange} />
+        <input
+          type="file"
+          name="profileImage"
+          className="mb-4"
+          onChange={handleFileChange}
+        />
         <button
           className="bg-[#eb2168] hover:bg-[#d7004b] text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
           onClick={handleProfilePhotoSave}
