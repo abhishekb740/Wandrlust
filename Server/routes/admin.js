@@ -3,6 +3,7 @@ const router = Router();
 const Admin = require('../Models/admin')
 const User = require("../Models/user")
 const Image = require("../Models/images")
+const Agency = require("../Models/agency")
 
 const adminId = "" // admin 
 router.post("/delete-post/:postId", async (req, res) => {
@@ -51,5 +52,26 @@ router.post("/block-user/:userId", async (req, res) => {
         return res.status(500).json({ error: "Internal server error" });
     }
 });
+
+router.get("/dashboard", async (req, res) => {
+    try {
+      const totalUsers = await User.countDocuments();
+      const totalBlockedUsers = await User.countDocuments({ blocked: true });
+      const totalPosts = await Image.countDocuments();
+      const totalDeletedPosts = await Admin.findOne({}).select("postsDeleted").then(admin => admin.postsDeleted.length);
+      const totalAgencies = await Agency.countDocuments();
+  
+      return res.status(200).json({
+        totalUsers,
+        totalBlockedUsers,
+        totalPosts,
+        totalDeletedPosts,
+        totalAgencies,
+      });
+    } catch (error) {
+      console.error("Error fetching admin dashboard data:", error);
+      return res.status(500).json({ error: "Internal server error" });
+    }
+  });
 
 module.exports = router;
