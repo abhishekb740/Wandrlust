@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   MDBCol,
   MDBContainer,
@@ -10,7 +10,6 @@ import {
   MDBBtn,
   MDBTypography,
 } from "mdb-react-ui-kit";
-import { useEffect } from "react";
 import Modal from "react-modal";
 import { extractUserIdFromToken } from "../utils/extractUserIdFromToken";
 import { ToastContainer, toast } from "react-toastify";
@@ -26,6 +25,7 @@ export default function Profile() {
     description: "Web Developer\nLives in New York\nPhotographer",
   });
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null); // New state to store the selected file
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -84,6 +84,26 @@ export default function Profile() {
     setAboutContent({ description: e.target.value });
   };
 
+  const handleFileChange = (e) => {
+    setSelectedFile(e.target.files[0]); // Store the selected file in state
+  };
+
+  const handleProfilePhotoSave = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const userId = extractUserIdFromToken(token);
+      const formData = new FormData();
+      formData.append("profileImage", selectedFile);
+      formData.append("userId", userId);
+      await axios.post(`http://localhost:5000/uploadProfilePhoto`, formData);
+      toast("Profile photo updated successfully", { type: "success" });
+      setModalIsOpen(false);
+    } catch (error) {
+      console.error("Error updating profile photo:", error);
+      toast("Error updating profile photo", { type: "error" });
+    }
+  };
+
   return (
     <div className="flex justify-center items-center min-h-screen">
       <MDBContainer className="py-5 px-11">
@@ -99,7 +119,7 @@ export default function Profile() {
                   style={{ width: "150px" }}
                 >
                   <MDBCardImage
-                    src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-profiles/avatar-1.webp"
+                    src={`http://localhost:5000/profileImages/${userDetails.profileImage}`} // Use userDetails.profilePhoto to display the profile photo
                     alt="Generic placeholder image"
                     className="mt-4 mb-5 img-thumbnail"
                     fluid
@@ -108,7 +128,7 @@ export default function Profile() {
                   <MDBBtn
                     outline
                     color="text"
-                    className="h-9 px-6 ring-2 ring-black text-black w-full" // Fix width here
+                    className="h-9 px-6 ring-2 ring-black text-black w-full"
                     onClick={() => setModalIsOpen(true)}
                   >
                     Edit profile
@@ -124,31 +144,6 @@ export default function Profile() {
                   <MDBCardText className="mb-1 text-lg">
                     {`${userDetails?.email}`}
                   </MDBCardText>
-                </div>
-              </div>
-              <div
-                className="p-4 text-black"
-                style={{ backgroundColor: "#f8f9fa" }}
-              >
-                <div className="flex justify-end text-center py-1">
-                  <div>
-                    <MDBCardText className="mb-1 text-lg">253</MDBCardText>
-                    <MDBCardText className="text-sm text-muted mb-0">
-                      Posts
-                    </MDBCardText>
-                  </div>
-                  <div className="px-3">
-                    <MDBCardText className="mb-1 text-lg">{`${userDetails.followers?.length}`}</MDBCardText>
-                    <MDBCardText className="text-sm text-muted mb-0">
-                      Followers
-                    </MDBCardText>
-                  </div>
-                  <div>
-                    <MDBCardText className="mb-1 text-lg">{`${userDetails.following?.length}`}</MDBCardText>
-                    <MDBCardText className="text-sm text-muted mb-0">
-                      Following
-                    </MDBCardText>
-                  </div>
                 </div>
               </div>
               <MDBCardBody className="text-black p-4">
@@ -199,7 +194,6 @@ export default function Profile() {
         </MDBRow>
       </MDBContainer>
 
-      {/* Modal */}
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={() => setModalIsOpen(false)}
@@ -220,11 +214,11 @@ export default function Profile() {
         }}
       >
         <h2 className="text-lg font-bold mb-4">Edit Profile</h2>
-        {/* Add inputs for adding photo and saving profile */}
-        <input type="file" className="mb-4" />
+        {/* Add input for selecting a new profile photo */}
+        <input type="file" name="profileImage" className="mb-4" onChange={handleFileChange} />
         <button
           className="bg-[#eb2168] hover:bg-[#d7004b] text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-          onClick={() => setModalIsOpen(false)}
+          onClick={handleProfilePhotoSave}
         >
           Save
         </button>

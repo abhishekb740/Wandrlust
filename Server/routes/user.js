@@ -41,6 +41,50 @@ router.post(
   }
 );
 
+const fileStorageEngine2 = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "./profileImages");
+  },
+  filename: (req, file, cb) => {
+    cb(false, Date.now() + "--" + file.originalname);
+  },
+});
+
+const upload2 = multer({ storage: fileStorageEngine2});
+
+router.post(
+  '/uploadProfilePhoto',
+  upload2.single('profileImage'),
+  async (req, res, next) => {
+    console.log(req.file);
+    try {
+      const userId = req.body.userId;
+      console.log(userId);
+      const profileImage = req.file.filename;
+      console.log(profileImage);
+
+      // Find the user by ID
+      const User = await user.findById(userId);
+
+      if (!User) {
+        return res.status(404).json({ error: 'User not found' });
+      }
+
+      // Update the user's profileImage field
+      User.profileImage = profileImage;
+
+      // Save the updated user document
+      await User.save();
+
+      res.json({ message: 'Profile photo updated successfully' });
+    } catch (error) {
+      console.error('Error updating profile photo:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  }
+);
+
+
 router.post("/signup", async (req, res) => {
   log(req.body);
   try {
