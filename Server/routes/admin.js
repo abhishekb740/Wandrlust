@@ -2,6 +2,7 @@ const { Router } = require("express");
 const router = Router();
 const Admin = require('../Models/admin')
 const User = require("../Models/user")
+const Image = require("../Models/images")
 
 const adminId = "" // admin 
 router.post("/delete-post/:postId", async (req, res) => {
@@ -12,6 +13,7 @@ router.post("/delete-post/:postId", async (req, res) => {
         if (admin) {
             admin.postsDeleted.push(postId);
             await admin.save();
+            const post = await Image.findByIdAndDelete(postId);
             return res.status(200).json({ message: "Post deleted successfully" });
         } else {
             return res.status(400).json({ message: "Admin not found" })
