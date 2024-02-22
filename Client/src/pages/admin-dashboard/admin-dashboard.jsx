@@ -1,6 +1,7 @@
 import { Card, AreaChart, BarChart, DonutChart, Legend } from '@tremor/react';
 import AdminSidebar from "./sidebar";
 
+
 const postdata = [
     {
         date: 'Jan 22',
