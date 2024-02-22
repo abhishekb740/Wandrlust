@@ -12,6 +12,7 @@ import Post from './pages/post.jsx';
 import Signup from './pages/signup.jsx';
 import Signin from './pages/signin.jsx';
 import AdminDashboard from './pages/admin-dashboard/admin-dashboard.jsx';
+import AgencyDashboard from "./pages/agency-dashboard/agency-dashboard.jsx";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Users from './pages/admin-dashboard/users.jsx';
@@ -19,10 +20,11 @@ import Posts from './pages/admin-dashboard/posts.jsx';
 import { useEffect, useState } from 'react';
 import { extractUserIdFromToken } from './utils/extractUserIdFromToken.js';
 import Agency from './pages/agency.jsx';
+import Programs from "./pages/agency-dashboard/programs.jsx";
 
 function App() {
     const [userId, setUserId] = useState(null);
-    useEffect(()=>{
+    useEffect(() => {
         const token = localStorage.getItem('token');
         setUserId(extractUserIdFromToken(token));
     }, [])
@@ -45,9 +47,9 @@ function App() {
                     <Route path='/dashboard/admin/' element={<AdminDashboard />} />
                     <Route path='/dashboard/admin/users' element={<Users />} />
                     <Route path='/dashboard/admin/posts' element={<Posts />} />
-                    <Route path='/agency' element={<Agency/>} />
-                    {/* <Route path='/dashboard/admin' element={<AdminDashboard />} /> */}
-                    {/* <Route path='/dashboard/agency' element={<AgencyDashboard/>} /> */}
+                    <Route path='/agency' element={<Agency />} />
+                    <Route path='/dashboard/agency' element={<AgencyDashboard />} />
+                    <Route path='/dashboard/agency/programs' element={<Programs />} />
                 </Routes>
             </ScrollToTop>
             <ToastContainer />
