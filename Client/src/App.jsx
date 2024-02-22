@@ -20,6 +20,7 @@ import Posts from './pages/admin-dashboard/posts.jsx';
 import { useEffect, useState } from 'react';
 import { extractUserIdFromToken } from './utils/extractUserIdFromToken.js';
 import Agency from './pages/agency.jsx';
+import AgencyUpload from "./pages/AgencyForm.jsx";
 import Programs from "./pages/agency-dashboard/programs.jsx";
 
 function App() {
@@ -48,6 +49,7 @@ function App() {
                     <Route path='/dashboard/admin/users' element={<Users />} />
                     <Route path='/dashboard/admin/posts' element={<Posts />} />
                     <Route path='/agency' element={<Agency />} />
+                    <Route path='/agencyForm' element={<AgencyUpload/>}/>
                     <Route path='/dashboard/agency' element={<AgencyDashboard />} />
                     <Route path='/dashboard/agency/programs' element={<Programs />} />
                 </Routes>
