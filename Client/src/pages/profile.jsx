@@ -16,6 +16,8 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import { ScrollShadow } from "@nextui-org/react";
+import Button from "@mui/material/Button";
+import { Link } from "react-router-dom";
 
 Modal.setAppElement("#root");
 
@@ -148,6 +150,11 @@ export default function Profile() {
       toast.error("Error deleting post");
     }
   };
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    window.location.href = "/signup";
+  }
 
   return (
     <div className="flex justify-center items-center min-h-screen">
@@ -297,6 +304,7 @@ export default function Profile() {
                       ))
                     )}
                   </ScrollShadow>
+                  <Button style={{ paddingTop: '1rem', paddingRight: '4rem' }} onClick={handleLogout} >Logout</Button>
                 </div>
               </MDBCardBody>
             </MDBCard>

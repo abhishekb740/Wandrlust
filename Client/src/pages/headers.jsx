@@ -134,7 +134,7 @@ export default function Header() {
                         </Typography>
                     </Link>
                     <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center', gap: '4rem' }}>
-                        <Link to={count ? "/locations" : "/signup"}>
+                        {/* <Link to={count ? "/locations" : "/signup"}>
                             <Typography
                                 component="div"
                                 variant='body1'
@@ -142,7 +142,7 @@ export default function Header() {
                             >
                                 Locations
                             </Typography>
-                        </Link>
+                        </Link> */}
                         <Link to={count ? "/feeds" : "/signup"} >
                             <Typography
                                 component="div"
@@ -177,6 +177,15 @@ export default function Header() {
                                 fontWeight={500}
                             >
                                 Contact Us
+                            </Typography>
+                        </Link>
+                        <Link to={count ? "/agencyForm" : "/signup"}>
+                            <Typography
+                                component="div"
+                                variant='body1'
+                                fontWeight={500}
+                            >
+                                Create Agency
                             </Typography>
                         </Link>
                         <Link to={count ? "/agency" : "/signup"}>

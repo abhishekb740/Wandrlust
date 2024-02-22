@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
-import "./AgencyUpload.css";  
-import {useNavigate} from "react-router-dom"
+import "./AgencyUpload.css";
+import { useNavigate } from "react-router-dom"
 
 const AgencyUpload = () => {
   const [formData, setFormData] = useState({
@@ -21,7 +21,7 @@ const AgencyUpload = () => {
     e.preventDefault();
     console.log(formData)
     try {
-      
+
       const response = await fetch("http://localhost:5000/agency/agenciesUpload", {
         method: "POST",
         headers: {
@@ -69,8 +69,7 @@ const AgencyUpload = () => {
             onChange={handleChange}
             required
           />
-
-          <button type="submit">Add Agency</button>
+          <button style={{backgroundColor: '#f94566'}} type="submit">Add Agency</button>
         </form>
       </div>
     </div>
