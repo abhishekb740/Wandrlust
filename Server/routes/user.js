@@ -163,7 +163,7 @@ router.put("/like/:postId", async (req, res) => {
         new: true,
       }
     );
-    res.json({ message: "Liked successfully" });
+    res.status(200).json({ message: "Liked successfully" });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Internal Server Error" });
@@ -182,7 +182,7 @@ router.put("/dislike/:postId", async (req, res) => {
         new: true,
       }
     );
-    res.json({ message: "Disliked successfully" });
+    res.status(200).json({ message: "Disliked successfully" });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Internal Server Error" });
