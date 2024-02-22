@@ -71,4 +71,23 @@ router.post("/enroll/:agencyId", async (req, res) => {
       res.status(500).json({ error: "Internal Server Error" });
     }
   });
+  router.post("/agenciesUpload", async (req, res) => {
+    try {
+      const { name, destination, description } = req.body;
+      console.log(name +" " +destination)
+  
+      const newAgency = new Agency({
+        name,
+        destination,
+        description,
+      });
+  
+      const savedAgency = await newAgency.save();
+  
+      res.status(201).json(savedAgency);
+    } catch (error) {
+      console.error("Error adding agency:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
 module.exports = router;
