@@ -1,15 +1,17 @@
 const { Router } = require("express");
 const router = Router();
 const Agency = require("../Models/agency")
-
+const User  = require("../Models/user")
 // async function insertAgencyData() {
 //     try {
 //         const agencyData = {
-//             name: "Srinagar Adventure",
-//               destination: "Srinagar, Kashmir",
-//               enrolledUsers: [],
-//               description: "Experience the breathtaking beauty of Srinagar and its serene landscapes.",
+//             name: "Mystic Travels",
+//             destination: "Marrakech, Morocco",
+//             enrolledUsers: [],
+//             description: "Immerse yourself in the rich history, vibrant markets, and exotic flavors of Marrakech.",
 //           };
+          
+          
   
 //       const agency = new Agency(agencyData);
   
@@ -31,4 +33,42 @@ router.get('/getAgencys',async(req,res)=>{
         return res.status(500).json({message : "Internel Server error"})
     }
 })
+
+router.post("/enroll/:agencyId", async (req, res) => {
+    // console.lor("test");
+    const agencyId = req.params.agencyId;
+    try {
+      await Agency.findByIdAndUpdate(
+        agencyId,
+        {
+          $push: { enrolledUsers: req.body.userId },
+        },
+        {
+          new: true,
+        }
+      );
+      res.status(200).json({ message: "enrolled successfully" });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  });
+  router.put("/unenroll/:agencyId", async (req, res) => {
+    const agencyId = req.params.agencyId;
+    try {
+      await Agency.findByIdAndUpdate(
+        agencyId,
+        {
+          $pull: { enrolledUsers: req.body.userId },
+        },
+        {
+          new: true,
+        }
+      );
+      res.status(200).json({ message: "unenrolled successfully" });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  });
 module.exports = router;
