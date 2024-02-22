@@ -266,27 +266,59 @@ router.put("/:userId/about", async (req, res) => {
   const { about } = req.body;
 
   try {
-    // Find the user by ID
     const User = await user.findById(userId);
 
     if (!User) {
       return res.status(404).json({ error: "User not found" });
     }
 
-    // Update the user's "about" field
     User.about = about;
 
-    // Save the updated user document
     await User.save();
 
-    // Respond with success message
     res.json({ message: "About section updated successfully" });
   } catch (error) {
     console.error("Error updating about section:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 });
+router.post("/userDetails", async (req, res) => {
+  const userId = req.body.userId;
 
+  try {
+    const User = await user.findById(userId);
+
+    if (!User) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    const totalLikes = await Post.aggregate([
+      { $match: { author: userId } },
+      { $project: { _id: 0, likes: 1 } },
+      { $unwind: "$likes" },
+      { $group: { _id: null, totalLikes: { $sum: 1 } } },
+    ]);
+
+    const totalPosts = await Post.countDocuments({ author: userId });
+
+    const totalFollowers = User.followers.length;
+    const totalFollowing = User.following.length;
+
+    const userDetails = {
+      userId: User._id,
+      name: User.name,
+      totalLikes: totalLikes.length > 0 ? totalLikes[0].totalLikes : 0,
+      totalPosts: totalPosts,
+      totalFollowers: totalFollowers,
+      totalFollowing: totalFollowing,
+    };
+
+    return res.status(200).json({ userDetails });
+  } catch (error) {
+    console.log("Error in get user details API ", error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
 router.get("/getPhotos/:userId", async (req, res) => {
   const { userId } = req.params;
   try {
