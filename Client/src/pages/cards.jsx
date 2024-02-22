@@ -2,7 +2,7 @@ import React from "react";
 import { Card, CardHeader, CardBody, Image } from "@nextui-org/react";
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import { extractUserIdFromToken } from "../utils/extractUserIdFromToken";
-
+import ProfileImage from "../assets/images/profile.png"
 export default function Cards(props) {
     const token = localStorage.getItem("token");
     const userId = extractUserIdFromToken(token);
@@ -53,7 +53,7 @@ export default function Cards(props) {
             <CardHeader className="pb-0 pt-2 px-4 flex-col items-start">
                 <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
                     <div className="flex items-center gap-2">
-                        <img src={`http://localhost:5000/profileImages/${props.feed.author.profileImage}`} className="rounded-[50%]" height={50} width={50} ></img>
+                        <img src={props.feed.author.profileImage ? `http://localhost:5000/profileImages/${props.feed.author.profileImage}` : ProfileImage} height={50} width={50} ></img>
                         <p className="font-bold text-xl">{props.feed.author.name}</p>
                     </div>
                     <small className="text-default-500">{createdAtIST}</small>

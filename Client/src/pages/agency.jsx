@@ -3,6 +3,7 @@ import { extractUserIdFromToken } from '../utils/extractUserIdFromToken';
 import { useEffect, useState } from 'react';
 import { Card, CardHeader, CardBody, CardFooter, Divider, Link, Image } from "@nextui-org/react";
 import { Button, ButtonGroup } from "@nextui-org/react";
+import { toast } from 'react-toastify';
 
 const Agency = () => {
     const token = localStorage.getItem('token');
@@ -19,14 +20,56 @@ const Agency = () => {
                 }
             });
             const data = await res.json();
-            console.log(data.data);
             setAgencies(data.data);
+            console.log(data.data);
         }
         getAllAgencies();
     }, [])
 
-    const handleEnroll = () =>{
-        
+    const handleEnroll = async (agencyId) => {
+        console.log(agencyId);
+        const res = await fetch(`http://localhost:5000/agency/enroll/${agencyId}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ userId }),
+        })
+        if (res.ok) {
+            toast("Enrolled successfully", { type: "success" });
+            setAgencies(agencies.map(agency => {
+                if (agency._id === agencyId) {
+                    return { ...agency, enrolledUsers: [...agency.enrolledUsers, userId] }
+                }
+                return agency;
+            }))
+        }
+        else {
+            toast("Error in enrolling", { type: "error" });
+        }
+    }
+
+    const handleUnEnroll = async (agencyId) => {
+        console.log(agencyId);
+        const res = await fetch(`http://localhost:5000/agency/unenroll/${agencyId}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ userId }),
+        })
+        if (res.ok) {
+            toast("Unenrolled successfully", { type: "success" });
+            setAgencies(agencies.map(agency => {
+                if (agency._id === agencyId) {
+                    return { ...agency, enrolledUsers: agency.enrolledUsers.filter(user => user !== userId) }
+                }
+                return agency;
+            }))
+        }
+        else {
+            toast("Error in unenrolling", { type: "error" });
+        }
     }
 
     return (
@@ -55,15 +98,24 @@ const Agency = () => {
                                 </CardBody>
                                 <Divider />
                                 <CardFooter>
-                                    <Link
-                                        isExternal
-                                        showAnchorIcon
-                                        onClick={handleEnroll}
-                                    >
-                                        <Button style={{ backgroundColor: '#f94566', color: 'white' }}>
-                                            Enroll Now
-                                        </Button>
-                                    </Link>
+                                    {agency.enrolledUsers.includes(userId) ?
+                                        <Link
+                                            isExternal
+                                            showAnchorIcon
+                                        >
+                                            <Button onClick={() => handleUnEnroll(agency._id)} style={{ backgroundColor: '#f94566', color: 'white' }}>
+                                                UnEnroll Now
+                                            </Button>
+                                        </Link> :
+                                        <Link
+                                            isExternal
+                                            showAnchorIcon
+                                        >
+                                            <Button onClick={() => handleEnroll(agency._id)} style={{ backgroundColor: '#f94566', color: 'white' }}>
+                                                Enroll Now
+                                            </Button>
+                                        </Link>
+                                    }
                                 </CardFooter>
                             </Card>
                         </div>

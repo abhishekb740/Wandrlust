@@ -186,7 +186,7 @@ const Feeds = () => {
                             user._id !== userId && (
                                 <div key={index} style={{ display: "flex", justifyContent: "space-between", width: "100%", }}>
                                     <div style={{ display: "flex", gap: "1rem" }}>
-                                        <img src={`http://localhost:5000/profileImages/${user.profileImage}`} alt="profile" width="40px" height="25px" />
+                                        <img src={user.profileImage ? `http://localhost:5000/profileImages/${user.profileImage}` : ProfileImage} alt="profile" width="40px" height="25px" />
                                         <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-evenly", width: "100%" }}>
                                             <p className="text-tiny" style={{ fontSize: "18px" }}>{user.name}</p>
                                             <small className="text-default-500">{user.email}</small>

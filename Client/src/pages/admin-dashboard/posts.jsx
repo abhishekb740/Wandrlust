@@ -2,110 +2,37 @@ import { Card, AreaChart } from '@tremor/react';
 import AdminSidebar from "./sidebar";
 import { Button, Link } from "@nextui-org/react";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-
-const postdata = [
-    {
-        date: 'Jan 22',
-        'Posts': 20,
-    },
-    {
-        date: 'Feb 22',
-        'Posts': 27,
-    },
-    {
-        date: 'Mar 22',
-        'Posts': 40,
-    },
-    {
-        date: 'Apr 22',
-        'Posts': 55,
-    },
-    {
-        date: 'May 22',
-        'Posts': 66,
-    },
-    {
-        date: 'Jun 22',
-        'Posts': 40,
-    },
-    {
-        date: 'Jul 22',
-        'Posts': 60,
-    },
-    {
-        date: 'Aug 22',
-        'Posts': 65,
-    },
-    {
-        date: 'Sep 22',
-        'Posts': 45,
-    },
-    {
-        date: 'Oct 22',
-        'Posts': 90,
-    },
-    {
-        date: 'Nov 22',
-        'Posts': 10,
-    },
-    {
-        date: 'Dec 22',
-        'Posts': 100,
-    },
-];
-
-const userdata = [
-    {
-        date: 'Jan 22',
-        Users: 10,
-    },
-    {
-        date: 'Feb 22',
-        Users: 12,
-    },
-    {
-        date: 'Mar 22',
-        Users: 13,
-    },
-    {
-        date: 'Apr 22',
-        Users: 20,
-    },
-    {
-        date: 'May 22',
-        Users: 40,
-    },
-    {
-        date: 'Jun 22',
-        Users: 50,
-    },
-    {
-        date: 'Jul 22',
-        Users: 52,
-    },
-    {
-        date: 'Aug 22',
-        Users: 100,
-    },
-    {
-        date: 'Sep 22',
-        Users: 102,
-    },
-    {
-        date: 'Oct 22',
-        Users: 115,
-    },
-    {
-        date: 'Nov 22',
-        Users: 116,
-    },
-    {
-        date: 'Dec 22',
-        Users: 120,
-    },
-];
+import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import CircularProgress from '@mui/material/CircularProgress';
+import Cards from "./AdminCard";
 
 export default function Posts() {
+
+    const [loadingFeeds, setLoadingFeeds] = useState(false);
+    const [feeds, setFeeds] = useState([]);
+    useEffect(() => {
+        const getAllPosts = async () => {
+            setLoadingFeeds(true);
+            const res = await fetch("http://localhost:5000/getPhotos", {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                }
+            });
+            const data = await res.json();
+            console.log(data);
+            setLoadingFeeds(false);
+            if (res.ok) {
+                setFeeds(data);
+            }
+            else {
+                toast("Failed to get posts", { type: "error" }, { autoClose: 3000 })
+            }
+        }
+        getAllPosts();
+    }, [])
+
     return (
         <div className="flex gap-10 w-full">
             <AdminSidebar />
@@ -113,38 +40,14 @@ export default function Posts() {
                 <Button isIconOnly as={Link} href="/dashboard/admin" color='danger' variant='flat'>
                     <ArrowBackIcon />
                 </Button>
-                <div className='flex mt-10 justify-center'>
-                    <Card className="mx-auto max-w-md max-h-[100px]">
-                        <h4 className="text-tremor-default text-tremor-content dark:text-dark-tremor-content">
-                            Total number of users
-                        </h4>
-                        <p className="text-tremor-metric font-semibold text-tremor-content-strong dark:text-dark-tremor-content-strong">
-                            20
-                        </p>
-                    </Card>
+                <div style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
+                    <div style={{ display: "flex", flexDirection: "column", width: "100%", justifyContent: "center", alignItems: "center", gap: "2rem" }}>
+                        {loadingFeeds && <CircularProgress color="secondary" sx={{ color: '#f94566' }} />}
+                        {feeds.map((feed, index) => (
+                            <Cards key={index} feed={feed} setFeeds={setFeeds}/>
+                        ))}
+                    </div>
                 </div>
-                <h3 className="mt-10 text-tremor-default text-tremor-content dark:text-dark-tremor-content">Total Number of Posts</h3>
-                <p className="text-tremor-metric text-tremor-content-strong dark:text-dark-tremor-content-strong font-semibold">50</p>
-                <AreaChart
-                    className="mt-4 h-72 pr-20"
-                    data={postdata}
-                    index="date"
-                    yAxisWidth={65}
-                    categories={['Posts']}
-                    colors={['red']}
-                />
-
-                <h3 className="mt-10 text-tremor-default text-tremor-content dark:text-dark-tremor-content">Total Number of Posts</h3>
-                <p className="text-tremor-metric text-tremor-content-strong dark:text-dark-tremor-content-strong font-semibold">20</p>
-                <AreaChart
-                    className="mt-4 h-72 pr-20"
-                    data={userdata}
-                    index="date"
-                    yAxisWidth={65}
-                    categories={['Users']}
-                    colors={['yellow']}
-                />
-
             </div>
         </div>
     )

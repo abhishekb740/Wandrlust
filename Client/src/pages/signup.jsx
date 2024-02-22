@@ -63,7 +63,6 @@ const Signup = () => {
   };
 
   const validateForm = () => {
-    // Simple form validation
     if (
       formData.name.trim() === "" ||
       formData.email.trim() === "" ||
