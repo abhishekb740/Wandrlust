@@ -48,8 +48,6 @@ export default function Navbar(props) {
     setAnchorElNav(null);
   };
 
-
-
   return (
     <React.Fragment>
       <HideOnScroll {...props}>

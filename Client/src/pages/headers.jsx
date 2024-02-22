@@ -179,6 +179,15 @@ export default function Header() {
                                 Contact Us
                             </Typography>
                         </Link>
+                        <Link to={count ? "/agency" : "/signup"}>
+                            <Typography
+                                component="div"
+                                variant='body1'
+                                fontWeight={500}
+                            >
+                                Agency
+                            </Typography>
+                        </Link>
                     </Box>
                     {count ? (
                         <Link to="/profile">

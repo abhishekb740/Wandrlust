@@ -1,4 +1,3 @@
-import './App.css'
 import ScrollToTop from "./components/scrollCorrector/scroll.jsx";
 import Home from "./pages/home";
 import Flights from "./pages/flights";
@@ -19,6 +18,7 @@ import Users from './pages/admin-dashboard/users.jsx';
 import Posts from './pages/admin-dashboard/posts.jsx';
 import { useEffect, useState } from 'react';
 import { extractUserIdFromToken } from './utils/extractUserIdFromToken.js';
+import Agency from './pages/agency.jsx';
 
 function App() {
     const [userId, setUserId] = useState(null);
@@ -45,6 +45,7 @@ function App() {
                     <Route path='/dashboard/admin/' element={<AdminDashboard />} />
                     <Route path='/dashboard/admin/users' element={<Users />} />
                     <Route path='/dashboard/admin/posts' element={<Posts />} />
+                    <Route path='/agency' element={<Agency/>} />
                     {/* <Route path='/dashboard/admin' element={<AdminDashboard />} /> */}
                     {/* <Route path='/dashboard/agency' element={<AgencyDashboard/>} /> */}
                 </Routes>
