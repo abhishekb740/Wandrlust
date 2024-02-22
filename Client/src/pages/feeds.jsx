@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Cards from "./Cards"; // Update import
+import Cards from "./cards"; // Update import
 import { Link } from "react-router-dom";
 import { Button } from "@nextui-org/react";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
