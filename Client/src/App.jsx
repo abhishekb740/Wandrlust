@@ -1,4 +1,3 @@
-import './App.css'
 import ScrollToTop from "./components/scrollCorrector/scroll.jsx";
 import Home from "./pages/home";
 import Flights from "./pages/flights";
