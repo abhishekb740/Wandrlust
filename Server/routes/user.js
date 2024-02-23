@@ -68,17 +68,17 @@ router.post(
       const profileImage = req.file.filename;
       console.log(profileImage);
 
-      // Find the user by ID
+     
       const User = await user.findById(userId);
 
       if (!User) {
         return res.status(404).json({ error: 'User not found' });
       }
 
-      // Update the user's profileImage field
+    
       User.profileImage = profileImage;
 
-      // Save the updated user document
+    
       await User.save();
 
       res.json({ message: 'Profile photo updated successfully' });
@@ -245,7 +245,7 @@ router.get("/getPhotos", async (req, res) => {
 
 router.post("/getAllUsers", async (req, res) => {
   try {
-    const users = await user.find({blocked: false});
+    const users = await user.find();
     return res.status(200).json({ users });
   } catch (error) {
     console.log("Error in get users not followed API ", error);
@@ -326,6 +326,7 @@ router.post("/userDetails", async (req, res,next) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
+
 router.get("/getPhotos/:userId", async (req, res) => {
   const { userId } = req.params;
   try {
@@ -341,13 +342,11 @@ router.delete("/deletePost/:postId", async (req, res) => {
   const { postId } = req.params;
 
   try {
-    // Find the post by ID and delete it from the database
     await Post.findByIdAndDelete(postId);
 
-    // If deletion is successful, send a success response
     res.status(200).json({ message: "Post deleted successfully" });
   } catch (error) {
-    // If there's an error, send an error response
+    
     console.error("Error deleting post:", error);
     res.status(500).json({ error: "Internal server error" });
   }

@@ -180,15 +180,11 @@ export default function Profile() {
                                         className="text-center ml-4 flex items-center cursor-pointer w-full"
                                         onClick={() => setModalIsOpen(true)}
                                     >
-                                        {" "}
-                                        {/* Adjusted style */}
-                                        <MDBBtn
-                                            outline
-                                            color="text"
-                                            className="h-[4.2rem] px-6 ring-2  ring-white bg-[#eb2168] hover:bg-[#d7004b] text-white w-70 mt-40 z-10"
+                                        <button
+                                            className="h-10 w-44 px-6 ring-2 ring-white bg-[#eb2168] hover:bg-[#d7004b] text-white w-70 mt-40 z-10"
                                         >
                                             Edit profile
-                                        </MDBBtn>
+                                        </button>
                                     </div>
                                 </div>
                                 <div
@@ -252,12 +248,12 @@ export default function Profile() {
                                         </div>
                                     )}
                                     {editableAbout && (
-                                        <MDBBtn
+                                        <button
                                             className="mt-2 px-4 py-2 bg-[#eb2168] text-white rounded-md hover:bg-[#d7004b] transition duration-300 ease-in-out transform focus:outline-none focus:ring focus:ring-[#e85c8d]"
                                             onClick={handleAboutSave}
                                         >
                                             Save
-                                        </MDBBtn>
+                                        </button>
                                     )}
                                 </div>
                                 <div className="flex justify-between items-center mb-4">
@@ -304,6 +300,7 @@ export default function Profile() {
                                             ))
                                         )}
                                     </ScrollShadow>
+                                    <Button style={{ paddingTop: '1rem', paddingRight: '4rem' }} onClick={handleLogout} >Logout</Button>
                                 </div>
                             </MDBCardBody>
                         </MDBCard>
