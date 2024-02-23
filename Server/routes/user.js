@@ -11,7 +11,12 @@ const cookieParser = require("cookie-parser");
 const Post = require("../Models/images");
 
 router.use(cookieParser());
+const errorHandler = (err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ error: 'Internal server ERROR' });
+};
 
+router.use(errorHandler);
 const fileStorageEngine = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, "./images");
@@ -85,7 +90,7 @@ router.post(
 );
 
 
-router.post("/signup", async (req, res) => {
+router.post("/signup", async (req, res, next) => {
   log(req.body);
   try {
     console.log(req.body);
@@ -104,6 +109,7 @@ router.post("/signup", async (req, res) => {
 
     res.status(201).json({ message: "User created successfully" });
   } catch (error) {
+    next(error)
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
   }
@@ -282,7 +288,7 @@ router.put("/:userId/about", async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
-router.post("/userDetails", async (req, res) => {
+router.post("/userDetails", async (req, res,next) => {
   const userId = req.body.userId;
 
   try {
@@ -315,6 +321,7 @@ router.post("/userDetails", async (req, res) => {
 
     return res.status(200).json({ userDetails });
   } catch (error) {
+    next(error);
     console.log("Error in get user details API ", error);
     return res.status(500).json({ error: "Internal server error" });
   }
