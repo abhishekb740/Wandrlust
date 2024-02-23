@@ -20,11 +20,11 @@ const Post = () => {
         const selectedFile = event.target.files[0];
 
         if (selectedFile) {
-            // const reader = new FileReader();
-            // reader.onloadend = () => {
-            //     setSelectedImage(reader.result);
-            // };
-            // reader.readAsDataURL(selectedFile);
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setSelectedImage(reader.result);
+            };
+            reader.readAsDataURL(selectedFile);
             setFile(selectedFile);
         }
     };

@@ -185,7 +185,7 @@ export default function Profile() {
                                         <MDBBtn
                                             outline
                                             color="text"
-                                            className="h-[4.2rem] px-6 ring-2  ring-white bg-[#eb2168] hover:bg-[#d7004b] text-white w-70 mt-40 z-10"
+                                            className="h-[4.2rem] px-6 ring-2  ring-white bg-[#eb2168] hover:bg-[#d7004b] text-white mt-40 z-10"
                                         >
                                             Edit profile
                                         </MDBBtn>

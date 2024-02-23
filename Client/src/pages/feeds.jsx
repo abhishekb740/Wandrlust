@@ -183,7 +183,7 @@ const Feeds = () => {
                             </div>
                         }
                         {users.map((user, index) => (
-                            user._id !== userId && (
+                            user._id !== userId && !user.blocked && (
                                 <div key={index} style={{ display: "flex", justifyContent: "space-between", width: "100%", }}>
                                     <div style={{ display: "flex", gap: "1rem" }}>
                                         <img src={user.profileImage ? `http://localhost:5000/profileImages/${user.profileImage}` : ProfileImage} alt="profile" width="40px" height="25px" />
