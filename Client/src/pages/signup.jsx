@@ -1,6 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import CircularProgress from '@mui/material/CircularProgress';
 
 const Signup = () => {
   const navigate = useNavigate();

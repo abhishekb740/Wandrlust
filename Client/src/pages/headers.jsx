@@ -15,6 +15,13 @@ import { Link } from 'react-router-dom';
 import ProfileImage from "../assets/images/profile.png"
 import { useState, useEffect } from 'react';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
+import {
+    Dropdown,
+    DropdownTrigger,
+    DropdownMenu,
+    DropdownSection,
+    DropdownItem
+} from "@nextui-org/react";
 
 export default function Header() {
     const [count, setCount] = useState(false);
@@ -36,6 +43,11 @@ export default function Header() {
         setAnchorEl(null);
         handleMobileMenuClose();
     };
+
+    const handleLogout = () => {
+        localStorage.removeItem("token");
+        window.location.href = "/signup";
+    }
 
     const handleMobileMenuOpen = (event) => {
         setMobileMoreAnchorEl(event.currentTarget);
@@ -199,29 +211,29 @@ export default function Header() {
                         </Link>
                     </Box>
                     {count ? (
-                        <Link to="/profile">
-                            <Box
-                                sx={{
-                                    display: {
-                                        xs: 'none',
-                                        md: 'flex'
-                                    },
-                                    alignItems: "center",
-                                    gap: "12px",
-                                    justifyContent: "center",
-                                    cursor: "pointer"
-                                }}
-                            >
-                                <img src={ProfileImage} width="35px" height="35px" style={{ border: '1px solid white', borderRadius: '50%' }}></img>
-                                <Typography
-                                    component="div"
-                                    variant='body1'
-                                    fontWeight={500}
+                        <Dropdown>
+                            <DropdownTrigger>
+                                <Box
+                                    sx={{
+                                        display: {
+                                            xs: 'none',
+                                            md: 'flex'
+                                        },
+                                        alignItems: "center",
+                                        gap: "12px",
+                                        justifyContent: "center",
+                                        cursor: "pointer"
+                                    }}
                                 >
-                                    Profile
-                                </Typography>
-                            </Box>
-                        </Link>
+                                    <img src={ProfileImage} width="35px" height="35px" style={{ border: '1px solid white', borderRadius: '50%' }}></img>
+                                </Box>
+                            </DropdownTrigger>
+                            <DropdownMenu>
+                                <DropdownItem key="new" href="/profile">Profile</DropdownItem>
+                                <DropdownItem key="copy" href="/admin">Admin</DropdownItem>
+                                <DropdownItem onClick={handleLogout} color='danger' key="logout">Logout</DropdownItem>
+                            </DropdownMenu>
+                        </Dropdown>
                     ) : (
                         <Link to="/signup">
                             <Box
@@ -247,18 +259,6 @@ export default function Header() {
                             </Box>
                         </Link>
                     )}
-                    <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
-                        <IconButton
-                            size="large"
-                            aria-label="show more"
-                            aria-controls={mobileMenuId}
-                            aria-haspopup="true"
-                            onClick={handleMobileMenuOpen}
-                            color="inherit"
-                        >
-                            <MenuIcon />
-                        </IconButton>
-                    </Box>
                 </Toolbar>
             </AppBar>
             {renderMobileMenu}
