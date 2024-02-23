@@ -11,11 +11,16 @@ const cookieParser = require("cookie-parser");
 const Post = require("../Models/images");
 
 router.use(cookieParser());
+
 const errorHandler = (err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ error: 'Internal server ERROR' });
 };
-
+const logRequest = (req, res, next) => {
+  console.log(`Received ${req.method} request for ${req.url}`);
+  next(); 
+};
+app.use(logRequest);
 router.use(errorHandler);
 const fileStorageEngine = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -115,7 +120,7 @@ router.post("/signup", async (req, res, next) => {
   }
 });
 
-router.post("/signin", async (req, res) => {
+router.post("/signin", logRequest,async (req, res,next) => {
   try {
     const { username, password } = req.body;
     if (!username || !password) {
@@ -243,7 +248,7 @@ router.get("/getPhotos", async (req, res) => {
   res.send(images);
 });
 
-router.post("/getAllUsers", async (req, res) => {
+router.post("/getAllUsers",logRequest, async (req, res,next) => {
   try {
     const users = await user.find();
     return res.status(200).json({ users });
