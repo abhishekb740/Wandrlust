@@ -31,6 +31,12 @@ export default function AdminDashboard() {
         <div className="flex gap-10 w-full">
             <AdminSidebar />
             <div className='w-full'>
+                <div className='text-center p-5'>
+                    <span className='text-4xl'>
+                        Admin Dashboard
+                    </span>
+                    <div className='mt-5 text-base'>Check out User and Posts to block spam users and delete malicious posts!</div>
+                </div>
                 <div className='flex mt-10'>
                     <Card className="mx-auto max-w-md max-h-[100px]">
                         <h4 className="text-tremor-default flex justify-between text-tremor-content dark:text-dark-tremor-content">
@@ -38,7 +44,7 @@ export default function AdminDashboard() {
                             <span>Blocked Users</span>
                         </h4>
                         <p className="text-tremor-metric flex justify-between font-semibold text-tremor-content-strong dark:text-dark-tremor-content-strong">
-                            <span>20</span>
+                            <span>8</span>
                             <span>2</span>
                         </p>
                     </Card>
@@ -48,8 +54,8 @@ export default function AdminDashboard() {
                             <span>Deleted Posts</span>
                         </h4>
                         <p className="text-tremor-metric flex justify-between font-semibold text-tremor-content-strong dark:text-dark-tremor-content-strong">
-                            <span>50</span>
-                            <span>15</span>
+                            <span>8</span>
+                            <span>3</span>
                         </p>
                     </Card>
                 </div>
