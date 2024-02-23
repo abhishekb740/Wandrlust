@@ -20,7 +20,7 @@ const logRequest = (req, res, next) => {
   console.log(`Received ${req.method} request for ${req.url}`);
   next(); 
 };
-app.use(logRequest);
+router.use(logRequest);
 router.use(errorHandler);
 const fileStorageEngine = multer.diskStorage({
   destination: (req, file, cb) => {

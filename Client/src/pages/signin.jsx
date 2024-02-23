@@ -26,7 +26,7 @@ const Signin = () => {
         type: "success",
 
       });
-      navigate("/");
+      location.href = "/";
     } else {
       console.error("Failed to sign in");
       toast("Error in SignIn", {
