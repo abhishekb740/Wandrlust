@@ -239,7 +239,7 @@ router.get("/getPhotos", async (req, res) => {
 
 router.post("/getAllUsers", async (req, res) => {
   try {
-    const users = await user.find({blocked: false});
+    const users = await user.find();
     return res.status(200).json({ users });
   } catch (error) {
     console.log("Error in get users not followed API ", error);
