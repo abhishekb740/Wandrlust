@@ -1,5 +1,7 @@
 const mongoose = require("mongoose");
 
+const PASSWORD_REQUIRED = require('../errors/mongoose')
+
 const AgencySchema = new mongoose.Schema(
   {
     name: {
@@ -8,7 +10,7 @@ const AgencySchema = new mongoose.Schema(
     },
     destination: {
         type: String,
-        required: true,
+        // required: true,
     },
     enrolledUsers: 
     {
@@ -18,6 +20,11 @@ const AgencySchema = new mongoose.Schema(
     },
     description: {
         type: String,
+    },
+    password: {
+      type: String,
+      required: [true, PASSWORD_REQUIRED],
+      unique: false,
     },
 },
   {

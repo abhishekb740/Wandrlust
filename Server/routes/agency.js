@@ -1,7 +1,12 @@
 const { Router } = require("express");
 const router = Router();
-const Agency = require("../Models/agency");
-const User = require("../Models/user");
+// const agency = require("../Models/agency");
+// const User = require("../Models/user");
+const admin = require("../Models/admin");
+const jwt = require("jsonwebtoken");
+const { log } = require("console");
+const cookieParser = require("cookie-parser");
+const agency = require("../Models/agency");
 // async function insertAgencyData() {
 //     try {
 //         const agencyData = {
@@ -21,6 +26,55 @@ const User = require("../Models/user");
 //     }
 //   }
 //   insertAgencyData()
+
+
+router.post("/login", async (req,res)=>{
+  try {
+    const {name, password}= req.body;
+    if (!name || !password) {
+      return res
+        .status(400)
+        .json({ error: "Please provide username and password" });
+    }
+
+    const Agency = await agency.findOne({name});
+
+    if (!Agency || Agency.password !== password) {
+      return res.status(401).json({ error: "Invalid name or password" });
+    }
+    const token = jwt.sign({ agencyId: Agency._id }, process.env.JWT_SECRET_KEY, {
+      expiresIn: "24h",
+    });
+    res.cookie("agencyId", Agency._id, {
+      httpOnly: true,
+      maxAge: 5000000,
+    });
+    res.status(200).json({ message: "successful login", token });
+  } catch (error) {
+    
+  }
+});
+
+
+router.post("/signup", async (req,res,next)=>{
+  log(req.body);
+  try {
+    console.log(req.body);
+    const { name, password } = req.body;
+
+    const newAgency = new agency({
+      name,
+      password,
+    });
+    await newAgency.save();
+
+    res.status(201).json({ message: "Agency created successfully" });
+  } catch (error) {
+    next(error)
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+})
 
 router.get("/getAllAgency", async (req, res) => {
   try {
