@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { Card, CardHeader, CardBody, Image } from "@nextui-org/react";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import { extractUserIdFromToken } from "../utils/extractUserIdFromToken";
@@ -23,10 +23,30 @@ export default function Cards(props) {
   const [comment, setComment] = useState("");
   const [comments, setComments] = useState(props.feed.comments || []);
 
-  const handleCommentSubmit = () => {
-    // Here you can send the comment to the backend or update it locally
-    setComments([...comments, { user: "You", text: comment }]);
-    setComment("");
+  useEffect(() => {
+    setComments(props.feed.comments || []);
+  }, [props.feed.comments]);
+
+  const handleCommentSubmit = async () => {
+    try {
+      const res = await fetch(`http://localhost:5000/comment/${props.feed._id}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ text: comment }),
+      });
+      if (res.ok) {
+        const newComment = await res.json();
+        setComments([...comments, newComment]);
+        setComment("");
+      } else {
+        console.error("Failed to submit comment");
+      }
+    } catch (error) {
+      console.error("Error submitting comment:", error);
+    }
   };
 
   const url = `http://localhost:5000/${props.feed.image}`;
@@ -144,41 +164,28 @@ export default function Cards(props) {
 
         {/* Modal for comments */}
         <Modal open={showComments} onClose={() => setShowComments(false)}>
-    <div
-        style={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            backgroundColor: "white",
-            padding: "1rem",
-            borderRadius: "8px",
-            display: "flex",
-            flexDirection: "column", // Set the direction to column
-            alignItems: "center", // Align items to center
-        }}
-    >
-        {/* Render comments */}
-        {comments.map((comment, index) => (
+        <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", backgroundColor: "white", padding: "1rem", borderRadius: "8px", display: "flex", flexDirection: "column", alignItems: "center" }}>
+          {/* Render comments */}
+          {comments.map((comment, index) => (
             <div key={index}>
-                <p>
-                    {comment.user}: {comment.text}
-                </p>
+              <p>
+                {comment.user}: {comment.text}
+              </p>
             </div>
-        ))}
-        {/* Text area for new comment */}
-        <textarea
+          ))}
+          {/* Text area for new comment */}
+          <textarea
             value={comment}
             onChange={(e) => setComment(e.target.value)}
             rows={4}
             cols={50}
             placeholder="Write a comment..."
-            style={{ marginBottom: "1rem" }} // Add margin-bottom for spacing
-        />
-        {/* Submit button */}
-        <button className="px-3 py-2 ml-2 text-white rounded-lg bg-[#eb2168] hover:bg-[#d7004b]" onClick={handleCommentSubmit}>Submit</button>
-    </div>
-</Modal>
+            style={{ marginBottom: "1rem" }}
+          />
+          {/* Submit button */}
+          <button className="px-3 py-2 ml-2 text-white rounded-lg bg-[#eb2168] hover:bg-[#d7004b]" onClick={handleCommentSubmit}>Submit</button>
+        </div>
+      </Modal>
 
       </div>
     </Card>

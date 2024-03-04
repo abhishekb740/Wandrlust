@@ -358,6 +358,32 @@ router.delete("/deletePost/:postId", async (req, res) => {
   }
 });
 
+router.post("/comment/:postId", async (req, res) => {
+  const { postId } = req.params;
+  const { userId, text } = req.body;
+
+  try {
+    const post = await Post.findById(postId);
+
+    if (!post) {
+      return res.status(404).json({ error: "Post not found" });
+    }
+
+    const newComment = {
+      user: userId,
+      text: text,
+    };
+
+    post.comments.push(newComment);
+    await post.save();
+
+    res.status(200).json({ message: "Comment added successfully", newComment });
+  } catch (error) {
+    console.error("Error adding comment:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 
 router.get("/", (req, res) => {
   console.log(req.body);
