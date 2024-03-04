@@ -1,16 +1,21 @@
 import React, { useEffect, useState } from "react";
 import Cards from "./cards"; // Update import
 import { Link } from "react-router-dom";
-import { Button } from "@nextui-org/react";
+import { Card, Button, Input, CardHeader } from "@nextui-org/react";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-import { Card, CardHeader } from "@nextui-org/react";
 import ProfileImage from "../assets/images/profile.png";
 import { TextField } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import { extractUserIdFromToken } from "../utils/extractUserIdFromToken";
 import { toast } from "react-toastify";
 import CircularProgress from "@mui/material/CircularProgress";
+import { useSelector, useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { caption, description } from "../store/slices/PostSlice";
+import axios from 'axios';
+import Modal from "@mui/material/Modal";
 
+let formData;
 const Feeds = () => {
   const [feeds, setFeeds] = useState([]);
   const [users, setUsers] = useState([]);
@@ -19,6 +24,57 @@ const Feeds = () => {
   const [userDetails, setUserDetails] = useState({});
   const [loadingFeeds, setLoadingFeeds] = useState(false);
   const [loadingUsers, setLoadingUsers] = useState(false);
+  const [file, setFile] = useState(null);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [createPost, setCreatePost] = useState(false);
+  const captionValue = useSelector(state => state.posts.caption);
+  const descriptionValue = useSelector(state => state.posts.description);
+  const navigate = useNavigate();
+
+  const handleImageChange = (event) => {
+    const selectedFile = event.target.files[0];
+
+    if (selectedFile) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setSelectedImage(reader.result);
+      };
+      reader.readAsDataURL(selectedFile);
+      setFile(selectedFile);
+    }
+  };
+
+  const captionChangeHandler = (e) => {
+    dispatch(caption(e.target.value))
+  }
+
+  const descriptionChangehandler = (e) => {
+    dispatch(description(e.target.value))
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const token = localStorage.getItem("token");
+    console.log(token);
+    const userId = extractUserIdFromToken(token)
+    console.log(userId);
+    formData = new FormData();
+    formData.append("myImage", file, "image.png");
+    formData.append("caption", captionValue);
+    formData.append("description", descriptionValue);
+    formData.append("userId", userId);
+    console.log(formData);
+    const res = await axios.post("http://localhost:5000/uploadPhoto", formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+    console.log(res);
+    setCreatePost(false);
+    // reload the page
+    window.location.href = "/feeds"
+
+  }
 
   useEffect(() => {
     const fetchUserDetails = async () => {
@@ -205,22 +261,21 @@ const Feeds = () => {
           </Link>
         </Card>
         {/* Create Post */}
-        <Link style={{ width: "70%" }} to="/post">
-          <Button
-            style={{
-              backgroundColor: "#f94566",
-              color: "white",
-              width: "100%",
-              height: "4rem",
-              fontSize: "25px",
-              fontWeight: "bold",
-            }}
-            startContent={<CloudUploadIcon />}
-            variant="shadow"
-          >
-            Create Post
-          </Button>
-        </Link>
+        <Button
+          onClick={() => setCreatePost(true)}
+          style={{
+            backgroundColor: "#f94566",
+            color: "white",
+            width: "100%",
+            height: "4rem",
+            fontSize: "25px",
+            fontWeight: "bold",
+          }}
+          startContent={<CloudUploadIcon />}
+          variant="shadow"
+        >
+          Create Post
+        </Button>
       </div>
 
       {/* Feeds */}
@@ -349,6 +404,67 @@ const Feeds = () => {
           </CardHeader>
         </Card>
       </div>
+      <Modal open={createPost} onClose={() => setCreatePost(false)}>
+        <div
+          style={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            backgroundColor: "white",
+            padding: "1rem",
+            borderRadius: "8px",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          <div>
+            <div style={{ display: 'flex', justifyContent: 'center' }}>
+              <Card className="py-4" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '800px', gap: '2rem' }}>
+                <div className="pb-0 pt-2 px-4 flex-col items-start" style={{ display: 'flex', alignItems: 'center' }}>
+                  <div>
+                    <h1 style={{ color: 'gray', fontSize: '40px', fontWeight: 'bold' }}>What's in your mind?</h1>
+                  </div>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'row', width: '100%', justifyContent: 'space-around' }} >
+                  <div style={{ width: '50%', border: '3px solid black' }} >
+                    {selectedImage && (
+                      <img
+                        src={selectedImage}
+                        alt="Selected"
+                        style={{ width: '100%', height: '200px', objectFit: 'cover' }}
+                      />
+                    )}
+                  </div>
+                  <div style={{ width: '40%', display: 'flex', flexDirection: 'column', gap: '2rem' }} >
+                    <input onChange={captionChangeHandler} placeholder="Caption" type="text" label="Caption" />
+                    <input onChange={descriptionChangehandler} placeholder="Description" type="text" label="Description" />
+                  </div>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%' }}>
+                  <div>
+                    <div>
+                      Choose an Image to Post:
+                    </div>
+                    <input style={{ border: '1px solid black' }} type="file" name="myImage" onChange={handleImageChange} />
+                  </div>
+                </div>
+                <div>
+                  <Button
+                    style={{ backgroundColor: '#f94566', color: 'white', width: '100%', height: '3rem', fontSize: '25px', fontWeight: 'bold' }}
+                    startContent={<CloudUploadIcon />}
+                    variant="shadow"
+                    onClick={handleSubmit}
+                  >
+                    Create Post
+                  </Button>
+                </div>
+              </Card>
+            </div>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 };

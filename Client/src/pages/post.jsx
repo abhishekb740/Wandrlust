@@ -58,32 +58,6 @@ const Post = () => {
         navigate("/feeds");
     }
 
-    // const handleSubmit = async (e) => {
-    //     e.preventDefault();
-    //     const token = localStorage.getItem("token");
-    //     console.log(token);
-    //     const userId = extractUserIdFromToken(token);
-    //     console.log(userId);
-    //     formData = new FormData();
-    //     formData.append("myImage", file, "image.png");
-    //     console.log(captionValue);
-    //     console.log(descriptionValue);
-    //     formData.append("caption", captionValue);
-    //     formData.append("description", descriptionValue);
-    //     const result = await axios.post(
-    //         'http://localhost:5000/uploadPhoto',
-    //         formData,
-    //         {
-    //             headers: {
-    //                 'Content-Type': 'multipart/form-data'
-    //             }
-    //         },
-
-    //     )
-    //     console.log(result);
-    //     navigate("/feeds");
-    // };
-
     return (
         <div>
             <div style={{ display: 'flex', justifyContent: 'center' }}>
