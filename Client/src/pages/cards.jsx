@@ -5,6 +5,8 @@ import { extractUserIdFromToken } from "../utils/extractUserIdFromToken";
 import ProfileImage from "../assets/images/profile.png";
 import Modal from "@mui/material/Modal";
 import CommentIcon from "@mui/icons-material/Comment";
+import { ScrollShadow } from "@nextui-org/react";
+
 
 export default function Cards(props) {
   const token = localStorage.getItem("token");
@@ -168,15 +170,17 @@ export default function Cards(props) {
         )}
 
         <Modal open={showComments} onClose={() => setShowComments(false)}>
-          <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", backgroundColor: "white", padding: "1rem", borderRadius: "8px", display: "flex", flexDirection: "column", alignItems: "center" }}>
-            {/* Render comments */}
-            {comments.map((comment, index) => (
-              <div key={index}>
-                <p>
-                  {comment.user}: {comment.text}
-                </p>
-              </div>
-            ))}
+          <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", backgroundColor: "white", padding: "1rem", borderRadius: "8px", display: "flex", flexDirection: "column", alignItems: "center", maxHeight: "55vh", overflow: "hidden" }}>
+            <div style={{ overflowY: "auto", flex: 1, width: "100%" }}>
+              {/* Render comments */}
+              {comments.map((comment, index) => (
+                <div key={index}>
+                  <p>
+                    {comment.user}: {comment.text}
+                  </p>
+                </div>
+              ))}
+            </div>
             {/* Text area for new comment */}
             <textarea
               value={comment}
@@ -184,12 +188,13 @@ export default function Cards(props) {
               rows={4}
               cols={50}
               placeholder="Write a comment..."
-              style={{ marginBottom: "1rem" }}
+              style={{ marginTop: "1rem", resize: "none", width: "100%" }}
             />
             {/* Submit button */}
-            <button className="px-3 py-2 ml-2 text-white rounded-lg bg-[#eb2168] hover:bg-[#d7004b]" onClick={handleCommentSubmit}>Submit</button>
+            <button className="px-3 py-2 ml-2 mt-2 text-white rounded-lg bg-[#eb2168] hover:bg-[#d7004b]" onClick={handleCommentSubmit}>Submit</button>
           </div>
         </Modal>
+
       </div>
     </Card>
   );
