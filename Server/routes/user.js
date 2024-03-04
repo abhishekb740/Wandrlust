@@ -14,11 +14,11 @@ router.use(cookieParser());
 
 const errorHandler = (err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).json({ error: 'Internal server ERROR' });
+  res.status(500).json({ error: "Internal server ERROR" });
 };
 const logRequest = (req, res, next) => {
   console.log(`Received ${req.method} request for ${req.url}`);
-  next(); 
+  next();
 };
 router.use(logRequest);
 router.use(errorHandler);
@@ -60,11 +60,11 @@ const fileStorageEngine2 = multer.diskStorage({
   },
 });
 
-const upload2 = multer({ storage: fileStorageEngine2});
+const upload2 = multer({ storage: fileStorageEngine2 });
 
 router.post(
-  '/uploadProfilePhoto',
-  upload2.single('profileImage'),
+  "/uploadProfilePhoto",
+  upload2.single("profileImage"),
   async (req, res, next) => {
     console.log(req.file);
     try {
@@ -73,27 +73,23 @@ router.post(
       const profileImage = req.file.filename;
       console.log(profileImage);
 
-     
       const User = await user.findById(userId);
 
       if (!User) {
-        return res.status(404).json({ error: 'User not found' });
+        return res.status(404).json({ error: "User not found" });
       }
 
-    
       User.profileImage = profileImage;
 
-    
       await User.save();
 
-      res.json({ message: 'Profile photo updated successfully' });
+      res.json({ message: "Profile photo updated successfully" });
     } catch (error) {
-      console.error('Error updating profile photo:', error);
-      res.status(500).json({ error: 'Internal server error' });
+      console.error("Error updating profile photo:", error);
+      res.status(500).json({ error: "Internal server error" });
     }
   }
 );
-
 
 router.post("/signup", async (req, res, next) => {
   log(req.body);
@@ -114,13 +110,13 @@ router.post("/signup", async (req, res, next) => {
 
     res.status(201).json({ message: "User created successfully" });
   } catch (error) {
-    next(error)
+    next(error);
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
-router.post("/signin", logRequest,async (req, res,next) => {
+router.post("/signin", logRequest, async (req, res, next) => {
   try {
     const { username, password } = req.body;
     if (!username || !password) {
@@ -243,12 +239,20 @@ router.put("/dislike/:postId", async (req, res) => {
 });
 
 router.get("/getPhotos", async (req, res) => {
-  let images = await ImageModel.find().populate("author");
+  let images = await ImageModel.find().populate("author").populate(
+    {
+      path: "comments",
+      populate: {
+        path: "user",
+        model: "User",
+      },
+    }
+  );
   images = images.reverse();
   res.send(images);
 });
 
-router.post("/getAllUsers",logRequest, async (req, res,next) => {
+router.post("/getAllUsers", logRequest, async (req, res, next) => {
   try {
     const users = await user.find();
     return res.status(200).json({ users });
@@ -294,7 +298,7 @@ router.put("/:userId/about", async (req, res) => {
   }
 });
 
-router.post("/userDetails", async (req, res,next) => {
+router.post("/userDetails", async (req, res, next) => {
   const userId = req.body.userId;
 
   try {
@@ -352,7 +356,6 @@ router.delete("/deletePost/:postId", async (req, res) => {
 
     res.status(200).json({ message: "Post deleted successfully" });
   } catch (error) {
-    
     console.error("Error deleting post:", error);
     res.status(500).json({ error: "Internal server error" });
   }
@@ -387,7 +390,5 @@ router.post("/comment/:postId", async (req, res) => {
 router.get("/", (req, res) => {
   console.log(req.body);
 });
-
-
 
 module.exports = router;

@@ -22,6 +22,7 @@ export default function Cards(props) {
 
   const [showComments, setShowComments] = useState(false);
   const [comment, setComment] = useState("");
+  console.log(props.feed);
   const [comments, setComments] = useState(props.feed.comments || []);
 
   useEffect(() => {
