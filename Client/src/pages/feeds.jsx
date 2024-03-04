@@ -17,6 +17,7 @@ import Modal from "@mui/material/Modal";
 
 let formData;
 const Feeds = () => {
+  const dispatch = useDispatch();
   const [feeds, setFeeds] = useState([]);
   const [users, setUsers] = useState([]);
   const token = localStorage.getItem("token");
