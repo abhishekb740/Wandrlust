@@ -261,7 +261,7 @@ export default function Profile() {
                                         Your Posts
                                     </MDBCardText>
                                 </div>
-                                <div className="grid justify-center">
+                                <div className="flex-wrap flex justify-start gap-16">
                                     {/* <ScrollShadow hideScrollBar className="w-[500px] h-[500px]"> */}
                                     {userPosts.length === 0 ? (
                                         <div className="text-center">
@@ -281,16 +281,18 @@ export default function Profile() {
                                                     alt="Post"
                                                     className="w-full"
                                                 />
-                                                <div className="px-6 py-4">
-                                                    <p className="font-bold text-xl mb-2">
-                                                        {post.caption}
-                                                    </p>
-                                                    <p className="text-[#eb2168] text-base">
-                                                        {post.likes.length}{" "}
-                                                        {post.likes.length === 1 ? "Like" : "Likes"}
-                                                    </p>
+                                                <div className="flex items-end justify-between p-4">
+                                                    <div className="flex-col">
+                                                        <p className="font-bold text-xl mb-2">
+                                                            {post.caption}
+                                                        </p>
+                                                        <p className="text-[#eb2168] text-base">
+                                                            {post.likes.length}{" "}
+                                                            {post.likes.length === 1 ? "Like" : "Likes"}
+                                                        </p>
+                                                    </div>
                                                     <button
-                                                        className="absolute bottom-0 right-0 m-2 bg-red-500 text-white py-1 px-3 rounded-md"
+                                                        className="m-2 bg-red-500 text-white py-1 px-3 rounded-md"
                                                         onClick={() => handleDeletePost(post._id)} // Assuming there's a function handleDeletePost to handle post deletion
                                                     >
                                                         Delete
