@@ -151,10 +151,10 @@ export default function Profile() {
         }
     };
 
-    const handleLogout = () => {
-        localStorage.removeItem("token");
-        window.location.href = "/signup";
-    }
+
+    const handleClose = () => {
+        setEditableAbout(false);
+    };
 
     return (
         <div className="flex justify-center items-center min-h-screen">
@@ -247,14 +247,24 @@ export default function Profile() {
                                                 ))}
                                         </div>
                                     )}
-                                    {editableAbout && (
-                                        <button
-                                            className="mt-2 px-4 py-2 bg-[#eb2168] text-white rounded-md hover:bg-[#d7004b] transition duration-300 ease-in-out transform focus:outline-none focus:ring focus:ring-[#e85c8d]"
-                                            onClick={handleAboutSave}
-                                        >
-                                            Save
-                                        </button>
-                                    )}
+                                    <div className="flex gap-4" >
+                                        {editableAbout && (
+                                            <button
+                                                className="mt-2 px-4 py-2 bg-[#eb2168] text-white rounded-md hover:bg-[#d7004b] transition duration-300 ease-in-out transform focus:outline-none focus:ring focus:ring-[#e85c8d]"
+                                                onClick={handleAboutSave}
+                                            >
+                                                Save
+                                            </button>
+                                        )}
+                                        {editableAbout && (
+                                            <button
+                                                className="mt-2 px-4 py-2 bg-[#eb2168] text-white rounded-md hover:bg-[#d7004b] transition duration-300 ease-in-out transform focus:outline-none focus:ring focus:ring-[#e85c8d]"
+                                                onClick={handleClose}
+                                            >
+                                                Cancel
+                                            </button>
+                                        )}
+                                    </div>
                                 </div>
                                 <div className="flex justify-between items-center mb-4">
                                     <MDBCardText className="lead font-bold mb-0">
