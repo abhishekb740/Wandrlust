@@ -40,7 +40,6 @@ const Signin = () => {
       <section className="bg-gray-50 bg-cover">
         <div className="flex flex-col items-center justify-center mx-auto md:h-screen lg:py-0">
           <a
-            href="#"
             className="flex items-center mb-6 text-2xl font-bold text-[#eb2168] pt-8"
           >
             WandrLust
@@ -104,7 +103,6 @@ const Signin = () => {
                     </div>
                   </div>
                   <a
-                    href="#"
                     className="text-sm font-medium text-[#eb2168] hover:underline dark:text-primary-500"
                   >
                     Forgot password?

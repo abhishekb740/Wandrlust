@@ -48,6 +48,7 @@ export default function Cards(props) {
       console.error("Error submitting comment:", error);
     }
   };
+  
 
   const url = `http://localhost:5000/${props.feed.image}`;
 
@@ -148,22 +149,23 @@ export default function Cards(props) {
           <div className="flex items-center gap-1 cursor-pointer">
             <div onClick={() => disLikePost(props.feed._id)}>
               {props.feed.likes.length}
+              <FavoriteIcon color="red" sx={{ color: "red" }} />
             </div>
-            <FavoriteIcon color="red" sx={{ color: "red" }} />
             <CommentIcon onClick={() => setShowComments(true)} />
           </div>
         ) : (
           <div className="flex items-center gap-1 cursor-pointer">
             <div onClick={() => likePost(props.feed._id)}>
               {props.feed.likes.length}
+              <FavoriteIcon color="red" sx={{ color: "black" }} />
             </div>
-            <FavoriteIcon color="red" sx={{ color: "black" }} />
-            <CommentIcon onClick={() => setShowComments(true)} />
+            <div>
+              <CommentIcon onClick={() => setShowComments(true)} />
+            </div>
           </div>
         )}
 
-        {/* Modal for comments */}
-        <Modal open={showComments} onClose={() => setShowComments(false)}>
+<Modal open={showComments} onClose={() => setShowComments(false)}>
         <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", backgroundColor: "white", padding: "1rem", borderRadius: "8px", display: "flex", flexDirection: "column", alignItems: "center" }}>
           {/* Render comments */}
           {comments.map((comment, index) => (
@@ -186,7 +188,6 @@ export default function Cards(props) {
           <button className="px-3 py-2 ml-2 text-white rounded-lg bg-[#eb2168] hover:bg-[#d7004b]" onClick={handleCommentSubmit}>Submit</button>
         </div>
       </Modal>
-
       </div>
     </Card>
   );

@@ -384,7 +384,6 @@ router.post("/comment/:postId", async (req, res) => {
   }
 });
 
-
 router.get("/", (req, res) => {
   console.log(req.body);
 });
