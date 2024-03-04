@@ -128,57 +128,55 @@ export default function Cards(props) {
           <div className="flex items-center gap-1 cursor-pointer">
             <div onClick={() => disLikePost(props.feed._id)}>
               {props.feed.likes.length}
+              <FavoriteIcon color="red" sx={{ color: "red" }} />
             </div>
-            <FavoriteIcon color="red" sx={{ color: "red" }} />
             <CommentIcon onClick={() => setShowComments(true)} />
           </div>
         ) : (
           <div className="flex items-center gap-1 cursor-pointer">
             <div onClick={() => likePost(props.feed._id)}>
               {props.feed.likes.length}
+              <FavoriteIcon color="red" sx={{ color: "black" }} />
             </div>
-            <FavoriteIcon color="red" sx={{ color: "black" }} />
-            <CommentIcon onClick={() => setShowComments(true)} />
+            <div>
+              <CommentIcon onClick={() => setShowComments(true)} />
+            </div>
           </div>
         )}
 
-        {/* Modal for comments */}
         <Modal open={showComments} onClose={() => setShowComments(false)}>
-    <div
-        style={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            backgroundColor: "white",
-            padding: "1rem",
-            borderRadius: "8px",
-            display: "flex",
-            flexDirection: "column", // Set the direction to column
-            alignItems: "center", // Align items to center
-        }}
-    >
-        {/* Render comments */}
-        {comments.map((comment, index) => (
-            <div key={index}>
+          <div
+            style={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              backgroundColor: "white",
+              padding: "1rem",
+              borderRadius: "8px",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
+          >
+            {comments.map((comment, index) => (
+              <div key={index}>
                 <p>
-                    {comment.user}: {comment.text}
+                  {comment.user}: {comment.text}
                 </p>
-            </div>
-        ))}
-        {/* Text area for new comment */}
-        <textarea
-            value={comment}
-            onChange={(e) => setComment(e.target.value)}
-            rows={4}
-            cols={50}
-            placeholder="Write a comment..."
-            style={{ marginBottom: "1rem" }} // Add margin-bottom for spacing
-        />
-        {/* Submit button */}
-        <button className="px-3 py-2 ml-2 text-white rounded-lg bg-[#eb2168] hover:bg-[#d7004b]" onClick={handleCommentSubmit}>Submit</button>
-    </div>
-</Modal>
+              </div>
+            ))}
+            <textarea
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+              rows={4}
+              cols={50}
+              placeholder="Write a comment..."
+              style={{ marginBottom: "1rem" }}
+            />
+            <button className="px-3 py-2 ml-2 text-white rounded-lg bg-[#eb2168] hover:bg-[#d7004b]" onClick={handleCommentSubmit}>Submit</button>
+          </div>
+        </Modal>
 
       </div>
     </Card>
