@@ -119,6 +119,7 @@ export default function UserComponent({ user, setUsers }) {
                                 rows={2}
                                 cols={100}
                                 style={{ marginBottom: "1rem" }}
+                                disabled
                             />
                         </div>
                     </div>
