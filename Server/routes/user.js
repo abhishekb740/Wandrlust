@@ -274,7 +274,7 @@ router.put("/dislike/:postId", async (req, res) => {
 
 router.get('/getPhotos', async (req, res) => {
   try {
-    const posts = await Post.find().populate('author', 'username').populate('comments.author', 'username');
+    const posts = await Post.find().populate('author').populate('comments.author');
     // The 'author' and 'comments.author' are the paths to populate, and 'username' is the field to select from the User model
 
     res.json(posts);
