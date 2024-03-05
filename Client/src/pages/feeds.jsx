@@ -193,7 +193,7 @@ const Feeds = () => {
                                         </div>
                                     </div>
                                     {user.followers.includes(userId) ? (
-                                        <Button style={{ backgroundColor: "#f94566", color: "white", fontWeight: "bold" }} variant="shadow" onClick={() => handleUnfollow(user._id)}>Unfollow</Button>
+                                        <Button style={{ backgroundColor: "#f94566", color: "white", fontWeight: "bold", width: "5rem" }} variant="shadow" onClick={() => handleUnfollow(user._id)}>Unfollow</Button>
                                     ) : (
                                         <Button style={{ backgroundColor: "#f94566", color: "white", fontWeight: "bold" }} variant="shadow" onClick={() => handleFollow(user._id)}>Follow</Button>
                                     )}
