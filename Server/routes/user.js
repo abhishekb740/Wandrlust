@@ -20,8 +20,8 @@ const errorHandler = (err, req, res, next) => {
 const logRequest = (req, res, next) => {
     console.log(`Received ${req.method} request for ${req.url}`);
     next();
-    console.error(err.stack);
-    res.status(500).json({ error: "Internal server ERROR" });
+    // console.error(err.stack);
+    // res.status(500).json({ error: "Internal server ERROR" });
 };
 
 router.use(logRequest);
@@ -92,6 +92,7 @@ router.post(
             console.error("Error updating profile photo:", error);
             res.status(500).json({ error: "Internal server error" });
         }
+    }
 );
 
 router.post("/authenticate", async (req, res) => {
@@ -104,8 +105,8 @@ router.post("/authenticate", async (req, res) => {
             { headers: { "Private-Key": "d2bccd07-e285-4816-a873-693e5fb18b09" } }
         );
         return res.status(r.status).json(r.data);
-    } catch (e) {
-        return res.status(e.response.status).json(e.response.data);
+    } catch (error) {
+        return res.status(400);
     }
 });
 
