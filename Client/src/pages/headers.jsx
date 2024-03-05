@@ -230,6 +230,7 @@ export default function Header() {
                             </DropdownTrigger>
                             <DropdownMenu>
                                 <DropdownItem key="new" href="/profile">Profile</DropdownItem>
+                                <DropdownItem key="chat" href='/chat'>Chat</DropdownItem>
                                 <DropdownItem key="copy" href="/admin">Admin</DropdownItem>
                                 <DropdownItem onClick={handleLogout} color='danger' key="logout">Logout</DropdownItem>
                             </DropdownMenu>

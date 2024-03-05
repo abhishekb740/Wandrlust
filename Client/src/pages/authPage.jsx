@@ -1,3 +1,4 @@
+import { Button, Input } from "@nextui-org/react";
 import axios from "axios";
 
 const AuthPage = (props) => {
@@ -11,18 +12,18 @@ const AuthPage = (props) => {
     };
 
     return (
-        <div className="background">
-            <form onSubmit={onSubmit} className="form-card">
-                <div className="form-title">Welcome 👋</div>
+        <div className="h-[80vh] flex justify-center items-center">
+            <form onSubmit={onSubmit} className="">
+                <div className="text-6xl">Welcome 👋</div>
 
                 <div className="form-subtitle">Set a username to get started</div>
 
-                <div className="auth">
-                    <div className="auth-label">Username</div>
-                    <input className="auth-input" name="username" />
-                    <button className="auth-button" type="submit">
+                <div className="flex-col gap-10">
+                    <Input className="auth-input" name="username" />
+                    &nbsp;
+                    <Button type="submit" color="danger" className="flex justify-center">
                         Enter
-                    </button>
+                    </Button>
                 </div>
             </form>
         </div>
