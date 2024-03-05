@@ -374,6 +374,7 @@ router.get("/getPhotos/:userId", async (req, res) => {
     const { userId } = req.params;
     try {
         const userPosts = await Post.find({ author: userId }).populate("author");
+        userPosts.reverse();
         res.send(userPosts);
     } catch (error) {
         console.log("Error fetching user's posts:", error);
