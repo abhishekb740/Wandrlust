@@ -175,7 +175,7 @@ export default function Cards(props) {
               {comments.map((comment, index) => (
                 <div key={index}>
                   <p>
-                    {comment.user}: {comment.text}
+                    {comment.name}: {comment.text}
                   </p>
                 </div>
               ))}
