@@ -151,10 +151,10 @@ export default function Profile() {
         }
     };
 
-    const handleLogout = () => {
-        localStorage.removeItem("token");
-        window.location.href = "/signup";
-    }
+
+    const handleClose = () => {
+        setEditableAbout(false);
+    };
 
     return (
         <div className="flex justify-center items-center min-h-screen">
@@ -247,41 +247,52 @@ export default function Profile() {
                                                 ))}
                                         </div>
                                     )}
-                                    {editableAbout && (
-                                        <button
-                                            className="mt-2 px-4 py-2 bg-[#eb2168] text-white rounded-md hover:bg-[#d7004b] transition duration-300 ease-in-out transform focus:outline-none focus:ring focus:ring-[#e85c8d]"
-                                            onClick={handleAboutSave}
-                                        >
-                                            Save
-                                        </button>
-                                    )}
+                                    <div className="flex gap-4" >
+                                        {editableAbout && (
+                                            <button
+                                                className="mt-2 px-4 py-2 bg-[#eb2168] text-white rounded-md hover:bg-[#d7004b] transition duration-300 ease-in-out transform focus:outline-none focus:ring focus:ring-[#e85c8d]"
+                                                onClick={handleAboutSave}
+                                            >
+                                                Save
+                                            </button>
+                                        )}
+                                        {editableAbout && (
+                                            <button
+                                                className="mt-2 px-4 py-2 bg-[#eb2168] text-white rounded-md hover:bg-[#d7004b] transition duration-300 ease-in-out transform focus:outline-none focus:ring focus:ring-[#e85c8d]"
+                                                onClick={handleClose}
+                                            >
+                                                Cancel
+                                            </button>
+                                        )}
+                                    </div>
                                 </div>
                                 <div className="flex justify-between items-center mb-4">
                                     <MDBCardText className="lead font-bold mb-0">
                                         Your Posts
                                     </MDBCardText>
                                 </div>
-                                <div className="grid justify-center">
-                                    <ScrollShadow hideScrollBar className="w-[500px] h-[500px]">
-                                        {userPosts.length === 0 ? (
-                                            <div className="text-center">
-                                                <p className="text-lg font-semibold mb-2 text-[#eb2168]">
-                                                    Why not travelling, start travelling and sharing with
-                                                    Wandrlust!
-                                                </p>
-                                            </div>
-                                        ) : (
-                                            userPosts.map((post) => (
-                                                <div
-                                                    key={post._id}
-                                                    className="max-w-sm border-3 border-black rounded-lg relative overflow-hidden m-4"
-                                                >
-                                                    <img
-                                                        src={`http://localhost:5000/images/${post.image}`}
-                                                        alt="Post"
-                                                        className="w-full"
-                                                    />
-                                                    <div className="px-6 py-4">
+                                <div className="flex-wrap flex justify-start gap-16">
+                                    {/* <ScrollShadow hideScrollBar className="w-[500px] h-[500px]"> */}
+                                    {userPosts.length === 0 ? (
+                                        <div className="text-center">
+                                            <p className="text-lg font-semibold mb-2 text-[#eb2168]">
+                                                Why not travelling, start travelling and sharing with
+                                                Wandrlust!
+                                            </p>
+                                        </div>
+                                    ) : (
+                                        userPosts.map((post) => (
+                                            <div
+                                                key={post._id}
+                                                className="max-w-sm border-3 border-black rounded-lg relative overflow-hidden m-4"
+                                            >
+                                                <img
+                                                    src={`http://localhost:5000/images/${post.image}`}
+                                                    alt="Post"
+                                                    className="w-full"
+                                                />
+                                                <div className="flex items-end justify-between p-4">
+                                                    <div className="flex-col">
                                                         <p className="font-bold text-xl mb-2">
                                                             {post.caption}
                                                         </p>
@@ -289,18 +300,18 @@ export default function Profile() {
                                                             {post.likes.length}{" "}
                                                             {post.likes.length === 1 ? "Like" : "Likes"}
                                                         </p>
-                                                        <button
-                                                            className="absolute bottom-0 right-0 m-2 bg-red-500 text-white py-1 px-3 rounded-md"
-                                                            onClick={() => handleDeletePost(post._id)} // Assuming there's a function handleDeletePost to handle post deletion
-                                                        >
-                                                            Delete
-                                                        </button>
                                                     </div>
+                                                    <button
+                                                        className="m-2 bg-red-500 text-white py-1 px-3 rounded-md"
+                                                        onClick={() => handleDeletePost(post._id)} // Assuming there's a function handleDeletePost to handle post deletion
+                                                    >
+                                                        Delete
+                                                    </button>
                                                 </div>
-                                            ))
-                                        )}
-                                    </ScrollShadow>
-                                    <Button style={{ paddingTop: '1rem', paddingRight: '4rem' }} onClick={handleLogout} >Logout</Button>
+                                            </div>
+                                        ))
+                                    )}
+                                    {/* </ScrollShadow> */}
                                 </div>
                             </MDBCardBody>
                         </MDBCard>

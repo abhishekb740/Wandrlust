@@ -25,7 +25,22 @@ const PostSchema = new mongoose.Schema(
     },
     name: {
       type: String,
-    }
+    },
+    comments: {
+      type: [
+        {
+          text: String,
+          date: {
+            type: Date,
+            default: Date.now,
+          },
+          author: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User",
+          },
+        },
+      ],
+    },
   },
   {
     timestamps: true,
