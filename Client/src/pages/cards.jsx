@@ -35,9 +35,8 @@ export default function Cards(props) {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ text: comment }),
+        body: JSON.stringify({ text: comment, userId }),
       });
       if (res.ok) {
         const newComment = await res.json();
