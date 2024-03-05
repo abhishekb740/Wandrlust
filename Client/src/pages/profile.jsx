@@ -247,7 +247,7 @@ export default function Profile() {
                                                 ))}
                                         </div>
                                     )}
-                                    <div className="flex gap-4" >
+                                    <div className="flex gap-4">
                                         {editableAbout && (
                                             <button
                                                 className="mt-2 px-4 py-2 bg-[#eb2168] text-white rounded-md hover:bg-[#d7004b] transition duration-300 ease-in-out transform focus:outline-none focus:ring focus:ring-[#e85c8d]"
