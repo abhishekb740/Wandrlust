@@ -5,7 +5,7 @@ import { extractUserIdFromToken } from "../utils/extractUserIdFromToken";
 import ProfileImage from "../assets/images/profile.png";
 import Modal from "@mui/material/Modal";
 import CommentIcon from "@mui/icons-material/Comment";
-import { ScrollShadow } from "@nextui-org/react";
+// import { ScrollShadow } from "@nextui-org/react";
 
 export default function Cards(props) {
   const token = localStorage.getItem("token");
