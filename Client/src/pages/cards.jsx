@@ -1,10 +1,12 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Card, CardHeader, CardBody, Image } from "@nextui-org/react";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import { extractUserIdFromToken } from "../utils/extractUserIdFromToken";
 import ProfileImage from "../assets/images/profile.png";
 import Modal from "@mui/material/Modal";
 import CommentIcon from "@mui/icons-material/Comment";
+import { ScrollShadow } from "@nextui-org/react";
+
 
 export default function Cards(props) {
   const token = localStorage.getItem("token");
@@ -49,7 +51,7 @@ export default function Cards(props) {
       console.error("Error submitting comment:", error);
     }
   };
-  
+
 
   const url = `http://localhost:5000/${props.feed.image}`;
 
@@ -166,29 +168,32 @@ export default function Cards(props) {
           </div>
         )}
 
-<Modal open={showComments} onClose={() => setShowComments(false)}>
-        <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", backgroundColor: "white", padding: "1rem", borderRadius: "8px", display: "flex", flexDirection: "column", alignItems: "center" }}>
-          {/* Render comments */}
-          {comments.map((comment, index) => (
-            <div key={index}>
-              <p>
-                {comment.user}: {comment.text}
-              </p>
+        <Modal open={showComments} onClose={() => setShowComments(false)}>
+          <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", backgroundColor: "white", padding: "1rem", borderRadius: "8px", display: "flex", flexDirection: "column", alignItems: "center", maxHeight: "55vh", overflow: "hidden" }}>
+            <div style={{ overflowY: "auto", flex: 1, width: "100%" }}>
+              {/* Render comments */}
+              {comments.map((comment, index) => (
+                <div key={index}>
+                  <p>
+                    {comment.user}: {comment.text}
+                  </p>
+                </div>
+              ))}
             </div>
-          ))}
-          {/* Text area for new comment */}
-          <textarea
-            value={comment}
-            onChange={(e) => setComment(e.target.value)}
-            rows={4}
-            cols={50}
-            placeholder="Write a comment..."
-            style={{ marginBottom: "1rem" }}
-          />
-          {/* Submit button */}
-          <button className="px-3 py-2 ml-2 text-white rounded-lg bg-[#eb2168] hover:bg-[#d7004b]" onClick={handleCommentSubmit}>Submit</button>
-        </div>
-      </Modal>
+            {/* Text area for new comment */}
+            <textarea
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+              rows={4}
+              cols={50}
+              placeholder="Write a comment..."
+              style={{ marginTop: "1rem", resize: "none", width: "100%" }}
+            />
+            {/* Submit button */}
+            <button className="px-3 py-2 ml-2 mt-2 text-white rounded-lg bg-[#eb2168] hover:bg-[#d7004b]" onClick={handleCommentSubmit}>Submit</button>
+          </div>
+        </Modal>
+
       </div>
     </Card>
   );
