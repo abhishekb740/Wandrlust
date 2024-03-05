@@ -258,19 +258,32 @@ router.put("/dislike/:postId", async (req, res) => {
     }
 });
 
-router.get("/getPhotos", async (req, res) => {
-    let images = await ImageModel.find().populate("author").populate(
-        {
-            path: "comments",
-            populate: {
-                path: "user",
-                model: "User",
-            },
-        }
-    );
-    images = images.reverse();
-    res.send(images);
+// router.get("/getPhotos", async (req, res) => {
+//   let images = await ImageModel.find().populate("author").populate(
+//     {
+//       path: "comments",
+//       populate: {
+//         path: "user",
+//         model: "User",
+//       },
+//     }
+//   );
+//   images = images.reverse();
+//   res.send(images);
+// });
+
+router.get('/getPhotos', async (req, res) => {
+  try {
+    const posts = await Post.find().populate('author').populate('comments.author');
+    // The 'author' and 'comments.author' are the paths to populate, and 'username' is the field to select from the User model
+
+    res.json(posts);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server Error' });
+  }
 });
+
 
 router.post("/getAllUsers", logRequest, async (req, res, next) => {
     try {
@@ -392,10 +405,10 @@ router.post("/comment/:postId", async (req, res) => {
             return res.status(404).json({ error: "Post not found" });
         }
 
-        const newComment = {
-            user: userId,
-            text: text,
-        };
+    const newComment = {
+      author: userId,
+      text: text,
+    };
 
         post.comments.push(newComment);
         await post.save();
