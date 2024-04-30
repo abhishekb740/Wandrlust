@@ -315,13 +315,25 @@ router.post("/getAllUsers", logRequest, async (req, res, next) => {
 
 router.get("/:userId", async (req, res) => {
   const { userId } = req.params;
-  console.log(userId);
   try {
-    const userDetails = await user.findById(userId);
-    if (!userDetails) {
-      return res.status(404).json({ error: "User Not Found" });
+    const cacheKey = 'userDetails' + userId;
+    let data = await client.get(cacheKey);
+    if (!data) {
+      const userDetails = await user.findById(userId);
+      if (!userDetails) {
+        return res.status(404).json({ error: "User Not Found" });
+      }
+      data = {
+        data: userDetails,
+        custom: "User Details Fetched Successfully!!"
+      };
+      client.set(cacheKey, JSON.stringify(data));
+      res.status(200).json(data);
     }
-    res.status(200).json(userDetails);
+    else {
+      console.log('User data retrieved from Redis cache');
+      res.send(JSON.parse(data));
+    }
   } catch (err) {
     console.log(err);
   }
