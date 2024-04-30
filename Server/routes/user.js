@@ -10,6 +10,8 @@ const { log } = require("console");
 const cookieParser = require("cookie-parser");
 const Post = require("../Models/images");
 const axios = require("axios");
+const redis = require('redis');
+const client = require('../utils/redis');
 
 router.use(cookieParser());
 
@@ -273,15 +275,31 @@ router.put("/dislike/:postId", async (req, res) => {
 
 router.get("/getPhotos", async (req, res) => {
   try {
-    const posts = await Post.find()
-      .populate("author")
-      .populate("comments.author");
-    // The 'author' and 'comments.author' are the paths to populate, and 'username' is the field to select from the User model
-    posts.reverse();
-    res.json(posts);
+    const cacheKey = 'all-photos';
+    let data = await client.get(cacheKey);
+
+    if (!data) {
+      const posts = await Post.find()
+        .populate("author")
+        .populate("comments.author");
+      // The 'author' and 'comments.author' are the paths to populate, and 'username' is the field to select from the User model
+      posts.reverse();
+
+      data = {
+        data: posts,
+        custom: "Photos Fetched Successfully!!"
+      };
+
+      client.set(cacheKey, JSON.stringify(data));
+      data = JSON.parse(data);
+      console.log('Photos data set into Redis cache');
+    } else {
+      console.log('Photos data retrieved from Redis cache');
+    }
+    res.send(data);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Server Error" });
+    console.error('Error retrieving photos data:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 
