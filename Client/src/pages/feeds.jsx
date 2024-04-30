@@ -90,7 +90,7 @@ const Feeds = () => {
                 toast(`Error fetching user details`, { type: "error" });
             }
             const data = await res.json();
-            setUserDetails(data);
+            setUserDetails(data.data);
         };
         if (userId) {
             fetchUserDetails();
@@ -105,7 +105,8 @@ const Feeds = () => {
                     },
                 });
                 const data = await res.json();
-                setFeeds(data);
+                console.log(data);
+                setFeeds(data.data);
             } catch (error) {
                 console.error("Error fetching feeds:", error);
             }

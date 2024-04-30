@@ -47,9 +47,10 @@ export default function Profile() {
                     throw new Error("Error fetching user details");
                 }
                 const data = await res.json();
-                setUserDetails(data);
-                if (data.about) {
-                    setAboutContent({ description: data.about });
+                console.log(data);
+                setUserDetails(data.data);
+                if (data.data.about) {
+                    setAboutContent({ description: data.data.about });
                 }
             } catch (error) {
                 console.error("Error:", error);
