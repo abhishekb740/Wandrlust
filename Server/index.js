@@ -10,6 +10,12 @@ const path = require("path");
 const bodyParser = require("body-parser");
 const AdminRoute = require("./routes/admin");
 const AgencyRoute = require("./routes/agency");
+const swaggerUi = require('swagger-ui-express');
+const specs = require('./swagger');
+
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
+
 app.use("/images", express.static(path.join(__dirname, "images")));
 app.use(
   "/profileImages",
