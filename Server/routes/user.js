@@ -1148,6 +1148,7 @@ router.post("/comment/:postId", async (req, res) => {
     console.error("Error adding comment:", error);
     res.status(500).json({ error: "Internal server error" });
   }
+  
 });
 
 router.get("/", (req, res) => {
