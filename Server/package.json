@@ -4,6 +4,7 @@
   "description": "Wandrlust - Travel Web Application",
   "main": "index.js",
   "scripts": {
+    "test": "jest",
     "start": "nodemon index.js"
   },
   "repository": {
@@ -31,5 +32,9 @@
     "socket.io": "^4.7.2",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.0"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "supertest": "^7.0.0"
   }
 }
