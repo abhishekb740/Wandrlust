@@ -48,9 +48,9 @@ export default function Profile() {
                 }
                 const data = await res.json();
                 console.log(data);
-                setUserDetails(data.data);
-                if (data.data.about) {
-                    setAboutContent({ description: data.data.about });
+                setUserDetails(data);
+                if (data.about) {
+                    setAboutContent({ description: data.about });
                 }
             } catch (error) {
                 console.error("Error:", error);

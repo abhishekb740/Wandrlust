@@ -72,7 +72,6 @@ const Feeds = () => {
         })
         console.log(res);
         setCreatePost(false);
-        // reload the page
         window.location.href = "/feeds"
 
     }
@@ -90,7 +89,8 @@ const Feeds = () => {
                 toast(`Error fetching user details`, { type: "error" });
             }
             const data = await res.json();
-            setUserDetails(data.data);
+            console.log(data);
+            setUserDetails(data);
         };
         if (userId) {
             fetchUserDetails();

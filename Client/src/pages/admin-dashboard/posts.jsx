@@ -24,7 +24,7 @@ export default function Posts() {
             console.log(data);
             setLoadingFeeds(false);
             if (res.ok) {
-                setFeeds(data);
+                setFeeds(data.data);
             }
             else {
                 toast("Failed to get posts", { type: "error" }, { autoClose: 3000 })
