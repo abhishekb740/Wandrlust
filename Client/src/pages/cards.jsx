@@ -27,6 +27,7 @@ export default function Cards(props) {
   const [comments, setComments] = useState(props.feed.comments);
 
   useEffect(() => {
+    console.log(props.feed.comments);
     setComments(props.feed.comments || []);
   }, [props.feed.comments]);
 
@@ -187,13 +188,13 @@ export default function Cards(props) {
                       <div>
                         <div>
                           <span>
-                            {comment.author.username}
+                            {comment.author?.username}
                           </span>
                         </div>
                       </div>
                     </div>
                     <div>
-                      {comment.date.toLocaleString(
+                      {comment.date?.toLocaleString(
                         "en-US", {
                         timeZone: "Asia/Kolkata",
                         weekday: "long",

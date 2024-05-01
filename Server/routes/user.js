@@ -645,7 +645,22 @@ router.post(
       description: description,
       author: userId,
     });
-    res.send(await newImage.save());
+    await newImage.save();
+    const cacheKey = 'allPhotos';
+    let data = await client.get(cacheKey);
+    if (data) {
+      data = JSON.parse(data);
+      console.log(data);
+      data.data.push(newImage);
+      console.log(data);
+    } else {
+      data = {
+        data: [newImage],
+        custom: "Photos Fetched Successfully!!"
+      };
+    }
+    client.set(cacheKey, JSON.stringify(data));
+    res.send(newImage);
   }
 );
 
@@ -862,7 +877,6 @@ router.put("/follow/:userIdToFollow", async (req, res) => {
 
     await currentUser.updateOne({ $push: { following: userIdToFollow } });
     await userToFollow.updateOne({ $push: { followers: followingId } });
-
     res.status(200).json({ message: "User followed successfully" });
   } catch (error) {
     console.error(error);
@@ -911,6 +925,14 @@ router.put("/like/:postId", async (req, res) => {
         new: true,
       }
     );
+    const cacheKey = 'allPhotos';
+    let data = await client.get(cacheKey);
+    if (data) {
+      data = JSON.parse(data);
+      const post = data.data.find((photo) => photo._id === postId);
+      post.likes.push(req.body.userId);
+      await client.set(cacheKey, JSON.stringify(data));
+    }
     res.status(200).json({ message: "Liked successfully" });
   } catch (err) {
     console.error(err);
@@ -930,6 +952,15 @@ router.put("/dislike/:postId", async (req, res) => {
         new: true,
       }
     );
+    const cacheKey = 'allPhotos';
+    let data = await client.get(cacheKey);
+    if (data) {
+      data = JSON.parse(data);
+      console.log(data);
+      const post = data.data.find((photo) => photo._id === postId);
+      post.likes = post.likes.filter((like) => like !== req.body.userId);
+      await client.set(cacheKey, JSON.stringify(data));
+    }
     res.status(200).json({ message: "Disliked successfully" });
   } catch (err) {
     console.error(err);
@@ -953,21 +984,18 @@ router.put("/dislike/:postId", async (req, res) => {
 
 router.get("/getPhotos", async (req, res) => {
   try {
-    const cacheKey = 'all-photos';
+    const cacheKey = 'allPhotos';
     let data = await client.get(cacheKey);
-
     if (!data) {
       const posts = await Post.find()
         .populate("author")
         .populate("comments.author");
       // The 'author' and 'comments.author' are the paths to populate, and 'username' is the field to select from the User model
       posts.reverse();
-
       data = {
         data: posts,
         custom: "Photos Fetched Successfully!!"
       };
-
       client.set(cacheKey, JSON.stringify(data));
       data = JSON.parse(data);
       console.log('Photos data set into Redis cache');
@@ -994,24 +1022,11 @@ router.post("/getAllUsers", logRequest, async (req, res, next) => {
 router.get("/:userId", async (req, res) => {
   const { userId } = req.params;
   try {
-    const cacheKey = 'userDetails' + userId;
-    let data = await client.get(cacheKey);
-    if (!data) {
       const userDetails = await user.findById(userId);
       if (!userDetails) {
         return res.status(404).json({ error: "User Not Found" });
       }
-      data = {
-        data: userDetails,
-        custom: "User Details Fetched Successfully!!"
-      };
-      client.set(cacheKey, JSON.stringify(data));
-      res.status(200).json(data);
-    }
-    else {
-      console.log('User data retrieved from Redis cache');
-      res.send(JSON.parse(data));
-    }
+      res.status(200).json(userDetails);
   } catch (err) {
     console.log(err);
   }
@@ -1117,10 +1132,17 @@ router.post("/comment/:postId", async (req, res) => {
       author: userId,
       text: text,
     };
-
     post.comments.push(newComment);
     await post.save();
-
+    const cacheKey = 'allPhotos';
+    let data = await client.get(cacheKey);
+    if (data) {
+      data = JSON.parse(data);
+      console.log(data);
+      const post = data.data.find((photo) => photo._id === postId);
+      post.comments.push(newComment);
+      await client.set(cacheKey, JSON.stringify(data));
+    }
     res.status(200).json({ message: "Comment added successfully", newComment });
   } catch (error) {
     console.error("Error adding comment:", error);

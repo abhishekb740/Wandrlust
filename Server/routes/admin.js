@@ -4,7 +4,7 @@ const Admin = require("../Models/admin");
 const User = require("../Models/user");
 const Image = require("../Models/images");
 const Agency = require("../Models/agency");
-
+const client = require('../utils/redis');
 const adminId = "65d7b6e5287a3933286f914b";
 
 /**
@@ -181,6 +181,21 @@ router.post("/delete-post", async (req, res) => {
       admin.postsDeleted.push(postId);
       await admin.save();
       const post = await Image.findByIdAndDelete(postId);
+      const cacheKey = 'allPhotos';
+      let data = await client.get(cacheKey);
+      if (data) {
+        data = JSON.parse(data);
+        console.log(data);
+        let filteredData = data.data.filter((photo) => photo._id !== postId);
+        data = {
+          data: filteredData,
+          custom: "Post deleted Success"
+        };
+        await client.set(cacheKey, JSON.stringify(data));
+      }
+      else{
+        console.log("cache miss");
+      }
       return res.status(200).json({ message: "Post deleted successfully" });
     } else {
       return res.status(400).json({ message: "Admin not found" });
