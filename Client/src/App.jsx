@@ -22,7 +22,7 @@ import { extractUserIdFromToken } from "./utils/extractUserIdFromToken.js";
 import Agency from "./pages/agency.jsx";
 import AgencyUpload from "./pages/AgencyForm.jsx";
 import Programs from "./pages/agency-dashboard/programs.jsx";
-import Admin from "./pages/admin.jsx";
+import Admin from "./pages/Admin.jsx";
 import AgencyLogin from "./pages/agencylogin.jsx";
 
 function App() {
