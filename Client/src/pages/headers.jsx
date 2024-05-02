@@ -229,9 +229,16 @@ export default function Header() {
                                 </Box>
                             </DropdownTrigger>
                             <DropdownMenu>
-                                <DropdownItem key="new" href="/profile">Profile</DropdownItem>
-                                <DropdownItem key="chat" href='/chat'>Chat</DropdownItem>
-                                <DropdownItem key="copy" href="/admin">Admin</DropdownItem>
+                                <DropdownItem key="new">
+                                    <Link to="/profile">
+                                        Profile
+                                    </Link>
+                                </DropdownItem>
+                                <DropdownItem key="copy">
+                                    <Link to="/admin" >
+                                        Admin
+                                    </Link>
+                                </DropdownItem>
                                 <DropdownItem onClick={handleLogout} color='danger' key="logout">Logout</DropdownItem>
                             </DropdownMenu>
                         </Dropdown>
