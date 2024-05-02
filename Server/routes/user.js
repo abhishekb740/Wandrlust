@@ -987,10 +987,7 @@ router.get("/getPhotos", async (req, res) => {
     const cacheKey = 'allPhotos';
     let data = await client.get(cacheKey);
     if (!data) {
-      const posts = await Post.find()
-        .populate("author")
-        .populate("comments.author");
-      // The 'author' and 'comments.author' are the paths to populate, and 'username' is the field to select from the User model
+      const posts = await Post.find().populate("author").populate("comments.author");
       posts.reverse();
       data = {
         data: posts,
@@ -1022,11 +1019,11 @@ router.post("/getAllUsers", logRequest, async (req, res, next) => {
 router.get("/:userId", async (req, res) => {
   const { userId } = req.params;
   try {
-      const userDetails = await user.findById(userId);
-      if (!userDetails) {
-        return res.status(404).json({ error: "User Not Found" });
-      }
-      res.status(200).json(userDetails);
+    const userDetails = await user.findById(userId);
+    if (!userDetails) {
+      return res.status(404).json({ error: "User Not Found" });
+    }
+    res.status(200).json(userDetails);
   } catch (err) {
     console.log(err);
   }
@@ -1148,7 +1145,7 @@ router.post("/comment/:postId", async (req, res) => {
     console.error("Error adding comment:", error);
     res.status(500).json({ error: "Internal server error" });
   }
-  
+
 });
 
 router.get("/", (req, res) => {

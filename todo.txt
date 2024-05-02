@@ -1,8 +1,0 @@
-Form Validation
-Edit Profile
-why am i able to view pages without signup/login - FIX
-Add ability to block users, delete posts on Admin Dashboard - TODO
-homepage - TODO
-chat - TODO
-
-admin Dashboard
