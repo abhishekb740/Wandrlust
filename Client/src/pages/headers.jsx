@@ -46,7 +46,7 @@ export default function Header() {
 
     const handleLogout = () => {
         localStorage.removeItem("token");
-        window.location.href = "/signup";
+        window.location.href = "https://wandrlust.vercel.app/signup";
     }
 
     const handleMobileMenuOpen = (event) => {
