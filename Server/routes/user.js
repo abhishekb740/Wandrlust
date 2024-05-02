@@ -645,7 +645,7 @@ router.post(
       author: userId,
     });
     await newImage.save();
-    const cacheKey = 'allPhotos3';
+    const cacheKey = 'allPhotos4';
     let data = await client.get(cacheKey);
     if (data) {
       data = JSON.parse(data);
@@ -923,7 +923,7 @@ router.put("/like/:postId", async (req, res) => {
         new: true,
       }
     );
-    const cacheKey = 'allPhotos3';
+    const cacheKey = 'allPhotos4';
     let data = await client.get(cacheKey);
     if (data) {
       data = JSON.parse(data);
@@ -950,7 +950,7 @@ router.put("/dislike/:postId", async (req, res) => {
         new: true,
       }
     );
-    const cacheKey = 'allPhotos3';
+    const cacheKey = 'allPhotos4';
     let data = await client.get(cacheKey);
     if (data) {
       data = JSON.parse(data);
@@ -982,7 +982,7 @@ router.put("/dislike/:postId", async (req, res) => {
 
 router.get("/getPhotos", async (req, res) => {
   try {
-    const cacheKey = 'allPhotos3';
+    const cacheKey = 'allPhotos4';
     let data = await client.get(cacheKey);
     if (!data) {
       const posts = await Post.find().populate("author").populate("comments.author");
@@ -1128,7 +1128,7 @@ router.post("/comment/:postId", async (req, res) => {
     };
     post.comments.push(newComment);
     await post.save();
-    const cacheKey = 'allPhotos3';
+    const cacheKey = 'allPhotos4';
     let data = await client.get(cacheKey);
     if (data) {
       data = JSON.parse(data);
