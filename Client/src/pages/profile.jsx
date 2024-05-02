@@ -36,7 +36,7 @@ export default function Profile() {
         const userId = extractUserIdFromToken(token);
         const fetchUserDetails = async () => {
             try {
-                const res = await fetch(`http://localhost:5000/${userId}`, {
+                const res = await fetch(`https://wandrlust-server.fly.dev/${userId}`, {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",
@@ -59,7 +59,7 @@ export default function Profile() {
         };
         const fetchUserPosts = async () => {
             try {
-                const res = await fetch(`http://localhost:5000/getPhotos/${userId}`, {
+                const res = await fetch(`https://wandrlust-server.fly.dev/getPhotos/${userId}`, {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",
@@ -91,7 +91,7 @@ export default function Profile() {
             const token = localStorage.getItem("token");
             const userId = extractUserIdFromToken(token);
             await axios.put(
-                `http://localhost:5000/${userId}/about`,
+                `https://wandrlust-server.fly.dev/${userId}/about`,
                 {
                     about: aboutContent.description,
                 },
@@ -125,7 +125,7 @@ export default function Profile() {
             const formData = new FormData();
             formData.append("profileImage", selectedFile);
             formData.append("userId", userId);
-            await axios.post(`http://localhost:5000/uploadProfilePhoto`, formData);
+            await axios.post(`https://wandrlust-server.fly.dev/uploadProfilePhoto`, formData);
             toast("Profile photo updated successfully", { type: "success" });
             setModalIsOpen(false);
         } catch (error) {
@@ -138,7 +138,7 @@ export default function Profile() {
         try {
             // Make a DELETE request to your backend API to delete the post
             const response = await axios.delete(
-                `http://localhost:5000/deletePost/${postId}`
+                `https://wandrlust-server.fly.dev/deletePost/${postId}`
             );
 
             // If deletion is successful, update the userPosts state to remove the deleted post
@@ -172,7 +172,7 @@ export default function Profile() {
                                     style={{ width: "150px" }}
                                 >
                                     <MDBCardImage
-                                        src={`http://localhost:5000/profileImages/${userDetails.profileImage}`}
+                                        src={`https://wandrlust-server.fly.dev/profileImages/${userDetails.profileImage}`}
                                         alt="Profile"
                                         className=" mt-20 mb-5 img-thumbnail rounded-full pr-1" // Adjusted style
                                         style={{ width: "150px", height: "150px", zIndex: "1" }} // Adjusted style
@@ -288,7 +288,7 @@ export default function Profile() {
                                                 className="max-w-sm border-3 border-black rounded-lg relative overflow-hidden m-4"
                                             >
                                                 <img
-                                                    src={`http://localhost:5000/images/${post.image}`}
+                                                    src={`https://wandrlust-server.fly.dev/images/${post.image}`}
                                                     alt="Post"
                                                     className="w-full"
                                                 />

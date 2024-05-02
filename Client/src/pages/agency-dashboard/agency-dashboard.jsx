@@ -36,7 +36,7 @@ const Agency = () => {
 
     useEffect(() => {
         const getAllAgencies = async () => {
-            const res = await fetch("http://localhost:5000/agency/getAllAgency", {
+            const res = await fetch("https://wandrlust-server.fly.dev/agency/getAllAgency", {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",

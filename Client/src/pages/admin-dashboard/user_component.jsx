@@ -6,7 +6,7 @@ import Modal from "@mui/material/Modal";
 export default function UserComponent({ user, setUsers }) {
     const [showModal, setShowModal] = useState(false);
     const blockUser = async (userId) => {
-        const res = await fetch("http://localhost:5000/admin/block-user", {
+        const res = await fetch("https://wandrlust-server.fly.dev/admin/block-user", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -29,7 +29,7 @@ export default function UserComponent({ user, setUsers }) {
     console.log(user);
 
     const unBlockUser = async (userId) => {
-        const res = await fetch("http://localhost:5000/admin/unblock-user", {
+        const res = await fetch("https://wandrlust-server.fly.dev/admin/unblock-user", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -71,7 +71,7 @@ export default function UserComponent({ user, setUsers }) {
                                 <img
                                     src={
                                         user.profileImage
-                                            ? `http://localhost:5000/profileImages/${user.profileImage}`
+                                            ? `https://wandrlust-server.fly.dev/profileImages/${user.profileImage}`
                                             : "https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png"
                                     }
                                     height={50}

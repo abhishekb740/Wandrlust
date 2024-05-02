@@ -11,7 +11,7 @@ export default function Users() {
 
     useEffect(() => {
         const getAllUsers = async () => {
-            const res = await fetch("http://localhost:5000/getAllUsers", {
+            const res = await fetch("https://wandrlust-server.fly.dev/getAllUsers", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

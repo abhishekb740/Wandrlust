@@ -42,7 +42,7 @@ export default function AdminDashboard() {
     useEffect(() => {
         const getDashboardData = async () => {
             setLoading(true);
-            const res = await fetch("http://localhost:5000/admin/dashboard", {
+            const res = await fetch("https://wandrlust-server.fly.dev/admin/dashboard", {
                 method: 'GET',
                 headers: {
                     "Content-Type": "application/json",

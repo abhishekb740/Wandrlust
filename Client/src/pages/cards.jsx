@@ -33,7 +33,7 @@ export default function Cards(props) {
 
   const handleCommentSubmit = async () => {
     try {
-      const res = await fetch(`http://localhost:5000/comment/${props.feed._id}`, {
+      const res = await fetch(`https://wandrlust-server.fly.dev/comment/${props.feed._id}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -54,11 +54,11 @@ export default function Cards(props) {
 
   console.log(props.feed.comments);
 
-  const url = `http://localhost:5000/${props.feed.image}`;
+  const url = `https://wandrlust-server.fly.dev/${props.feed.image}`;
 
   const likePost = async (postId) => {
     try {
-      const res = await fetch(`http://localhost:5000/like/${postId}`, {
+      const res = await fetch(`https://wandrlust-server.fly.dev/like/${postId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -75,7 +75,7 @@ export default function Cards(props) {
 
   const disLikePost = async (postId) => {
     try {
-      const res = await fetch(`http://localhost:5000/dislike/${postId}`, {
+      const res = await fetch(`https://wandrlust-server.fly.dev/dislike/${postId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -112,7 +112,7 @@ export default function Cards(props) {
             <img
               src={
                 props.feed.author?.profileImage
-                  ? `http://localhost:5000/profileImages/${props.feed.author.profileImage}`
+                  ? `https://wandrlust-server.fly.dev/profileImages/${props.feed.author.profileImage}`
                   : ProfileImage
               }
               height={50}
@@ -135,7 +135,7 @@ export default function Cards(props) {
         <Image
           alt="Card background"
           className="object-cover rounded-xl"
-          src={`http://localhost:5000/images/${props.feed.image}`}
+          src={`https://wandrlust-server.fly.dev/images/${props.feed.image}`}
           width={400}
           style={{ border: "3px solid black" }}
         />
@@ -179,7 +179,7 @@ export default function Cards(props) {
                       <img
                         src={
                           comment.author?.profileImage
-                            ? `http://localhost:5000/profileImages/${comment.author?.profileImage}`
+                            ? `https://wandrlust-server.fly.dev/profileImages/${comment.author?.profileImage}`
                             : "https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png"
                         }
                         height={30}

@@ -24,7 +24,6 @@ import AgencyUpload from "./pages/AgencyForm.jsx";
 import Programs from "./pages/agency-dashboard/programs.jsx";
 import Admin from "./pages/admin.jsx";
 import AgencyLogin from "./pages/agencylogin.jsx";
-import MainChat from "./pages/mainChat.jsx";
 
 function App() {
     const [userId, setUserId] = useState(null);
@@ -57,7 +56,6 @@ function App() {
                     <Route path="/dashboard/agency" element={<AgencyDashboard />} />
                     <Route path="/dashboard/agency/programs" element={<Programs />} />
                     <Route path="/admin" element={<Admin />} />
-                    <Route path="/chat" element={<MainChat />} />
                 </Routes>
             </ScrollToTop>
             <ToastContainer />

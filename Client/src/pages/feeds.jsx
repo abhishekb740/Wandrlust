@@ -65,7 +65,7 @@ const Feeds = () => {
         formData.append("description", descriptionValue);
         formData.append("userId", userId);
         console.log(formData);
-        const res = await axios.post("http://localhost:5000/uploadPhoto", formData, {
+        const res = await axios.post("https://wandrlust-server.fly.dev/uploadPhoto", formData, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             }
@@ -78,7 +78,7 @@ const Feeds = () => {
 
     useEffect(() => {
         const fetchUserDetails = async () => {
-            const res = await fetch(`http://localhost:5000/${userId}`, {
+            const res = await fetch(`https://wandrlust-server.fly.dev/${userId}`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
@@ -98,7 +98,7 @@ const Feeds = () => {
         const getFeeds = async () => {
             setLoadingFeeds(true);
             try {
-                const res = await fetch("http://localhost:5000/getPhotos", {
+                const res = await fetch("https://wandrlust-server.fly.dev/getPhotos", {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",
@@ -115,7 +115,7 @@ const Feeds = () => {
         const getUsers = async () => {
             setLoadingUsers(true);
             try {
-                const res = await fetch("http://localhost:5000/getAllUsers", {
+                const res = await fetch("https://wandrlust-server.fly.dev/getAllUsers", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
@@ -137,7 +137,7 @@ const Feeds = () => {
     const handleFollow = async (userIdToFollow) => {
         try {
             const res = await fetch(
-                `http://localhost:5000/follow/${userIdToFollow}`,
+                `https://wandrlust-server.fly.dev/follow/${userIdToFollow}`,
                 {
                     method: "PUT",
                     headers: {
@@ -166,7 +166,7 @@ const Feeds = () => {
     const handleUnfollow = async (userIdToUnfollow) => {
         try {
             const res = await fetch(
-                `http://localhost:5000/unfollow/${userIdToUnfollow}`,
+                `https://wandrlust-server.fly.dev/unfollow/${userIdToUnfollow}`,
                 {
                     method: "PUT",
                     headers: {
@@ -235,7 +235,7 @@ const Feeds = () => {
                         <CardHeader className="pb-0 pt-2 px-4 flex-col items-start">
                             <div style={{ display: "flex", gap: "1rem" }}>
                                 <img
-                                    src={`http://localhost:5000/profileImages/${userDetails.profileImage}`}
+                                    src={`https://wandrlust-server.fly.dev/profileImages/${userDetails.profileImage}`}
                                     width="50px"
                                     height="50px"
                                     alt="profile"
@@ -355,7 +355,7 @@ const Feeds = () => {
                                             <img
                                                 src={
                                                     user.profileImage
-                                                        ? `http://localhost:5000/profileImages/${user.profileImage}`
+                                                        ? `https://wandrlust-server.fly.dev/profileImages/${user.profileImage}`
                                                         : ProfileImage
                                                 }
                                                 alt="profile"

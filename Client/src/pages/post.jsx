@@ -49,7 +49,7 @@ const Post = () => {
         formData.append("description", descriptionValue);
         formData.append("userId", userId);
         console.log(formData);
-        const res = await axios.post("http://localhost:5000/uploadPhoto", formData, {
+        const res = await axios.post("https://wandrlust-server.fly.dev/uploadPhoto", formData, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             }

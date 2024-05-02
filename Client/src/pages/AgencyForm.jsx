@@ -22,7 +22,7 @@ const AgencyUpload = () => {
     console.log(formData);
     try {
       const response = await fetch(
-        "http://localhost:5000/agency/agenciesUpload",
+        "https://wandrlust-server.fly.dev/agency/agenciesUpload",
         {
           method: "POST",
           headers: {

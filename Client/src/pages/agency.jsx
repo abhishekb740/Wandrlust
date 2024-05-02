@@ -13,7 +13,7 @@ const Agency = () => {
 
     useEffect(() => {
         const getAllAgencies = async () => {
-            const res = await fetch("http://localhost:5000/agency/getAllAgency", {
+            const res = await fetch("https://wandrlust-server.fly.dev/agency/getAllAgency", {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
@@ -28,7 +28,7 @@ const Agency = () => {
 
     const handleEnroll = async (agencyId) => {
         console.log(agencyId);
-        const res = await fetch(`http://localhost:5000/agency/enroll/${agencyId}`, {
+        const res = await fetch(`https://wandrlust-server.fly.dev/agency/enroll/${agencyId}`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -51,7 +51,7 @@ const Agency = () => {
 
     const handleUnEnroll = async (agencyId) => {
         console.log(agencyId);
-        const res = await fetch(`http://localhost:5000/agency/unenroll/${agencyId}`, {
+        const res = await fetch(`https://wandrlust-server.fly.dev/agency/unenroll/${agencyId}`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
