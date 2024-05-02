@@ -111,7 +111,7 @@ export default function Cards(props) {
           <div className="flex items-center gap-2">
             <img
               src={
-                props.feed.author.profileImage
+                props.feed.author?.profileImage
                   ? `http://localhost:5000/profileImages/${props.feed.author.profileImage}`
                   : ProfileImage
               }

@@ -635,7 +635,6 @@ router.post(
   "/uploadPhoto",
   upload.single("myImage"),
   async (req, res, next) => {
-    console.log(req.file);
     const userId = req.body.userId;
     const caption = req.body.caption;
     const description = req.body.description;
@@ -646,13 +645,13 @@ router.post(
       author: userId,
     });
     await newImage.save();
-    const cacheKey = 'allPhotos';
+    const cacheKey = 'allPhotos3';
     let data = await client.get(cacheKey);
     if (data) {
       data = JSON.parse(data);
-      console.log(data);
-      data.data.push(newImage);
-      console.log(data);
+      data.data.push(await newImage.populate("author"));
+      console.log("NewImage", newImage);
+      console.log("NewImage Populated in Console", await newImage.populate("author"));
     } else {
       data = {
         data: [newImage],
@@ -925,7 +924,7 @@ router.put("/like/:postId", async (req, res) => {
         new: true,
       }
     );
-    const cacheKey = 'allPhotos';
+    const cacheKey = 'allPhotos3';
     let data = await client.get(cacheKey);
     if (data) {
       data = JSON.parse(data);
@@ -952,7 +951,7 @@ router.put("/dislike/:postId", async (req, res) => {
         new: true,
       }
     );
-    const cacheKey = 'allPhotos';
+    const cacheKey = 'allPhotos3';
     let data = await client.get(cacheKey);
     if (data) {
       data = JSON.parse(data);
@@ -984,7 +983,7 @@ router.put("/dislike/:postId", async (req, res) => {
 
 router.get("/getPhotos", async (req, res) => {
   try {
-    const cacheKey = 'allPhotos';
+    const cacheKey = 'allPhotos3';
     let data = await client.get(cacheKey);
     if (!data) {
       const posts = await Post.find().populate("author").populate("comments.author");
@@ -994,6 +993,7 @@ router.get("/getPhotos", async (req, res) => {
         custom: "Photos Fetched Successfully!!"
       };
       client.set(cacheKey, JSON.stringify(data));
+      console.log(data);
       data = JSON.parse(data);
       console.log('Photos data set into Redis cache');
     } else {
@@ -1120,32 +1120,30 @@ router.post("/comment/:postId", async (req, res) => {
 
   try {
     const post = await Post.findById(postId);
-
     if (!post) {
       return res.status(404).json({ error: "Post not found" });
     }
-
     const newComment = {
       author: userId,
       text: text,
     };
     post.comments.push(newComment);
     await post.save();
-    const cacheKey = 'allPhotos';
+    const cacheKey = 'allPhotos3';
     let data = await client.get(cacheKey);
     if (data) {
       data = JSON.parse(data);
-      console.log(data);
-      const post = data.data.find((photo) => photo._id === postId);
-      post.comments.push(newComment);
-      await client.set(cacheKey, JSON.stringify(data));
+      const cachedPostIndex = data.data.findIndex((photo) => photo._id === postId);
+      if (cachedPostIndex !== -1) {
+        data.data[cachedPostIndex] = await Post.findById(postId).populate("comments.author"); // Populate the comments' authors in the cached post
+        await client.set(cacheKey, JSON.stringify(data));
+      }
     }
     res.status(200).json({ message: "Comment added successfully", newComment });
   } catch (error) {
     console.error("Error adding comment:", error);
     res.status(500).json({ error: "Internal server error" });
   }
-
 });
 
 router.get("/", (req, res) => {

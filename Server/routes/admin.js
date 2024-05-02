@@ -181,7 +181,7 @@ router.post("/delete-post", async (req, res) => {
       admin.postsDeleted.push(postId);
       await admin.save();
       const post = await Image.findByIdAndDelete(postId);
-      const cacheKey = 'allPhotos';
+      const cacheKey = 'allPhotos3';
       let data = await client.get(cacheKey);
       if (data) {
         data = JSON.parse(data);
