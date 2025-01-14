@@ -27,47 +27,65 @@ export default function Cards(props) {
   const [comments, setComments] = useState(props.feed.comments);
 
   useEffect(() => {
-    console.log(props.feed.comments);
-    setComments(props.feed.comments || []);
+    if (props.feed.comments) {
+      setComments(props.feed.comments);
+    }
   }, [props.feed.comments]);
 
   const handleCommentSubmit = async () => {
+    if (!comment.trim()) {
+      return; // Don't submit empty comments
+    }
+
     try {
-      const res = await fetch(`https://wandrlust-server.fly.dev/comment/${props.feed._id}`, {
+      const res = await fetch(`http://localhost:3000/comment/${props.feed._id}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ text: comment, userId }),
+        body: JSON.stringify({ 
+          text: comment, 
+          userId 
+        }),
       });
-      if (res.ok) {
-        const newComment = await res.json();
-        setComments([...comments, newComment]);
-        setComment("");
-      } else {
-        console.error("Failed to submit comment");
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        console.error("Comment error:", errorData);
+        throw new Error(errorData.message || "Failed to submit comment");
       }
+
+      const newComment = await res.json();
+      setComments(prevComments => [...prevComments, newComment]);
+      setComment(""); // Clear the comment input
     } catch (error) {
       console.error("Error submitting comment:", error);
+      // You might want to show a toast or error message to the user
     }
   };
 
   console.log(props.feed.comments);
 
-  const url = `https://wandrlust-server.fly.dev/${props.feed.image}`;
+  const url = `http://localhost:3000/${props.feed.image}`;
 
   const likePost = async (postId) => {
     try {
-      const res = await fetch(`https://wandrlust-server.fly.dev/like/${postId}`, {
+      const res = await fetch(`http://localhost:3000/like/${postId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ userId }),
       });
-      if (res.ok) {
-        props.updateLikeStatus(postId, true);
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        console.error("Like error:", errorData);
+        return;
       }
+
+      const data = await res.json();
+      props.updateLikeStatus(postId, true);
     } catch (error) {
       console.error("Error liking post:", error);
     }
@@ -75,20 +93,33 @@ export default function Cards(props) {
 
   const disLikePost = async (postId) => {
     try {
-      const res = await fetch(`https://wandrlust-server.fly.dev/dislike/${postId}`, {
+      const res = await fetch(`http://localhost:3000/dislike/${postId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ userId }),
       });
-      if (res.ok) {
-        props.updateLikeStatus(postId, false);
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        console.error("Dislike error:", errorData);
+        return;
       }
+
+      const data = await res.json();
+      props.updateLikeStatus(postId, false);
     } catch (error) {
       console.error("Error unliking post:", error);
     }
   };
+
+  const author = props.feed.author || {};
+  const profileImageUrl = author.profileImage
+    ? `http://localhost:3000/profileImages/${author.profileImage}`
+    : ProfileImage;
+
+  console.log('Profile Image URL:', profileImageUrl);
 
   return (
     <Card
@@ -110,15 +141,13 @@ export default function Cards(props) {
         >
           <div className="flex items-center gap-2">
             <img
-              src={
-                props.feed.author?.profileImage
-                  ? `https://wandrlust-server.fly.dev/profileImages/${props.feed.author.profileImage}`
-                  : ProfileImage
-              }
+              src={profileImageUrl}
+              alt="Profile"
               height={50}
               width={50}
-            ></img>
-            <p className="font-bold text-xl">{props.feed.author.name}</p>
+              onError={(e) => { e.target.src = ProfileImage; }}
+            />
+            <p className="font-bold text-xl">{author.name || 'Unknown User'}</p>
           </div>
           <small className="text-default-500">{createdAtIST}</small>
         </div>
@@ -135,7 +164,7 @@ export default function Cards(props) {
         <Image
           alt="Card background"
           className="object-cover rounded-xl"
-          src={`https://wandrlust-server.fly.dev/images/${props.feed.image}`}
+          src={`http://localhost:3000/images/${props.feed.image}`}
           width={400}
           style={{ border: "3px solid black" }}
         />
@@ -179,23 +208,24 @@ export default function Cards(props) {
                       <img
                         src={
                           comment.author?.profileImage
-                            ? `https://wandrlust-server.fly.dev/profileImages/${comment.author?.profileImage}`
-                            : "https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png"
+                            ? `http://localhost:3000/profileImages/${comment.author.profileImage}`
+                            : ProfileImage
                         }
                         height={30}
                         width={30}
+                        alt="Profile"
+                        onError={(e) => { e.target.src = ProfileImage; }}
                       />
                       <div>
                         <div>
                           <span>
-                            {comment.author?.username}
+                            {comment.author?.username || 'Unknown User'}
                           </span>
                         </div>
                       </div>
                     </div>
                     <div>
-                      {comment.date?.toLocaleString(
-                        "en-US", {
+                      {new Date(comment.date).toLocaleString("en-US", {
                         timeZone: "Asia/Kolkata",
                         weekday: "long",
                         year: "numeric",
@@ -204,8 +234,7 @@ export default function Cards(props) {
                         hour: "numeric",
                         minute: "numeric",
                         second: "numeric",
-                      }
-                      )}
+                      })}
                     </div>
                   </div>
                   <div>

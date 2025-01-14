@@ -24,7 +24,7 @@ const Signup = () => {
 
       setLoading(true);
 
-      const response = await fetch("https://wandrlust-server.fly.dev/signup", {
+      const response = await fetch("http://localhost:3000/signup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

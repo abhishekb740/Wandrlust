@@ -14,7 +14,7 @@ export default function Posts() {
     useEffect(() => {
         const getAllPosts = async () => {
             setLoadingFeeds(true);
-            const res = await fetch("https://wandrlust-server.fly.dev/getPhotos", {
+            const res = await fetch("http://localhost:3000/getPhotos", {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",

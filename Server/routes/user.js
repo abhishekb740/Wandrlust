@@ -625,43 +625,61 @@ const fileStorageEngine = multer.diskStorage({
     cb(null, "./images");
   },
   filename: (req, file, cb) => {
-    cb(false, Date.now() + "--" + file.originalname);
-  },
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, uniqueSuffix + '-' + file.originalname);
+  }
 });
 
-const upload = multer({ storage: fileStorageEngine });
-
-router.post(
-  "/uploadPhoto",
-  upload.single("myImage"),
-  async (req, res, next) => {
-    const userId = req.body.userId;
-    const caption = req.body.caption;
-    const description = req.body.description;
-    const newImage = await new ImageModel({
-      image: req.file.filename,
-      caption: caption,
-      description: description,
-      author: userId,
-    });
-    await newImage.save();
-    const cacheKey = 'allPhotos4';
-    let data = await client.get(cacheKey);
-    if (data) {
-      data = JSON.parse(data);
-      data.data.push(await newImage.populate("author"));
-      console.log("NewImage", newImage);
-      console.log("NewImage Populated in Console", await newImage.populate("author"));
-    } else {
-      data = {
-        data: [newImage],
-        custom: "Photos Fetched Successfully!!"
-      };
-    }
-    client.set(cacheKey, JSON.stringify(data));
-    res.send(newImage);
+const upload = multer({ 
+  storage: fileStorageEngine,
+  limits: {
+    fileSize: 5 * 1024 * 1024 // 5MB limit
   }
-);
+});
+
+router.post("/uploadPhoto", upload.single("myImage"), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: "No file uploaded" });
+    }
+
+    const { userId, caption, description } = req.body;
+
+    const newImage = new ImageModel({
+      image: req.file.filename,
+      caption: caption || "",
+      description: description || "",
+      author: userId
+    });
+
+    await newImage.save();
+
+    // Update Redis cache
+    const cacheKey = 'allPhotos4';
+    try {
+      let data = await client.get(cacheKey);
+      if (data) {
+        data = JSON.parse(data);
+        const populatedImage = await newImage.populate("author");
+        data.data.unshift(populatedImage); // Add to start of array
+        await client.set(cacheKey, JSON.stringify(data), {
+          EX: 3600 // 1 hour expiration
+        });
+      }
+    } catch (redisError) {
+      console.error("Redis error:", redisError);
+      // Continue even if Redis fails
+    }
+
+    res.status(200).json(newImage);
+  } catch (error) {
+    console.error("Upload error:", error);
+    res.status(500).json({ 
+      error: "Internal server error",
+      message: error.message 
+    });
+  }
+});
 
 
 //upload profile photo
@@ -914,55 +932,118 @@ router.put("/unfollow/:userIdToUnfollow", async (req, res) => {
 router.put("/like/:postId", async (req, res) => {
   const postId = req.params.postId;
   try {
-    await ImageModel.findByIdAndUpdate(
+    // First check if the post exists
+    const post = await ImageModel.findById(postId);
+    if (!post) {
+      return res.status(404).json({ error: "Post not found" });
+    }
+
+    // Check if user hasn't already liked the post
+    if (post.likes.includes(req.body.userId)) {
+      return res.status(400).json({ error: "Post already liked" });
+    }
+
+    // Update the post with the new like
+    const updatedPost = await ImageModel.findByIdAndUpdate(
       postId,
       {
         $push: { likes: req.body.userId },
       },
       {
-        new: true,
+        new: true, // Return the updated document
+        runValidators: true // Run model validators
       }
     );
+
+    // Update Redis cache if it exists
     const cacheKey = 'allPhotos4';
-    let data = await client.get(cacheKey);
-    if (data) {
-      data = JSON.parse(data);
-      const post = data.data.find((photo) => photo._id === postId);
-      post.likes.push(req.body.userId);
-      await client.set(cacheKey, JSON.stringify(data));
+    try {
+      let data = await client.get(cacheKey);
+      if (data) {
+        data = JSON.parse(data);
+        const postIndex = data.data.findIndex(photo => photo._id === postId);
+        if (postIndex !== -1) {
+          data.data[postIndex].likes.push(req.body.userId);
+          await client.set(cacheKey, JSON.stringify(data), {
+            EX: 3600 // 1 hour expiration
+          });
+        }
+      }
+    } catch (redisError) {
+      console.error("Redis error:", redisError);
+      // Continue even if Redis fails
     }
-    res.status(200).json({ message: "Liked successfully" });
+
+    res.status(200).json({ 
+      message: "Liked successfully",
+      post: updatedPost 
+    });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Internal Server Error" });
+    console.error("Like error:", err);
+    res.status(500).json({ 
+      error: "Internal Server Error",
+      message: err.message 
+    });
   }
 });
 
 router.put("/dislike/:postId", async (req, res) => {
   const postId = req.params.postId;
   try {
-    await ImageModel.findByIdAndUpdate(
+    // First check if the post exists
+    const post = await ImageModel.findById(postId);
+    if (!post) {
+      return res.status(404).json({ error: "Post not found" });
+    }
+
+    // Check if user has liked the post
+    if (!post.likes.includes(req.body.userId)) {
+      return res.status(400).json({ error: "Post not liked yet" });
+    }
+
+    // Remove the like
+    const updatedPost = await ImageModel.findByIdAndUpdate(
       postId,
       {
         $pull: { likes: req.body.userId },
       },
       {
-        new: true,
+        new: true, // Return the updated document
+        runValidators: true // Run model validators
       }
     );
+
+    // Update Redis cache
     const cacheKey = 'allPhotos4';
-    let data = await client.get(cacheKey);
-    if (data) {
-      data = JSON.parse(data);
-      console.log(data);
-      const post = data.data.find((photo) => photo._id === postId);
-      post.likes = post.likes.filter((like) => like !== req.body.userId);
-      await client.set(cacheKey, JSON.stringify(data));
+    try {
+      let data = await client.get(cacheKey);
+      if (data) {
+        data = JSON.parse(data);
+        const postIndex = data.data.findIndex(photo => photo._id === postId);
+        if (postIndex !== -1) {
+          data.data[postIndex].likes = data.data[postIndex].likes.filter(
+            like => like !== req.body.userId
+          );
+          await client.set(cacheKey, JSON.stringify(data), {
+            EX: 3600 // 1 hour expiration
+          });
+        }
+      }
+    } catch (redisError) {
+      console.error("Redis error:", redisError);
+      // Continue even if Redis fails
     }
-    res.status(200).json({ message: "Disliked successfully" });
+
+    res.status(200).json({ 
+      message: "Disliked successfully",
+      post: updatedPost 
+    });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Internal Server Error" });
+    console.error("Dislike error:", err);
+    res.status(500).json({ 
+      error: "Internal Server Error",
+      message: err.message 
+    });
   }
 });
 
@@ -982,26 +1063,40 @@ router.put("/dislike/:postId", async (req, res) => {
 
 router.get("/getPhotos", async (req, res) => {
   try {
-    const cacheKey = 'allPhotos4';
-    let data = await client.get(cacheKey);
-    if (!data) {
-      const posts = await Post.find().populate("author").populate("comments.author");
-      posts.reverse();
-      data = {
-        data: posts,
-        custom: "Photos Fetched Successfully!!"
-      };
-      client.set(cacheKey, JSON.stringify(data));
-      console.log(data);
-      data = JSON.parse(data);
-      console.log('Photos data set into Redis cache');
-    } else {
-      console.log('Photos data retrieved from Redis cache');
+    const posts = await Post.find()
+      .populate("author")
+      .populate("comments.author");
+    
+    if (!posts) {
+      return res.status(404).json({ 
+        message: 'No posts found',
+        data: [] 
+      });
     }
-    res.send(data);
+
+    const response = {
+      data: posts.reverse(),
+      custom: "Photos Fetched Successfully!!"
+    };
+
+    // Set Redis cache - using new Redis API
+    const cacheKey = 'allPhotos4';
+    try {
+      await client.set(cacheKey, JSON.stringify(response), {
+        EX: 3600 // expires in 1 hour
+      });
+    } catch (redisError) {
+      console.error('Redis error:', redisError);
+      // Continue even if Redis fails
+    }
+
+    res.status(200).json(response);
   } catch (error) {
-    console.error('Error retrieving photos data:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    console.error('Error in getPhotos:', error);
+    res.status(500).json({ 
+      error: 'Internal server error',
+      message: error.message 
+    });
   }
 });
 
@@ -1122,26 +1217,49 @@ router.post("/comment/:postId", async (req, res) => {
     if (!post) {
       return res.status(404).json({ error: "Post not found" });
     }
+
     const newComment = {
       author: userId,
       text: text,
+      date: new Date()
     };
+
+    // Add comment to post
     post.comments.push(newComment);
     await post.save();
+
+    // Populate the author details for the new comment
+    const populatedPost = await Post.findById(postId)
+      .populate('comments.author', 'username profileImage');
+
+    const addedComment = populatedPost.comments[populatedPost.comments.length - 1];
+
+    // Update Redis cache
     const cacheKey = 'allPhotos4';
-    let data = await client.get(cacheKey);
-    if (data) {
-      data = JSON.parse(data);
-      const cachedPostIndex = data.data.findIndex((photo) => photo._id === postId);
-      if (cachedPostIndex !== -1) {
-        data.data[cachedPostIndex] = await Post.findById(postId).populate("comments.author"); // Populate the comments' authors in the cached post
-        await client.set(cacheKey, JSON.stringify(data));
+    try {
+      let data = await client.get(cacheKey);
+      if (data) {
+        data = JSON.parse(data);
+        const cachedPostIndex = data.data.findIndex((photo) => photo._id === postId);
+        if (cachedPostIndex !== -1) {
+          data.data[cachedPostIndex].comments.push(addedComment);
+          await client.set(cacheKey, JSON.stringify(data), {
+            EX: 3600 // 1 hour expiration
+          });
+        }
       }
+    } catch (redisError) {
+      console.error("Redis error:", redisError);
+      // Continue even if Redis fails
     }
-    res.status(200).json({ message: "Comment added successfully", newComment });
+
+    res.status(200).json(addedComment);
   } catch (error) {
     console.error("Error adding comment:", error);
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ 
+      error: "Internal server error",
+      message: error.message 
+    });
   }
 });
 

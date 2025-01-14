@@ -9,7 +9,7 @@ const Signin = () => {
     e.preventDefault();
     const username = e.target.username.value;
     const password = e.target.password.value;
-    const response = await fetch("https://wandrlust-server.fly.dev/signin", {
+    const response = await fetch("http://localhost:3000/signin", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

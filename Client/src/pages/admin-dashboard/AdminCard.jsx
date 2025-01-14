@@ -16,7 +16,7 @@ export default function Cards(props) {
     const deletePost = async (postId) => {
         console.log("Delete post");
         console.log(postId);
-        const res = await fetch(`https://wandrlust-server.fly.dev/admin/delete-post`, {
+        const res = await fetch(`http://localhost:3000/admin/delete-post`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -32,14 +32,14 @@ export default function Cards(props) {
         }
     }
 
-    const url = `https://wandrlust-server.fly.dev/${props.feed.image}`;
+    const url = `http://localhost:3000/${props.feed.image}`;
 
     return (
         <Card className="py-4" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '550px' }}>
             <CardHeader className="pb-0 pt-2 px-4 flex-col items-start">
                 <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
                     <div className="flex items-center gap-2">
-                        <img src={`https://wandrlust-server.fly.dev/profileImages/${props.feed.author.profileImage}`} className="rounded-[50%]" height={50} width={50} ></img>
+                        <img src={`http://localhost:3000/profileImages/${props.feed.author.profileImage}`} className="rounded-[50%]" height={50} width={50} ></img>
                         <p className="font-bold text-xl">{props.feed.author.name}</p>
                     </div>
                     <small className="text-default-500">{createdAtIST}</small>
@@ -50,7 +50,7 @@ export default function Cards(props) {
                 <Image
                     alt="Card background"
                     className="object-cover rounded-xl"
-                    src={`https://wandrlust-server.fly.dev/images/${props.feed.image}`}
+                    src={`http://localhost:3000/images/${props.feed.image}`}
                     width={400}
                     style={{ border: '3px solid black' }}
                 />
